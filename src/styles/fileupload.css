@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.filepond--root {
+  font-family: "IBM Plex Sans", sans-serif !important;
+  font-size: 1rem !important;
+}
+
+.filepond--panel-root {
+  background-color: transparent !important;
+  border-style: solid !important;
+  border-width: thin;
+  border-color: #d1d5db;
+  border-radius: 0.3em !important;
+}
+
+.filepond--panel-root:hover {
+  border-color: #0ea5e9 !important;
+}
+
+.filepond--file-action-button:hover,
+.filepond--file-action-button:focus {
+  border-color: #0ea5e9 !important;
+}
