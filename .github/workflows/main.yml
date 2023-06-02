@@ -25,8 +25,11 @@ jobs:
       - name: Install Depedencies
         run: yarn install --frozen-lockfile
 
+      - name: Prebuild - Generate TailwindCSS
+        run: npx tailwindcss -i ./src/styles/globals.css -o ./src/styles/generated.css
+
       - name: Build Project
-        run: yarn build
+        run: next build
 
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
