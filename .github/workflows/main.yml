@@ -29,7 +29,7 @@ jobs:
         run: npx tailwindcss -i ./src/styles/globals.css -o ./src/styles/generated.css
 
       - name: Build Project
-        run: next build
+        run: yarn build
 
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
