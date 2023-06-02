@@ -20,7 +20,7 @@ jobs:
           cache: npm
 
       - name: Install Depedencies
-        run: npm install
+        run: npm install --force
 
       - name: Build Project
         run: npm run build
@@ -31,3 +31,4 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /home/m3119016/sinata/
