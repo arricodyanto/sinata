@@ -19,11 +19,14 @@ jobs:
           node-version: 16.x
           cache: npm
 
+      - name: Install Yarn
+        run: npm install --force yarn --locate=global
+
       - name: Install Depedencies
-        run: npm install --force
+        run: yarn install --frozen-lockfile
 
       - name: Build Project
-        run: npm run build
+        run: yarn build
 
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
@@ -31,4 +34,4 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /home/m3119016/sinata/
+          server-dir: /sinata/
