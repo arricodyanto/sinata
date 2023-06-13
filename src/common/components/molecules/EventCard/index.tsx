@@ -19,8 +19,8 @@ export default function EventCard(props: TEventCardProps) {
     <Card sx={{ maxWidth: 200 }} variant='outlined' className='rounded-xl shadow-md border'>
         <CardHeader className='text-center py-3 h-7' title={
             <Typography variant='caption' color='text.primary' className='truncate'>
-                <CalendarMonthOutlinedIcon sx={{ fontSize: 10}}/> {eventDate}
-                <ScheduleOutlinedIcon sx={{ fontSize: 10, marginLeft: 1}}/> {eventTime}
+                <CalendarMonthOutlinedIcon sx={{ fontSize: 10}} color='primary'/> {eventDate}
+                <ScheduleOutlinedIcon sx={{ fontSize: 10, marginLeft: 1}} color='primary'/> {eventTime}
             </Typography>}
         />
         <CardMedia component='img' height='128' image={eventImage} alt='Event Image' />
