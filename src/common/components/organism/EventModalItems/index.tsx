@@ -4,13 +4,13 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
 import Link from 'next/link'
 import React from 'react'
+import { dateFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
 // import event from '../../../json/events.json'
 
 type TFilteredDate = {
   id: number
   title: String
-  date: String
-  sdate: number
+  date: Date
   description: String
   image: String
   link: String
@@ -22,20 +22,19 @@ type EventModalItemsProps = {
 
 export default function EventModalItems(props: EventModalItemsProps) {
   const { filteredDate } = props
-  // const arrFilteredDate = Object.entries(filteredDate)
-  // console.log(filteredDate.map((item) => item.date))
+  const api_image = process.env.NEXT_PUBLIC_API_IMG
   return (
   <>
     { filteredDate.map((item) => {
       return (
         <Card key={item.id} className='mb-3' sx={{ display: 'flex'}}>
-            <CardMedia sx={{ width: { xs: 100, sm: 120 }, height: 140}} component='img' image={`${item.image}`} alt='event-cover'/>
+            <CardMedia sx={{ width: { xs: 100, sm: 120 }, height: 140}} component='img' image={`${api_image}/${item.image}`} alt='event-cover'/>
             <Box className='p-2 relative'>
               <CardContent sx={{ width: {xs: 150, sm: 210, md: 335}, height: 120, padding: 1}}>
-                <Typography variant='subtitle1' fontStyle='bold' className='truncate'>{item.title}</Typography>
+                <Typography variant='subtitle1' fontStyle='bold' className='truncate text-primary brightness-95'>{item.title}</Typography>
                 <Typography variant='caption' color='text.primary' className='truncate xs:text-[10px] sm:text-[13px]'>
-                    <CalendarMonthOutlinedIcon sx={{ fontSize: 10}}/> {item.date}
-                    <ScheduleOutlinedIcon sx={{ fontSize: 10, marginLeft: 1}}/>{item.date}
+                    <CalendarMonthOutlinedIcon sx={{ fontSize: 10}} color='primary'/> {dateFormatter(item.date)}
+                    <ScheduleOutlinedIcon sx={{ fontSize: 10, marginLeft: 1}} color='primary'/> {timeFormatter(item.date)} WIB
                 </Typography>
                 <Typography variant='caption' className='leading-[1rem] line-clamp-2 mt-1'>{item.description}</Typography>
               </CardContent>

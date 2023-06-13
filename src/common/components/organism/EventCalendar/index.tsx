@@ -1,28 +1,42 @@
-import * as React from 'react';
+import { useCallback, useEffect, useState, useRef} from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import Badge from '@mui/material/Badge';
-import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DayCalendarSkeleton, LocalizationProvider, PickersDay, PickersDayProps, StaticDatePicker } from '@mui/x-date-pickers';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import event from '@/json/events.json'
 import { Box, Divider, Modal, Typography } from '@mui/material';
 import EventModalItems from '../EventModalItems';
+import { getKalenderEvents } from '@/services/agenda';
+import { dateFormatter, oneDigitdateFormatter } from '@/common/utils/dateFormatter.util';
 
 export default function EventCalendar() {
   const initialValue = dayjs()
   const getBulan = initialValue.month()+1
   const getTahun = initialValue.year()
+
+  const [kalenderData, setKalenderData] = useState<Array<any>>([])
+
+  const getKalenderData = useCallback(async () => {
+    const data = await getKalenderEvents()
+    setKalenderData(data)
+  }, [getKalenderEvents])
+
+  useEffect(() => {
+    getKalenderData()
+  }, [])
+
   // get array of object from db (json)
-  const jsonValue = event.map((item) => item.date)
-
+  // const tanggalKalender = kalenderData.map((item) => item.tb_kegiatan.tgl_kegiatan)
+  const tanggalKalender = kalenderData.map((item) => oneDigitdateFormatter(item.date))
+  
   // filter array of object from db (json) by current month
-  const filterMonthdb = jsonValue.filter((item:any) => item.split('/')[1] == getBulan.toString())
+  const filterMonthdb = tanggalKalender.filter((item:any) => item.split('/')[1] == getBulan.toString())
   // const splitDate = filterMonthdb.map((item) => item.split('/')[1] == currentMonth.toString())
-
+  // console.log(filterMonthdb)
+  
   // filter array from filterMonthdb by current year
   const filterYeardb = filterMonthdb.filter((item:any) => item.split('/')[2] == getTahun.toString())
-  // console.log(filterYeardb)
   
   // get only date from array of object from db (json)
   const stringDate = filterYeardb.map((item:any) => item.split('/')[0])
@@ -30,23 +44,16 @@ export default function EventCalendar() {
   // convert date string to number
   const highlightDays = stringDate.map(Number)
 
-  const [fetchP, setFetchP] = React.useState<number[]>(highlightDays)
-  const requestAbortController = React.useRef<AbortController | null>(null);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [highlightedDays, setHighlightedDays] = React.useState<Array<number>>([]);
-  const [value, setValue] = React.useState<Dayjs | null>(initialValue);
-  const [open, setOpen] = React.useState(false)
+  const [fetchP, setFetchP] = useState<number[]>(highlightDays)
+  const requestAbortController = useRef<AbortController | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [highlightedDays, setHighlightedDays] = useState<Array<number>>([]);
+  const [value, setValue] = useState<Dayjs | null>(initialValue);
+  console.log(tanggalKalender)
+  const [open, setOpen] = useState(false)
   
   // define type of eventdb
-  const [filteredDate, setFilteredDate] = React.useState([{
-    id: 0,
-    title: "",
-    date: "",
-    sdate: 0,
-    description: "",
-    image: "",
-    link: ""
-  }])
+  const [filteredDate, setFilteredDate] = useState<Array<any>>([])
 
   function fakeFetch(date: Dayjs, { signal }: { signal: AbortSignal }, highlightDays: number[]) {
     return new Promise<{ daysToHighlight: number[] }>((resolve, reject) => {
@@ -86,7 +93,7 @@ export default function EventCalendar() {
     requestAbortController.current = controller;
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchHighlightedDays(initialValue, fetchP);
     // abort request on unmount
     return () => requestAbortController.current?.abort();
@@ -116,7 +123,7 @@ export default function EventCalendar() {
   function filterModal(newValue:any) {
     // convert date to local string (20/12/2023 15:15:20)
     const dateString = new Date(newValue).toLocaleDateString('it-IT')
-    const filtered = event.filter(t=>t.date === dateString);
+    const filtered = kalenderData.filter(t=>oneDigitdateFormatter(t.date) === dateString);
     // console.log(filtered)
     { 
         if (filtered.length !== 0) {
@@ -131,8 +138,7 @@ export default function EventCalendar() {
 
   function filterEvent(getCurrentMonth:number, getCurrentYear:number) {
     // get array of object from db (json)
-    const jsonValue = event.map((item) => item.date)
-    // console.log(jsonValue)
+    const tanggalKalender = kalenderData.map((item) => oneDigitdateFormatter(item.date))
 
     // get current month from handleMonthChange
     const currentMonth = getCurrentMonth
@@ -143,7 +149,7 @@ export default function EventCalendar() {
     // console.log(currentYear)
 
     // filter array of object from db (json) by current month
-    const filterMonthdb = jsonValue.filter((item) => item.split('/')[1] == currentMonth.toString())
+    const filterMonthdb = tanggalKalender.filter((item) => item.split('/')[1] == currentMonth.toString())
     // const splitDate = filterMonthdb.map((item) => item.split('/')[1] == currentMonth.toString())
 
     // filter array from filterMonthdb by current year
