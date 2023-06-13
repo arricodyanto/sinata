@@ -8,6 +8,7 @@ import event from '@/json/events.json'
 import { Box, Divider, Modal, Typography } from '@mui/material';
 import EventModalItems from '../EventModalItems';
 import { getKalenderEvents } from '@/services/agenda';
+import { dateFormatter, oneDigitdateFormatter } from '@/common/utils/dateFormatter.util';
 
 export default function EventCalendar() {
   const initialValue = dayjs()
@@ -27,7 +28,7 @@ export default function EventCalendar() {
 
   // get array of object from db (json)
   // const tanggalKalender = kalenderData.map((item) => item.tb_kegiatan.tgl_kegiatan)
-  const tanggalKalender = event.map((item) => item.date)
+  const tanggalKalender = kalenderData.map((item) => oneDigitdateFormatter(item.date))
   
   // filter array of object from db (json) by current month
   const filterMonthdb = tanggalKalender.filter((item:any) => item.split('/')[1] == getBulan.toString())
@@ -48,18 +49,11 @@ export default function EventCalendar() {
   const [isLoading, setIsLoading] = useState(false);
   const [highlightedDays, setHighlightedDays] = useState<Array<number>>([]);
   const [value, setValue] = useState<Dayjs | null>(initialValue);
+  console.log(tanggalKalender)
   const [open, setOpen] = useState(false)
   
   // define type of eventdb
-  const [filteredDate, setFilteredDate] = useState([{
-    id: 0,
-    title: "",
-    date: "",
-    sdate: 0,
-    description: "",
-    image: "",
-    link: ""
-  }])
+  const [filteredDate, setFilteredDate] = useState<Array<any>>([])
 
   function fakeFetch(date: Dayjs, { signal }: { signal: AbortSignal }, highlightDays: number[]) {
     return new Promise<{ daysToHighlight: number[] }>((resolve, reject) => {
@@ -129,7 +123,7 @@ export default function EventCalendar() {
   function filterModal(newValue:any) {
     // convert date to local string (20/12/2023 15:15:20)
     const dateString = new Date(newValue).toLocaleDateString('it-IT')
-    const filtered = event.filter(t=>t.date === dateString);
+    const filtered = kalenderData.filter(t=>oneDigitdateFormatter(t.date) === dateString);
     // console.log(filtered)
     { 
         if (filtered.length !== 0) {
@@ -144,8 +138,7 @@ export default function EventCalendar() {
 
   function filterEvent(getCurrentMonth:number, getCurrentYear:number) {
     // get array of object from db (json)
-    const tanggalKalender = event.map((item) => item.date)
-    // console.log(jsonValue)
+    const tanggalKalender = kalenderData.map((item) => oneDigitdateFormatter(item.date))
 
     // get current month from handleMonthChange
     const currentMonth = getCurrentMonth

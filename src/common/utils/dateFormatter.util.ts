@@ -5,6 +5,13 @@ export function dateFormatter(inputDate: Date) {
     return formattedDate
 }
 
+export function oneDigitdateFormatter(inputDate: Date) {
+    const dateOrigin = inputDate
+    const date = new Date(dateOrigin)
+    const formattedDate = date.toLocaleString('id-ID', { day: 'numeric', month: 'numeric', year: 'numeric'})
+    return formattedDate
+}
+
 export function timeFormatter(inputDate: Date) {
     const timeString = inputDate
     const stringToDate = new Date(timeString)
