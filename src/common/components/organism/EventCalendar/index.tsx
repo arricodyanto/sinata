@@ -48,8 +48,7 @@ export default function EventCalendar() {
   const requestAbortController = useRef<AbortController | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [highlightedDays, setHighlightedDays] = useState<Array<number>>([]);
-  const [value, setValue] = useState<Dayjs | null>(initialValue);
-  console.log(tanggalKalender)
+  const [value, setValue] = useState<Dayjs | null>(initialValue)
   const [open, setOpen] = useState(false)
   
   // define type of eventdb
