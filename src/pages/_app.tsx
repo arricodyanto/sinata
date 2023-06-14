@@ -18,9 +18,11 @@ let theme = createTheme({
   palette: {
     primary: {
       main: '#0ea5e9',
-      light: '#38bdf8',
-      dark: '#0284c7',
       contrastText: "#ffffff",
+    },
+    secondary: {
+      main: '#E2E8F0',
+      contrastText: '#0F172A'
     },
     success: {
       main: '#22c55e',
@@ -29,7 +31,8 @@ let theme = createTheme({
     error: {
       main: '#ef4444',
       contrastText: "#ffffff",
-    }
+    },
+    divider: '#e5e7eb',
   },
   typography: {
     fontFamily: "'IBM Plex Sans', sans-serif"

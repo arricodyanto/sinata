@@ -10,6 +10,7 @@ const nextConfig = {
             pathname: '**',
         },
     ],
+    domains: ['localhost']
   },
   env: {
     X_API_Key: process.env.X_API_Key

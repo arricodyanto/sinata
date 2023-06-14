@@ -24,11 +24,11 @@ export default function EventCalendar() {
 
   useEffect(() => {
     getKalenderData()
-  }, [])
+  }, [getKalenderData])
 
   // get array of object from db (json)
   // const tanggalKalender = kalenderData.map((item) => item.tb_kegiatan.tgl_kegiatan)
-  const tanggalKalender = kalenderData.map((item) => oneDigitdateFormatter(item.date))
+  const tanggalKalender = kalenderData ? kalenderData.map((item) => oneDigitdateFormatter(item.date)) : [];
   
   // filter array of object from db (json) by current month
   const filterMonthdb = tanggalKalender.filter((item:any) => item.split('/')[1] == getBulan.toString())
@@ -137,7 +137,7 @@ export default function EventCalendar() {
 
   function filterEvent(getCurrentMonth:number, getCurrentYear:number) {
     // get array of object from db (json)
-    const tanggalKalender = kalenderData.map((item) => oneDigitdateFormatter(item.date))
+    const tanggalKalender = kalenderData ? kalenderData.map((item) => oneDigitdateFormatter(item.date)) : []
 
     // get current month from handleMonthChange
     const currentMonth = getCurrentMonth

@@ -1,5 +1,5 @@
 import { TPengumuman } from "@/services/data-types/pengumumanItem"
 
-export type TPengumumanProps = {
+export type TSidebarPengumumanProps = {
     data: TPengumuman[]
 }

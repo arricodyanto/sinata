@@ -5,15 +5,13 @@ import PersonIcon from '@mui/icons-material/Person';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import EventIcon from '@mui/icons-material/Event';
 import { dateFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
-import { TPengumuman } from '@/services/data-types/pengumumanItem';
-import { TPengumumanProps } from '@/common/types/pengumuman-item';
+import { TSidebarPengumumanProps } from '@/common/types/sidebar-pengumuman';
 
-export default function SidebarItem(props: TPengumumanProps) {
+export default function SidebarPengumuman(props: TSidebarPengumumanProps) {
     const { data } = props
-    const [pengumuman, setPengumuman] = useState(data)
   return (
     <>
-        {pengumuman.map((item:any) => {
+        {data.map((item:any) => {
             return(
                 <>
                     <Link href={`/pengumuman/${item.id}`}>

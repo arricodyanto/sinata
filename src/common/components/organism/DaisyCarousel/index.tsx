@@ -19,7 +19,7 @@ export default function DaisyCarousel() {
   return (
     <>
         <Carousel display='sequential' className='py-2'>
-            { cardData.map((item) =>  {
+            { cardData ? cardData.map((item) =>  {
                  return (
                     <>
                         <Carousel.Item className='mx-2'>
@@ -27,7 +27,7 @@ export default function DaisyCarousel() {
                         </Carousel.Item>
                     </>
                  )
-             })}
+             }) : []}
         </Carousel>
     </>
   )

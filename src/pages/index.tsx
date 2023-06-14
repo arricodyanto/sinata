@@ -24,7 +24,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Box className='bg-white'> 
-        <UpdatesNotification />
+        {/* <UpdatesNotification /> */}
         <Box className='w-screen xs:h-[70vh] lg:h-[80vh] relative flex items-center'>
           <Appnav />
           <Image src='/images/hero-5.jpg' alt="Hero's Site" layout='fill' objectFit='cover' className='pt-0 brightness-[0.3]'/>
@@ -39,7 +39,7 @@ export default function Home() {
           </ContainerPage>
         </Box>
           <ContainerPage>
-            <Paper variant='outlined' className='-translate-y-14 xs:-translate-y-9 shadow-lg rounded-xl p-5 px-4'>
+            <Paper variant='outlined' sx={{ borderColor: '#e5e7eb' }} className='-translate-y-14 xs:-translate-y-9 shadow-lg rounded-xl p-5 px-4'>
               <Grid container spacing={2} className='px-5'>
                 <Grid item xs={4}>
                   <Link href="/" className='grid place-items-center align-middle hover:brightness-125'>
