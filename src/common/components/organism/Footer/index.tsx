@@ -21,7 +21,7 @@ export default function Footer() {
                     </Stack>
                     <Typography variant='subtitle1' className='mt-10 italic'>&quot;Every civitas can publish theirs here!&quot;</Typography>
                     <Typography variant='caption' className='mt-0'>~ Public Relation UNS</Typography>
-                    <Divider />
+                    <Divider sx={{ borderColor: '#1f2937' }}/>
                     <Link href='/sign-in'>
                         <Button variant='contained' sx={{borderRadius: 0, width: { xs: '75%', md: '50%'}}} size='large' className='mt-3 h-[45px] capitalize rounded-md' endIcon={<ArrowForwardIcon fontSize='small' />}>Ajukan Layanan</Button>
                     </Link>

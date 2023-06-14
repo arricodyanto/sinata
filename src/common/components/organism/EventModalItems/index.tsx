@@ -31,7 +31,9 @@ export default function EventModalItems(props: EventModalItemsProps) {
             <CardMedia sx={{ width: { xs: 100, sm: 120 }, height: 140}} component='img' image={`${api_image}/${item.image}`} alt='event-cover'/>
             <Box className='p-2 relative'>
               <CardContent sx={{ width: {xs: 150, sm: 210, md: 335}, height: 120, padding: 1}}>
-                <Typography variant='subtitle1' fontStyle='bold' className='truncate text-primary brightness-95'>{item.title}</Typography>
+                <Link href={`/agenda/${item.link}`}>
+                  <Typography variant='subtitle1' fontStyle='bold' className='truncate text-primary brightness-95 hover:brightness-125'>{item.title}</Typography>
+                </Link>
                 <Typography variant='caption' color='text.primary' className='truncate xs:text-[10px] sm:text-[13px]'>
                     <CalendarMonthOutlinedIcon sx={{ fontSize: 10}} color='primary'/> {dateFormatter(item.date)}
                     <ScheduleOutlinedIcon sx={{ fontSize: 10, marginLeft: 1}} color='primary'/> {timeFormatter(item.date)} WIB
@@ -39,7 +41,7 @@ export default function EventModalItems(props: EventModalItemsProps) {
                 <Typography variant='caption' className='leading-[1rem] line-clamp-2 mt-1'>{item.description}</Typography>
               </CardContent>
               <CardActions className='h-0 flex bottom-3 right-0 absolute'>
-                  <Link href={`${item.link}`}>
+                  <Link href={`/agenda/${item.link}`}>
                       <IconButton aria-label='more' color='primary'><VisibilityIcon fontSize='small'/><Typography variant='caption' className='pl-1'>More</Typography></IconButton>
                   </Link>
               </CardActions>

@@ -16,7 +16,7 @@ export default function EventCard(props: TEventCardProps) {
         eventLink
     } = props
   return (
-    <Card sx={{ maxWidth: 200 }} variant='outlined' className='rounded-xl shadow-md border'>
+    <Card sx={{ maxWidth: 200, borderColor: '#e5e7eb' }} variant='outlined' className='rounded-xl shadow-md'>
         <CardHeader className='text-center py-3 h-7' title={
             <Typography variant='caption' color='text.primary' className='truncate'>
                 <CalendarMonthOutlinedIcon sx={{ fontSize: 10}} color='primary'/> {eventDate}
@@ -25,12 +25,14 @@ export default function EventCard(props: TEventCardProps) {
         />
         <CardMedia component='img' height='128' image={eventImage} alt='Event Image' />
         <CardContent sx={{ height: 120 }}>
-            <Typography variant='body1' color='text.primary' className='mb-1 truncate'>{eventTitle}</Typography>
+            <Link href={`/agenda/${eventLink}`}>
+                <Typography variant='body1' color='text.primary' className='mb-1 truncate hover:text-primary transition'>{eventTitle}</Typography>
+            </Link>
             <Typography variant='body2' color='text.secondary' className='leading-[1rem] line-clamp-3'>{eventDesc}</Typography>
         </CardContent>
-        <Divider />
+        <Divider light sx={{ borderColor: '#e5e7eb'}} />
         <CardActions className='justify-center h-7'>
-            <Link href={eventLink}>
+            <Link href={`/agenda/${eventLink}`}>
                 <IconButton aria-label='more' color='primary'><VisibilityIcon fontSize='small'/><Typography variant='caption' className='pl-1'>More</Typography></IconButton>
             </Link>
         </CardActions>

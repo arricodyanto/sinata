@@ -1,7 +1,7 @@
-import { Typography } from '@mui/material'
+import { Typography, TypographyProps } from '@mui/material'
 import React from 'react'
 
-type TPageTitleProps = {
+type TPageTitleProps = TypographyProps & {
     title: string
 }
 

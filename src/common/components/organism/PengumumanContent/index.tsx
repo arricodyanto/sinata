@@ -1,7 +1,7 @@
 import { Button, Grid, IconButton, Paper, Stack, Typography } from '@mui/material'
 import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
-import pengumuman from '@/json/pengumuman.json'
+// import pengumuman from '@/json/pengumuman.json'
 import { getPengumumanList } from '@/services/pengumuman'
 import { dateFormatter, timeFormatter } from '@/common/utils/dateFormatter.util'
 import PersonIcon from '@mui/icons-material/Person';
@@ -9,7 +9,6 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import EventIcon from '@mui/icons-material/Event';
 
 export default function PengumumanContent() {
-
     const [pengumumanData, setPengumumanData] = useState<Array<any>>([])
     
     const getPengumumanData = useCallback(async () => {
@@ -20,6 +19,7 @@ export default function PengumumanContent() {
     useEffect(() => {
         getPengumumanData()
     }, [])
+
   return (
     <>
         {
@@ -50,7 +50,7 @@ export default function PengumumanContent() {
                             </Paper>
                         </Grid>
                         <Grid item xs={10} md={9} className=''>
-                            <Link href='/'>
+                            <Link href={`/pengumuman/${item.id}`}>
                                 <Typography variant='h6' className='font-bold text-primary line-clamp-2 hover:brightness-125 leading-7 text-xl'>{item.judul_pengumuman}</Typography>
                             </Link>
                             <Stack direction='row' alignItems='center' spacing={2} className='mt-1'>
@@ -68,7 +68,7 @@ export default function PengumumanContent() {
                                 </Stack>
                             </Stack>
                             <Typography variant='body2' className='text-gray-500 mt-3 line-clamp-3 leading-5'>{item.content}</Typography>
-                            <Link href='/'>
+                            <Link href={`/pengumuman/${item.id}`}>
                                 <Button variant='outlined' size='small' color='primary' className='mt-4 normal-case'>Baca lebih lanjut</Button>
                             </Link>
                         </Grid>
