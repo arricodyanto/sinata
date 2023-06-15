@@ -6,7 +6,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import EventIcon from '@mui/icons-material/Event';
 import PlaceIcon from '@mui/icons-material/Place';
-import { dateFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
+import { dateFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
 import Image from 'next/image';
 
 export default function SidebarAgenda(props: TSidebarAgendaProps) {
@@ -31,7 +31,7 @@ export default function SidebarAgenda(props: TSidebarAgendaProps) {
                                 </Stack>
                                 <Stack direction='row'>
                                     <AccessTimeIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>
-                                    <Typography variant='caption' className='pl-1 text-gray-500'>{timeFormatter(item.tb_kegiatan.tgl_kegiatan)} WIB</Typography>
+                                    <Typography variant='caption' className='pl-1 text-gray-500'>{timeStrictFormatter(item.tb_kegiatan.waktu_kegiatan)} WIB</Typography>
                                 </Stack>
                             </Stack>
                             <Stack direction='row'>

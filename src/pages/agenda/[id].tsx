@@ -12,12 +12,11 @@ import Image from 'next/image'
 import SidebarAgenda from '@/common/components/molecules/SidebarAgenda'
 import { useRouter } from 'next/router'
 import { getAgendaItem, getAgendaList } from '@/services/agenda'
-import { dateFormatter, timeFormatter } from '@/common/utils/dateFormatter.util'
+import { dateFormatter, timeFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util'
 import Link from 'next/link'
 
 export default function DetailAgenda() {
-  const router = useRouter()
-  const { id } = router.query
+  const { query, isReady } = useRouter()
 
   const api_image = process.env.NEXT_PUBLIC_API_IMG
 
@@ -29,17 +28,18 @@ export default function DetailAgenda() {
     setAgenda(data)
   }, [getAgendaList])
 
-  const getOneAgenda = useCallback(async () => {
-    if (id) {
+  const getOneAgenda = useCallback(async (id: any) => {
       const data = await getAgendaItem(id)
       setAgendaItem(data)
-    }
-  }, [id])
+  }, [])
   
   useEffect(() => {
-    getAgenda()
-    getOneAgenda()
-  }, [getAgenda, getOneAgenda])
+    if(isReady) {
+      getOneAgenda(query.id)
+      getAgenda()
+    }
+  }, [isReady, query.id])
+
   return (
     <>
       { agendaItem ? agendaItem.map(item => {
@@ -51,7 +51,7 @@ export default function DetailAgenda() {
                 <Grid container spacing={4} sx={{ marginBottom: 5, minHeight: '30vh' }}>
                   <Grid item xs={12} md={7} lg={8} className='mb-4'>
                     <PageTitle title={item.tb_kegiatan.judul_kegiatan} />
-                    <Stack direction='row' alignItems='center' spacing={2} className='-mt-5'>
+                    <Stack direction='row' alignItems='center' spacing={2} className='-mt-5' sx={{ display: { xs: 'none', md: 'flex' }}}>
                         <Stack direction='row'>
                           <PersonIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>
                           <Typography variant='caption' className='pl-1 text-gray-500'>{item.tb_kegiatan.tb_account.name}</Typography>
@@ -62,22 +62,42 @@ export default function DetailAgenda() {
                         </Stack>
                         <Stack direction='row'>
                           <AccessTimeIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>
-                          <Typography variant='caption' className='pl-1 text-gray-500'>{timeFormatter(item.tb_kegiatan.tgl_kegiatan)} WIB</Typography>
+                          <Typography variant='caption' className='pl-1 text-gray-500'>{timeStrictFormatter(item.tb_kegiatan.waktu_kegiatan)} WIB</Typography>
                         </Stack>
                         <Stack direction='row'>
                           <PlaceIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>
                           <Typography variant='caption' className='pl-1 text-gray-500'>{item.tb_kegiatan.tempat_kegiatan}</Typography>
                         </Stack>
                     </Stack>
+                    <Box sx={{ display: { xs: 'block', md: 'none' }}}>
+                      <Stack direction='row' alignItems='center' spacing={2} className='mt-1'>
+                          <Stack direction='row'>
+                              <PersonIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>
+                              <Typography variant='caption' className='pl-1 text-gray-500'>{item.tb_kegiatan.tb_account.name}</Typography>
+                          </Stack>
+                          <Stack direction='row'>
+                              <EventIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>
+                              <Typography variant='caption' className='pl-1 text-gray-500'>{dateFormatter(item.tb_kegiatan.tgl_kegiatan)}</Typography>
+                          </Stack>
+                          <Stack direction='row'>
+                              <AccessTimeIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>
+                              <Typography variant='caption' className='pl-1 text-gray-500'>{timeStrictFormatter(item.tb_kegiatan.waktu_kegiatan)} WIB</Typography>
+                          </Stack>
+                      </Stack>
+                      <Stack direction='row' className='mt-1'>
+                          <PlaceIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>
+                          <Typography variant='caption' className='pl-1 text-gray-500'>{item.tb_kegiatan.tempat_kegiatan}</Typography>
+                      </Stack>
+                    </Box>
                     <Box className='mt-6'>
                       <Link href={`${api_image}/${item.leaflet_kegiatan}`} target='blank'>
                         <Image src={`${api_image}/${item.leaflet_kegiatan}`} alt={`Judul Agenda`} quality={80} layout='responsive' width={20} height={20} className='rounded-lg shadow-lg mb-2' />
                       </Link>
-                      <Typography variant='body1' className='mb-6'>
+                      <Typography variant='body1' className='my-6'>
                         {item.caption}
                       </Typography>
                       <Divider light className='mb-4 border-gray-200' />
-                      <Typography variant='caption'>Diajukan pada tanggal {dateFormatter(item.tb_kegiatan.tgl_kegiatan)} - {timeFormatter(item.tb_kegiatan.tgl_kegiatan)} WIB</Typography>
+                      <Typography variant='caption'>Diajukan pada tanggal {dateFormatter(item.createdAt)} - {timeFormatter(item.createdAt)} WIB</Typography>
                     </Box>            
                   </Grid>
                   <Grid item xs={12} md={5} lg={4} className='xs:mt-[2rem] md:mt-[6rem] lg:mt-[7.5rem]'>

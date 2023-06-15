@@ -14,26 +14,27 @@ import { dateFormatter, timeFormatter } from '@/common/utils/dateFormatter.util'
 import SidebarPengumuman from '@/common/components/molecules/SidebarPengumuman';
 
 export default function PengumumanView() {
-  const router = useRouter();
-  const { id } = router.query;
+  const { query, isReady } = useRouter()
 
   const [pengumuman, setPengumuman] = useState<TPengumuman | null>(null)
   const [pengumumanList, setPengumumanList] = useState<Array<any>>([])
 
-  const getPengumuman = useCallback(async () => {
+  const getPengumuman = useCallback(async (id: any) => {
     const data = await getPengumumanItem(id);
     setPengumuman(data);    
-  }, [id]);
+  }, [])
 
   const getPengumumans = useCallback(async () => {
     const data = await getPengumumanList()
     setPengumumanList(data)
-  }, [getPengumumanList])
+  }, [])
 
   useEffect(() => {
-    getPengumuman()
-    getPengumumans()
-  }, [getPengumuman, getPengumumans]);
+    if(isReady) {
+      getPengumuman(query.id)
+      getPengumumans()
+    }
+  }, [isReady, query.id]);
 
   if (!pengumuman) {
     return null; // Tampilkan loading atau komponen lain saat data masih diambil
