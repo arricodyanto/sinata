@@ -21,3 +21,10 @@ export async function getAgendaItem(id: any) {
     const axiosResponse = response.data
     return axiosResponse.data
 }
+
+export async function getAllAgenda(params: string) {
+    const URLparams = params || ''
+    const response = await axios.get(`${HOST}/${VERSION}/${URL}/lihat/?${URLparams}`)
+    const axiosResponse = response.data
+    return axiosResponse
+}

@@ -1,5 +1,5 @@
 import { Box, Grid, Pagination, Stack, Typography } from "@mui/material";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ContainerPage from "@/common/components/atoms/ContainerPage";
 import PageTitle from "@/common/components/atoms/PageTitle";
 import HeaderPages from "@/common/components/molecules/HeaderPages";
@@ -9,21 +9,36 @@ import TodaysEvent from "@/common/components/organism/TodaysEvent";
 import TomorrowsEvent from "@/common/components/organism/TomorrowsEvent";
 import eventData from '@/json/events.json'
 import EventCardV2 from "@/common/components/molecules/EventCardV2";
+import { getAllAgenda } from "@/services/agenda";
+import { dateFormatter, dateStringFormatter, timeStrictFormatter } from "@/common/utils/dateFormatter.util";
 
 export default function Events() {
-  const [min, setMin] = React.useState(0)
-  const [max, setMax] = React.useState(8)
-  const count = Math.ceil(eventData.length / 9)
-
-  const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
-      if (value >= 2) {
-          setMin((value - 1) * 9)
-          setMax(((value - 1) * 9)+8)
-      } else if ( value == 1) {
-          setMin(0)
-          setMax(8)
-      }
+    const [agenda, setAgenda] = useState<Array<any>>([])
+    const [page, setPage] = useState<number>(1)
+    const [totalRow, setTotalRow] = useState<number>(0)
+    
+    const count = Math.ceil(totalRow / 12)
+    
+    const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
+      setPage(value)
     }
+    
+    const getAgenda = useCallback(async () => {
+      const params = `limit=12&page=${page}`
+      const data = await getAllAgenda(params)
+      setAgenda(data.data)
+      setTotalRow(data.totalRow)
+    }, [page, setAgenda])
+    
+    useEffect(() => {
+      getAgenda()
+    }, [getAgenda])
+    
+    useEffect(() => {
+      getAgenda()
+    }, [page])
+
+    const api_image = process.env.NEXT_PUBLIC_API_IMG
   return (
     <Box className="bg-white">
       <HeaderPages
@@ -54,14 +69,13 @@ export default function Events() {
             Semua Agenda
           </Typography>
           <Grid container spacing={3}>
-            { eventData.slice(0).reverse().filter((item, index) => index >= min && index <= max).map(item => {
+            { agenda.map(item => {
                 return (
-                    <>
-                        <Grid item key={item.id} xs={12} md={4}>
-                            <EventCardV2 image={item.image} visibility={item.sifat} publisher={item.publisher} avatar={item.avatar} title={item.title}
-                              description={item.description} date={item.date} time={item.time} location={item.location} />
-                        </Grid>
-                    </>
+                  <Grid item key={item.id} xs={12} md={4}>
+                      <EventCardV2 image={`${api_image}/${item.leaflet_kegiatan}`} visibility={item.tb_kegiatan.sifat_kegiatan} 
+                        publisher={item.tb_kegiatan.tb_account.name} avatar={item.tb_kegiatan.tb_account.img_profil} title={item.tb_kegiatan.judul_kegiatan} description={item.caption} 
+                        date={dateStringFormatter(item.tb_kegiatan.tgl_kegiatan)} time={timeStrictFormatter(item.tb_kegiatan.waktu_kegiatan)} location={item.tb_kegiatan.tempat_kegiatan} link={`/agenda/${item.id}`} />
+                  </Grid>
                 )
             })}
           </Grid>

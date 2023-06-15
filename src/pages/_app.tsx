@@ -16,6 +16,7 @@ let theme = createTheme({
     }
   },
   palette: {
+    mode: 'light',
     primary: {
       main: '#0ea5e9',
       contrastText: "#ffffff",
@@ -31,6 +32,10 @@ let theme = createTheme({
     error: {
       main: '#ef4444',
       contrastText: "#ffffff",
+    },
+    text: {
+      primary: '#334155',
+      secondary: '#64748b'
     },
     divider: '#e5e7eb',
   },

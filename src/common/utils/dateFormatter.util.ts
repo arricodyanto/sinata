@@ -20,3 +20,15 @@ export function timeFormatter(inputDate: Date) {
     const formattedTime = `${hours}:${minutes}`
     return formattedTime
 }
+
+export function timeStrictFormatter(inputTime: any) {
+    const time = inputTime
+    const formattedTime = time.substring(0, 5)
+    return formattedTime
+}
+
+export function dateStringFormatter(inputDate: Date) {
+    const date = new Date(inputDate);
+    const formattedDate = date.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+    return formattedDate
+}

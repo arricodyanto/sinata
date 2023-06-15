@@ -1,15 +1,32 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import event from '@/json/events.json'
-import { Alert, Box, Card, CardActions, CardContent, CardMedia, IconButton, Typography } from '@mui/material'
+import { Alert, Box, Card, CardActions, CardContent, CardMedia, IconButton, Stack, Typography } from '@mui/material'
 import Link from 'next/link'
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
+import PlaceIcon from '@mui/icons-material/Place';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import EventIcon from '@mui/icons-material/Event';
+import { getAgendaList } from '@/services/agenda'
+import { dateFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util'
 
 export default function TomorrowsEvent() {
-    const tomorrow = dayjs().date(dayjs().date() + 1).format('D/M/YYYY')
-    const filteredDate = event.filter((item) => item.date === tomorrow)
+    const [agenda, setAgenda] = useState<Array<any>>([])
+    
+    const getAgenda = useCallback(async () => {
+        const data = await getAgendaList()
+        setAgenda(data)
+    }, [getAgendaList])
+    
+    useEffect(() => {
+        getAgenda()
+    }, [getAgenda])
+
+    const tomorrow = dayjs().date(dayjs().date() + 1).format('DD/MM/YYYY')
+    const filteredDate = agenda.filter((item) => {
+        return dateFormatter(item.tb_kegiatan.tgl_kegiatan) === tomorrow
+    })
+
+    const api_image = process.env.NEXT_PUBLIC_API_IMG
 
     if (filteredDate.length === 0) {
         return(
@@ -20,32 +37,37 @@ export default function TomorrowsEvent() {
             </>
         )
     } else {
-        return (
+        return(
             <>
                 {filteredDate.map((item) => {
                     return(
-                    
-                        <Card key={item.id} className='mb-3 flex'>
-                            <CardMedia sx={{ width: { xs: 100, sm: 100 }, height: 140}} component='img' image={`${item.image}`} alt='event-cover'/>
-                            <Box className='p-2 relative'>
-                            <CardContent sx={{ width: {xs: 230, sm: '100%', md: 260}, padding: 1}}>
-                                <Typography variant='subtitle1' fontStyle='bold'>{item.title}</Typography>
-                                <Typography variant='caption' color='text.primary' className='truncate'>
-                                    <CalendarMonthOutlinedIcon sx={{ fontSize: 10}}/> {item.date}
-                                    <ScheduleOutlinedIcon sx={{ fontSize: 10, marginLeft: 1}}/> {item.date}
-                                </Typography>
-                                <Typography variant='caption' className='leading-[1rem] line-clamp-2 mt-1'>{item.description}</Typography>
-                            </CardContent>
-                            <CardActions className='h-0 flex bottom-3 right-0 absolute'>
-                                <Link href={`${item.link}`}>
-                                    <IconButton aria-label='more' color='primary'><VisibilityIcon fontSize='small'/><Typography variant='caption' className='pl-1'>More</Typography></IconButton>
-                                </Link>
-                            </CardActions>
-                            </Box>                        
-                        </Card>   
+                        <Link href={`/agenda/${item.id}`}>
+                            <Card key={item.id} variant='outlined' className='mb-3 flex hover:shadow-md rounded-lg'>
+                                <CardMedia sx={{ width: { xs: 100, sm: 100 }, height: 140}} component='img' image={`${api_image}/${item.leaflet_kegiatan}`} alt='event-cover'/>
+                                <Box className='relative'>
+                                    <CardContent sx={{ width: {xs: 230, sm: '100%', md: 230}}} className='py-2 px-3'>
+                                        <Typography variant='subtitle1' className='text-primary font-bold leading-5 line-clamp-2'>{item.tb_kegiatan.judul_kegiatan}</Typography>
+                                        <Stack direction='row' alignItems='center' spacing={1} className='mt-1'>
+                                            <Stack direction='row'>
+                                                <EventIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>
+                                                <Typography variant='caption' className='pl-1 text-gray-500'>{dateFormatter(item.tb_kegiatan.tgl_kegiatan)}</Typography>
+                                            </Stack>
+                                            <Stack direction='row'>
+                                                <AccessTimeIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>
+                                                <Typography variant='caption' className='pl-1 text-gray-500'>{timeStrictFormatter(item.tb_kegiatan.waktu_kegiatan)} WIB</Typography>
+                                            </Stack>
+                                        </Stack>
+                                        <Stack direction='row'>
+                                            <PlaceIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>
+                                            <Typography variant='caption' className='pl-1 text-gray-500 line-clamp-1'>{item.tb_kegiatan.tempat_kegiatan}</Typography>
+                                        </Stack>
+                                        <Typography variant='caption' className='leading-[1rem] line-clamp-2 mt-1'>{item.caption}</Typography>
+                                    </CardContent>
+                                </Box>                        
+                            </Card>   
+                        </Link>
                     )
                 })}
-
             </>
         )
     }

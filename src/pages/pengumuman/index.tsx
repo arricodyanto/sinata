@@ -12,30 +12,29 @@ import { getPengumumanAll } from '@/services/pengumuman'
 import PengumumanContent from '@/common/components/organism/PengumumanContent'
 
 export default function AllPengumuman() {
-    const [pengumumans, setPengumumans] = useState<Array<any>>([]);
-    const [page, setPage] = useState<number>(1);
-    const [totalRow, setTotalRow] = useState<number>(0);
+    const [pengumumans, setPengumumans] = useState<Array<any>>([])
+    const [page, setPage] = useState<number>(1)
+    const [totalRow, setTotalRow] = useState<number>(0)
     
-    const count = Math.ceil(totalRow / 12);
+    const count = Math.ceil(totalRow / 12)
     
     const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
-      setPage(value);
-    };
+      setPage(value)
+    }
     
     const getPengumumans = useCallback(async () => {
-      const params = `limit=12&page=${page}`;
-      const data = await getPengumumanAll(params);
-      setPengumumans(data.data);
-      setTotalRow(data.totalRow);
-    }, [page, setPengumumans]);
+      const params = `limit=12&page=${page}`
+      const data = await getPengumumanAll(params)
+      setPengumumans(data.data)
+      setTotalRow(data.totalRow)
+    }, [page, setPengumumans])
     
     useEffect(() => {
-      getPengumumans();
-    }, [getPengumumans]);
+      getPengumumans()
+    }, [getPengumumans])
     
-    // Tambahan useEffect untuk memanggil getPengumumans ketika nilai page berubah
     useEffect(() => {
-      getPengumumans();
+      getPengumumans()
     }, [page]);
   return (
     <>

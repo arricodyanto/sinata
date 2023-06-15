@@ -13,7 +13,7 @@ export default function ContainerPage(props: TContainerPageProps & Partial<Conta
         ...containerProps
      } = props
   return (
-    <Container {...containerProps} sx={{ maxWidth: {xs: 'calc(100vw-20px)', md: 800, lg: 1150}}} className={className}>
+    <Container {...containerProps} sx={{ maxWidth: {xs: 'calc(100vw-10px)', md: 800, lg: 1150}}} className={className}>
         {children}
     </Container>
   )
