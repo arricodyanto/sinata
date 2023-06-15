@@ -13,6 +13,7 @@ import SidebarAgenda from '@/common/components/molecules/SidebarAgenda'
 import { useRouter } from 'next/router'
 import { getAgendaItem, getAgendaList } from '@/services/agenda'
 import { dateFormatter, timeFormatter } from '@/common/utils/dateFormatter.util'
+import Link from 'next/link'
 
 export default function DetailAgenda() {
   const router = useRouter()
@@ -69,9 +70,9 @@ export default function DetailAgenda() {
                         </Stack>
                     </Stack>
                     <Box className='mt-6'>
-                      <Box className='max-h-[600px] mb-2'>
-                        <Image src={`${api_image}/${item.leaflet_kegiatan}`} alt={`Judul Agenda`} layout='responsive' width={200} height={100} className='rounded-lg shadow-lg' />
-                      </Box>
+                      <Link href={`${api_image}/${item.leaflet_kegiatan}`} target='blank'>
+                        <Image src={`${api_image}/${item.leaflet_kegiatan}`} alt={`Judul Agenda`} quality={80} layout='responsive' width={20} height={20} className='rounded-lg shadow-lg mb-2' />
+                      </Link>
                       <Typography variant='body1' className='mb-6'>
                         {item.caption}
                       </Typography>

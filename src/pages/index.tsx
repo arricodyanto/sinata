@@ -10,11 +10,23 @@ import DaisyCarousel from '@/common/components/organism/DaisyCarousel';
 import EventCalendar from '@/common/components/organism/EventCalendar';
 import PengumumanContent from '@/common/components/organism/PengumumanContent';
 import Footer from '@/common/components/organism/Footer';
-import UpdatesNotification from '@/common/components/organism/UpdatesNotification';
+// import UpdatesNotification from '@/common/components/organism/UpdatesNotification';
 import ContainerPage from '@/common/components/atoms/ContainerPage';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { useCallback, useEffect, useState } from 'react';
+import { getPengumumanList } from '@/services/pengumuman';
 
 export default function Home() {
+    const [pengumumanData, setPengumumanData] = useState<Array<any>>([])
+    
+    const getPengumumanData = useCallback(async () => {
+        const data = await getPengumumanList()
+        setPengumumanData(data)
+    }, [getPengumumanList])
+
+    useEffect(() => {
+        getPengumumanData()
+    }, [])
   return (
     <>
       <Head>
@@ -89,10 +101,12 @@ export default function Home() {
             <Box className='mt-4'>
               <Typography variant='h5' className='font-bold mb-6' color='primary'>Pengumuman Sistem</Typography>
               <Grid container spacing={2} className='my-4 -mx-1'>
-                <PengumumanContent />
+                <PengumumanContent data={pengumumanData} />
               </Grid>
               <Box className='flex justify-center mb-8'>
-                <Button variant='outlined' color='primary' size='medium' className='capitalize rounded-lg'>Lihat Lainnya</Button>
+                <Link href='/pengumuman'>
+                  <Button variant='outlined' color='primary' size='medium' className='capitalize rounded-lg'>Lihat Lainnya</Button>
+                </Link>
               </Box>
             </Box>
         </ContainerPage>
