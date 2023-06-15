@@ -7,23 +7,14 @@ import { dateFormatter, timeFormatter } from '@/common/utils/dateFormatter.util'
 import PersonIcon from '@mui/icons-material/Person';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import EventIcon from '@mui/icons-material/Event';
+import { TPengumumanContentProps } from '@/common/types/pengumuman-content'
 
-export default function PengumumanContent() {
-    const [pengumumanData, setPengumumanData] = useState<Array<any>>([])
-    
-    const getPengumumanData = useCallback(async () => {
-        const data = await getPengumumanList()
-        setPengumumanData(data)
-    }, [getPengumumanList])
-
-    useEffect(() => {
-        getPengumumanData()
-    }, [])
-
+export default function PengumumanContent(props: TPengumumanContentProps) {
+    const { data } = props
   return (
     <>
         {
-            pengumumanData.map((item) => {
+            data.map((item) => {
                 const dateString = item.tgl_upload
                 const dateTypes = new Date(dateString)
                 const month = dateTypes.getMonth() + 1

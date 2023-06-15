@@ -4,11 +4,10 @@ import Badge from '@mui/material/Badge';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DayCalendarSkeleton, LocalizationProvider, PickersDay, PickersDayProps, StaticDatePicker } from '@mui/x-date-pickers';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import event from '@/json/events.json'
 import { Box, Divider, Modal, Typography } from '@mui/material';
 import EventModalItems from '../EventModalItems';
 import { getKalenderEvents } from '@/services/agenda';
-import { dateFormatter, oneDigitdateFormatter } from '@/common/utils/dateFormatter.util';
+import {  oneDigitdateFormatter } from '@/common/utils/dateFormatter.util';
 
 export default function EventCalendar() {
   const initialValue = dayjs()
@@ -59,9 +58,6 @@ export default function EventCalendar() {
       const timeout = setTimeout(() => {
         // const daysInMonth = date.daysInMonth();
         const daysToHighlight = highlightDays;
-        
-        const dateValue = value?.format('D-M-YYYY')
-        // console.log(highlightDays)
   
         resolve({ daysToHighlight });
       }, 500);
@@ -100,8 +96,6 @@ export default function EventCalendar() {
 
   const handleMonthChange = (date: Dayjs) => {
     if (requestAbortController.current) {
-      // make sure that you are aborting useless requests
-      // because it is possible to switch between months pretty quickly
       requestAbortController.current.abort();
     }
 
@@ -111,7 +105,6 @@ export default function EventCalendar() {
     const getCurrentMonth = date.month()+1;
     const getCurrentYear = date.year()
     filterEvent(getCurrentMonth, getCurrentYear)
-    // console.log(getCurrentYear)
   };
 
   const handleDateChange = (newValue:any) => {
@@ -120,7 +113,6 @@ export default function EventCalendar() {
   }
 
   function filterModal(newValue:any) {
-    // convert date to local string (20/12/2023 15:15:20)
     const dateString = new Date(newValue).toLocaleDateString('it-IT')
     const filtered = kalenderData.filter(t=>oneDigitdateFormatter(t.date) === dateString);
     // console.log(filtered)
