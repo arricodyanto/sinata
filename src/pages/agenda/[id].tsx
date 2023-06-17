@@ -51,7 +51,7 @@ export default function DetailAgenda() {
                 <Grid container spacing={4} sx={{ marginBottom: 5, minHeight: '30vh' }}>
                   <Grid item xs={12} md={7} lg={8} className='mb-4'>
                     <PageTitle title={item.tb_kegiatan.judul_kegiatan} />
-                    <Stack direction='row' alignItems='center' spacing={2} className='-mt-5' sx={{ display: { xs: 'none', md: 'flex' }}}>
+                    <Stack direction='row' alignItems='center' spacing={2} className='-mt-5' sx={{ display: { xs: 'none', lg: 'flex' }}}>
                         <Stack direction='row'>
                           <PersonIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>
                           <Typography variant='caption' className='pl-1 text-gray-500'>{item.tb_kegiatan.tb_account.name}</Typography>
@@ -69,7 +69,7 @@ export default function DetailAgenda() {
                           <Typography variant='caption' className='pl-1 text-gray-500'>{item.tb_kegiatan.tempat_kegiatan}</Typography>
                         </Stack>
                     </Stack>
-                    <Box sx={{ display: { xs: 'block', md: 'none' }}}>
+                    <Box sx={{ display: { xs: 'block', lg: 'none' }}}>
                       <Stack direction='row' alignItems='center' spacing={2} className='mt-1'>
                           <Stack direction='row'>
                               <PersonIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>

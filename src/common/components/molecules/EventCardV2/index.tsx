@@ -31,7 +31,7 @@ export default function EventCardV2(props: TEventCardV2Props) {
                 </Box>
                 <Box className="bg-white/80 py-1 px-3 absolute bottom-0 right-0 m-3 rounded-md flex backdrop-blur-sm border border-solid border-gray-200 shadow-md">
                     <Avatar alt={publisher} src={avatar} sx={{ width: 20, height: 20 }} className='mr-1'/>
-                    <Typography variant="body2" className="text-gray-500 font-bold">
+                    <Typography variant="body2" className="font-medium">
                         {publisher}
                     </Typography>
                 </Box>
