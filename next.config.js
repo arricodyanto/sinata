@@ -3,18 +3,18 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     remotePatterns: [
-        {
-            protocol: 'https',
-            hostname: '**',
-            port: '',
-            pathname: '**',
-        },
+      {
+        protocol: 'https',
+        hostname: '**',
+        port: '',
+        pathname: '**',
+      },
     ],
-    domains: ['localhost']
+    domains: ['localhost'],
   },
   env: {
-    X_API_Key: process.env.X_API_Key
-  }
-}
+    X_API_Key: process.env.X_API_Key,
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

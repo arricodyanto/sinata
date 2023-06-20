@@ -11,3 +11,12 @@ export async function setSignUp(data: {}) {
     data,
   });
 }
+
+export async function setSignIn(data: {}) {
+  const url = `${HOST}/${VERSION}/auth/sign-in`;
+  return callAPI({
+    url,
+    method: 'POST',
+    data,
+  });
+}

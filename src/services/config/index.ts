@@ -11,19 +11,17 @@ export default async function callAPI({
     data,
   }).catch((err) => err.response);
 
-  if (response.data.page) {
-    if (response.status > 300) {
-      const res = {
-        error: true,
-        message: response.data.message,
-        page: undefined,
-        totalPage: undefined,
-        totalRow: undefined,
-        rowsPerPage: undefined,
-        data: null,
-      };
-      return res;
-    }
+  if (response.status > 300) {
+    const res = {
+      error: true,
+      message: response.data.message,
+      page: undefined,
+      totalPage: undefined,
+      totalRow: undefined,
+      rowsPerPage: undefined,
+      data: null,
+    };
+    return res;
   }
 
   const res = {

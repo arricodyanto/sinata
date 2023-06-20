@@ -1,11 +1,11 @@
-import '@/styles/globals.css';
-import '@/styles/generated.css';
 import '@/styles/fileupload.css';
-import 'react-toastify/dist/ReactToastify.css';
-import type { AppProps } from 'next/app';
+import '@/styles/generated.css';
+import '@/styles/globals.css';
 import { createTheme, CssBaseline, responsiveFontSizes, ThemeProvider } from '@mui/material';
 import { Analytics } from '@vercel/analytics/react';
+import type { AppProps } from 'next/app';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 let theme = createTheme({
   breakpoints: {
