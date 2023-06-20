@@ -24,8 +24,8 @@ export default function DetailAgenda() {
   const [agendaItem, setAgendaItem] = useState<Array<any>>([])
 
   const getAgenda = useCallback(async () => {
-    const data = await getAgendaList()
-    setAgenda(data)
+    const response = await getAgendaList()
+    setAgenda(response.data)
   }, [getAgendaList])
 
   const getOneAgenda = useCallback(async (id: any) => {
