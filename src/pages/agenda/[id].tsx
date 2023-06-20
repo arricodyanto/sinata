@@ -29,8 +29,8 @@ export default function DetailAgenda() {
   }, [getAgendaList])
 
   const getOneAgenda = useCallback(async (id: any) => {
-      const data = await getAgendaItem(id)
-      setAgendaItem(data)
+      const response = await getAgendaItem(id)
+      setAgendaItem(response.data)
   }, [])
   
   useEffect(() => {

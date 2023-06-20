@@ -1,9 +1,11 @@
-import '@/styles/globals.css'
-import '@/styles/generated.css'
-import '@/styles/fileupload.css'
-import type { AppProps } from 'next/app'
+import '@/styles/globals.css';
+import '@/styles/generated.css';
+import '@/styles/fileupload.css';
+import 'react-toastify/dist/ReactToastify.css';
+import type { AppProps } from 'next/app';
 import { createTheme, CssBaseline, responsiveFontSizes, ThemeProvider } from '@mui/material';
 import { Analytics } from '@vercel/analytics/react';
+import { ToastContainer } from 'react-toastify';
 
 let theme = createTheme({
   breakpoints: {
@@ -42,7 +44,7 @@ let theme = createTheme({
   typography: {
     fontFamily: "'IBM Plex Sans', sans-serif"
   }
-})
+});
 theme = responsiveFontSizes(theme);
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -51,8 +53,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Component {...pageProps} />
+        <ToastContainer />
         <Analytics />
       </ThemeProvider>
     </>
-  )
+  );
 }
