@@ -1,4 +1,5 @@
 import axios from "axios";
+import callAPI from "./config";
 
 const HOST = process.env.NEXT_PUBLIC_API_HOST
 const VERSION = process.env.NEXT_PUBLIC_API_VERSION
@@ -11,9 +12,16 @@ export async function getKalenderEvents() {
 }
 
 export async function getAgendaList() {
-    const response = await axios.get(`${HOST}/${VERSION}/${URL}/lihat`)
-    const axiosResponse = response.data
-    return axiosResponse.data
+    const url = `${HOST}/${VERSION}/${URL}/lihat`
+
+    return callAPI({
+        url,
+        method: 'GET'
+    })
+
+    // const response = await axios.get(`${HOST}/${VERSION}/${URL}/lihat`)
+    // const axiosResponse = response.data
+    // return axiosResponse.data
 }
 
 export async function getAgendaItem(id: any) {
