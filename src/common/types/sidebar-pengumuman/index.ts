@@ -1,5 +1,5 @@
-import { TPengumuman } from "@/services/data-types/pengumumanItem"
+import { TPengumuman } from '@/services/data-types';
 
 export type TSidebarPengumumanProps = {
-    data: TPengumuman[]
-}
+  data: TPengumuman[];
+};
