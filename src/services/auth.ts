@@ -1,4 +1,6 @@
+import jwtDecode from 'jwt-decode';
 import callAPI from './config';
+import { TokenTypes } from './data-types';
 
 const HOST = process.env.NEXT_PUBLIC_API_HOST;
 const VERSION = process.env.NEXT_PUBLIC_API_VERSION;

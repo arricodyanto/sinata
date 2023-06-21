@@ -1,4 +1,5 @@
 import { TokenTypes } from '@/services/data-types';
+import Cookies from 'js-cookie';
 import jwtDecode from 'jwt-decode';
 
 export function decodeToken(token: string) {
