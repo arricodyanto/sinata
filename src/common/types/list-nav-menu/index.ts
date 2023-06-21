@@ -3,7 +3,7 @@ export type TListNavMenuProps = {
   subheader: string;
   title: string;
   icon: React.ReactNode;
-  link: string | null;
+  link: any;
   divider: React.ReactNode;
   subItem: {
     id: number;
