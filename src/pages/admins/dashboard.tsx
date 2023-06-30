@@ -6,8 +6,7 @@ import TableRiwayat from '@/common/components/molecules/TableRiwayat';
 import DaisyCarousel from '@/common/components/organism/DaisyCarousel';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import { authAdmin } from '@/common/middlewares/auth';
-import rows from '@/json/riwayatAjuan.json';
-import { AccountTokenTypes, TokenTypes } from '@/services/data-types';
+import { TokenTypes } from '@/services/data-types';
 import ArrowCircleDownOutlinedIcon from '@mui/icons-material/ArrowCircleDownOutlined';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
@@ -103,7 +102,7 @@ export default function Dashboard(props: any) {
                     <Grid item xs={12} md={8}>
                         <Paper className='shadow-md px-6 py-4'>
                             <Typography variant='subtitle1' color='text.primary' className='font-bold mb-4 leading-5'>Riwayat Layanan</Typography>
-                            <TableRiwayat rows={rows} />
+                            {/* <TableRiwayat /> */}
                         </Paper>
                     </Grid>
                 </Grid>
@@ -164,16 +163,21 @@ export const listMenuAdmin = [
         subItem: [
             {
                 id: 1,
+                subtitle: 'Semua Ajuan Layanan',
+                link: '/admins/semua-ajuan',
+            },
+            {
+                id: 2,
                 subtitle: 'Layanan Hubungan Masyarakat',
                 link: '/admins/layanan-humas',
             },
             {
-                id: 2,
+                id: 3,
                 subtitle: 'Layanan Publikasi',
                 link: '/admins/layanan-publikasi',
             },
             {
-                id: 3,
+                id: 4,
                 subtitle: 'Layanan Media',
                 link: '/admins/layanan-media',
             }
