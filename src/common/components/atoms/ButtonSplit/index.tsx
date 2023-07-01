@@ -13,21 +13,21 @@ import { useRouter } from 'next/router';
 // const options = ['Create a merge commit', 'Squash and merge', 'Rebase and merge'];
 
 interface IButtonSplitProps {
-    options: Array<string>
-    redirect: Array<string>
+  options: Array<string>;
+  redirect: Array<string>;
 }
 
 export default function ButtonSplit(props: IButtonSplitProps) {
-  const { options, redirect } = props
-  const { push } = useRouter()
+  const { options, redirect } = props;
+  const { push } = useRouter();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
-  const [index, setIndex] = React.useState<number>(0)
+  const [index, setIndex] = React.useState<number>(0);
 
   const handleClick = () => {
     // console.log(`You clicked ${options[selectedIndex]}`);
-    selectedIndex === index ? push(`${redirect[index]}`) : console.log('kamu')
+    selectedIndex === index ? push(`${redirect[index]}`) : null;
   };
 
   const handleMenuItemClick = (
@@ -37,6 +37,7 @@ export default function ButtonSplit(props: IButtonSplitProps) {
     setSelectedIndex(index);
     setIndex(index);
     setOpen(false);
+    push(`${redirect[index]}`);
   };
 
   const handleToggle = () => {

@@ -1,12 +1,11 @@
 import TitlePage from '@/common/components/atoms/TitlePage';
-import DashboardPanel from '@/common/components/organism/DashboardPanel';
-import { Box, Paper } from '@mui/material';
-import React from 'react';
-import { adminPayload, listMenuAdmin } from './dashboard';
 import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
-import Link from 'next/link';
 import TableRiwayat from '@/common/components/molecules/TableRiwayat';
+import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import { authAdmin } from '@/common/middlewares/auth';
+import { Box, Paper } from '@mui/material';
+import Link from 'next/link';
+import { adminPayload, listMenuAdmin } from './dashboard';
 
 export default function SemuaAjuan(props: any) {
     const { user } = props;

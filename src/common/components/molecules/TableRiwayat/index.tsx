@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import TableData from '@/common/components/molecules/TableData';
 import TableDataSkeleton from '@/common/components/molecules/TableDataSkeleton';
+import ButtonSplit from '../../atoms/ButtonSplit';
 
 export default function TableRiwayat() {
     const [data, setData] = useState<Array<any>>([]);
@@ -51,6 +52,9 @@ export default function TableRiwayat() {
         { id: 5, label: 'tempat_kegiatan' },
     ];
 
+    const ajuanOptions = ['Tambahkan Layanan Humas', 'Tambahkan Layanan Publikasi', 'Tambahkan Layanan Media'];
+    const redirect = ['/admins/layanan-humas', '/admins/layanan-publikasi', '/admins/layanan-media'];
+
     const getRiwayatAjuan = useCallback(async () => {
         const params = `page=${page}&rowsPerPage=${rowsPerPage}`;
         const response = await getAllRiwayatAjuan(params);
@@ -73,7 +77,11 @@ export default function TableRiwayat() {
                     <TableDataSkeleton headers={tableHeaders} />
                 </>
                 :
-                <TableData headers={tableHeaders} columns={tableColumns} rows={data} status={true} actionOnClick={handleOpen} page={page} limit={rowsPerPage} totalRow={totalRow} changedPage={handleChangePage} changedLimit={handleChangeLimit} />
+                <TableData headers={tableHeaders} columns={tableColumns} rows={data} status={true} actionOnClick={handleOpen} page={page} limit={rowsPerPage} totalRow={totalRow} changedPage={handleChangePage} changedLimit={handleChangeLimit} addButton={
+                    <Stack direction='row-reverse'>
+                        <ButtonSplit options={ajuanOptions} redirect={redirect} />
+                    </Stack>
+                } />
             }
             <Modal open={open} onClose={handleClose}>
                 <Fade in={open}>
