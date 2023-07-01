@@ -2,12 +2,16 @@ import TitlePage from '@/common/components/atoms/TitlePage';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import { Box, Paper } from '@mui/material';
 import React from 'react';
-import { listMenuAdmin } from './dashboard';
+import { adminPayload, listMenuAdmin } from './dashboard';
 import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
 import Link from 'next/link';
 import TableRiwayat from '@/common/components/molecules/TableRiwayat';
+import { authAdmin } from '@/common/middlewares/auth';
 
-export default function SemuaAjuan() {
+export default function SemuaAjuan(props: any) {
+    const { user } = props;
+    let payload = adminPayload;
+    payload = user;
     return (
         <Box className='bg-white'>
             <TitlePage title='Semua Ajuan Layanan - Sinata' />
@@ -23,4 +27,9 @@ export default function SemuaAjuan() {
             </DashboardPanel>
         </Box>
     );
+}
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authAdmin(tkn);
 }

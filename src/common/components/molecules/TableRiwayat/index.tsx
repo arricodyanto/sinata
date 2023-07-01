@@ -4,15 +4,15 @@ import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
 import TimePickerBasic from '@/common/components/atoms/TimePickerBasic';
 import { dateFormatter, dateStringFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
 import { getAllRiwayatAjuan } from '@/services/riwayat-ajuan';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CloseIcon from '@mui/icons-material/Close';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import SaveIcon from '@mui/icons-material/Save';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import { Box, Button, Chip, Fade, FormControl, FormLabel, IconButton, Modal, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from '@mui/material';
+import { Box, Button, Chip, Fade, FormControl, FormLabel, IconButton, Modal, Skeleton, Stack, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import Link from 'next/link';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import TableData from '@/common/components/molecules/TableData';
+import TableDataSkeleton from '@/common/components/molecules/TableDataSkeleton';
 
 export default function TableRiwayat() {
     const [data, setData] = useState<Array<any>>([]);
@@ -31,14 +31,25 @@ export default function TableRiwayat() {
     const [totalRow, setTotalRow] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+    const handleChangePage = (newPage: number) => {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
+    const handleChangeLimit = (limit: number) => {
+        setRowsPerPage(limit);
     };
+
+    const tableHeaders = [
+        'Jenis Layanan', 'Judul', 'Tanggal Kegiatan', ' Waktu', 'Tempat', 'Aksi', 'Status'
+    ];
+
+    const tableColumns = [
+        { id: 1, label: 'jenis_layanan' },
+        { id: 2, label: 'judul' },
+        { id: 3, label: 'tgl_kegiatan' },
+        { id: 4, label: 'waktu_kegiatan' },
+        { id: 5, label: 'tempat_kegiatan' },
+    ];
 
     const getRiwayatAjuan = useCallback(async () => {
         const params = `page=${page}&rowsPerPage=${rowsPerPage}`;
@@ -46,66 +57,24 @@ export default function TableRiwayat() {
         setData(response.data);
         setTotalRow(response.totalRow);
         setPage(response.page);
-    }, [setData, page]);
+        console.log(response.data);
+    }, [setData, page, rowsPerPage]);
+
 
     useEffect(() => {
         getRiwayatAjuan();
     }, [getRiwayatAjuan]);
-
-    useEffect(() => {
-        getRiwayatAjuan();
-    }, [page]);
     return (
         <>
-            <TableContainer component={Paper} className='shadow-none overflow-x-auto'>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Jenis Layanan</TableCell>
-                            <TableCell>Judul</TableCell>
-                            <TableCell align='center'>Tanggal</TableCell>
-                            <TableCell align='center'>Waktu</TableCell>
-                            <TableCell>Tempat</TableCell>
-                            <TableCell align='center'>Aksi</TableCell>
-                            <TableCell align='center'>Status</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {data.map((item, index) => (
-                            <TableRow hover key={item.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                <TableCell component="th" scope="row">
-                                    {item.jenis_layanan}
-                                </TableCell>
-                                <TableCell>{item.judul}</TableCell>
-                                <TableCell align='center'>{item.tgl_kegiatan ? dateFormatter(item.tgl_kegiatan) : '-'}</TableCell>
-                                <TableCell align='center'>{item.waktu_kegiatan ? timeStrictFormatter(item.waktu_kegiatan) : '-'}</TableCell>
-                                <TableCell>{item.tempat_kegiatan ? item.tempat_kegiatan : '-'}</TableCell>
-                                <TableCell align='center'>
-                                    <IconButton onClick={() => handleOpen(index)} aria-label='view-more' size='small' className='hover:text-primary'>
-                                        <VisibilityIcon fontSize='small' />
-                                    </IconButton>
-                                </TableCell>
-                                <TableCell align='center'>{
-                                    item.status === 'Pending' ? <Chip label={item.status} size='small' className='bg-primary text-white text-xs' />
-                                        : item.status === 'Approved & On Progress' ? <Chip label={item.status} size='small' className='bg-pending text-white text-xs' />
-                                            : item.status === 'Completed' ? <Chip label={item.status} size='small' className='bg-complete text-white text-xs' />
-                                                : item.status === 'Rejected' ? <Chip label={item.status} size='small' className='bg-error text-white text-xs' />
-                                                    : undefined
-                                }</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 50]}
-                component="div"
-                count={totalRow}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+
+            {data.length === 0 ?
+                <>
+                    <Skeleton variant='rounded' width={210} height={25} className='mb-6' />
+                    <TableDataSkeleton headers={tableHeaders} />
+                </>
+                :
+                <TableData headers={tableHeaders} columns={tableColumns} rows={data} status={true} actionOnClick={handleOpen} page={page} limit={rowsPerPage} totalRow={totalRow} changedPage={handleChangePage} changedLimit={handleChangeLimit} />
+            }
             <Modal open={open} onClose={handleClose}>
                 <Fade in={open}>
                     <Box className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white py-4 px-6 rounded-md xs:w-[calc(100%-40px)] md:w-[600px]'>
@@ -118,7 +87,7 @@ export default function TableRiwayat() {
                             </IconButton>
                         </Stack>
                         <Box id="transition-modal-description" sx={{ mt: 2 }}>
-                            {data.filter((item, i) => i === currIndex).map(item => {
+                            {data.filter((item) => item.id === currIndex).map(item => {
                                 return (
                                     <>
                                         <TextfieldLabel label='Jenis Layanan' defaultValue={item.jenis_layanan} InputProps={{ readOnly: true }} />
@@ -155,8 +124,8 @@ export default function TableRiwayat() {
                                             <Stack direction='row' spacing={1} className='mb-2 mt-6'>
                                                 <Typography variant='subtitle2' className='font-bold'>Status</Typography>
                                                 {
-                                                    item.status === 'Pending' ? <Chip label={item.status} size='small' className='bg-primary text-white text-xs' />
-                                                        : item.status === 'Approved & On Progress' ? <Chip label={item.status} size='small' className='bg-pending text-white text-xs' />
+                                                    item.status === 'Pending' ? <Chip label={item.status} size='small' className='bg-pending text-white text-xs' />
+                                                        : item.status === 'Approved & On Progress' ? <Chip label={item.status} size='small' className='bg-primary text-white text-xs' />
                                                             : item.status === 'Completed' ? <Chip label={item.status} size='small' className='bg-complete text-white text-xs' />
                                                                 : item.status === 'Rejected' ? <Chip label={item.status} size='small' className='bg-error text-white text-xs' />
                                                                     : undefined
