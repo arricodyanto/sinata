@@ -8,3 +8,12 @@ export type TTableRiwayatProps = {
     status: string;
   }[];
 };
+
+export type TLayananPeliputanProps = {
+  data: Array<any>;
+  id: any;
+};
+
+export type TDisabledFormDataKegiatanProps = {
+  judul_kegiatan: string;
+};

@@ -12,7 +12,7 @@ export default function SemuaAjuan(props: any) {
     let payload = adminPayload;
     payload = user;
     return (
-        <Box className='bg-white'>
+        <Box className='bg-grey'>
             <TitlePage title='Semua Ajuan Layanan - Sinata' />
             <DashboardPanel listMenu={listMenuAdmin}>
                 <HeaderBreadcrumbs pageHeader='Semua Ajuan Layanan' currentPage='Semua Ajuan'>

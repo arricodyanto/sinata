@@ -273,7 +273,7 @@ export default function DashboardPanel(props: TDashboarPanelProps) {
           <Divider className='border-gray-700' />
           {arrayMenu}
         </Drawer>
-        <Box component="main" className='pt-3 min-w-0 xs:px-4 sm:px-7 min-h-screen w-screen'>
+        <Box component="main" className='pt-3 min-w-0 xs:px-2 md:px-7 min-h-screen w-screen'>
           <DrawerHeader />
           {children}
           <FooterDashboard />

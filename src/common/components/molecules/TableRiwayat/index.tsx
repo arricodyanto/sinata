@@ -14,8 +14,10 @@ import { useCallback, useEffect, useState } from 'react';
 import TableData from '@/common/components/molecules/TableData';
 import TableDataSkeleton from '@/common/components/molecules/TableDataSkeleton';
 import ButtonSplit from '../../atoms/ButtonSplit';
+import { useRouter } from 'next/router';
 
 export default function TableRiwayat() {
+    const router = useRouter();
     const [data, setData] = useState<Array<any>>([]);
     const [open, setOpen] = useState(false);
     const [currIndex, setCurrIndex] = useState(0);
@@ -64,13 +66,11 @@ export default function TableRiwayat() {
         console.log(response.data);
     }, [setData, page, rowsPerPage]);
 
-
     useEffect(() => {
         getRiwayatAjuan();
     }, [getRiwayatAjuan]);
     return (
         <>
-
             {data.length === 0 ?
                 <>
                     <Skeleton variant='rounded' width={210} height={25} className='mb-6' />
@@ -141,13 +141,13 @@ export default function TableRiwayat() {
                                             </Stack>
                                             <Typography variant='caption' className='text-right italic'>Diajukan oleh {item.pemohon} pada {dateStringFormatter(item.createdAt)}</Typography>
                                         </Stack>
+                                        <Stack direction='row' justifyContent='flex-end' spacing={1} marginBottom={1} marginTop={3}>
+                                            <ButtonIcon variant='contained' icon={<CancelIcon className='-mr-1' />} onClick={handleClose}>Tutup</ButtonIcon>
+                                            <ButtonIcon variant='outlined' icon={<ArrowForwardIcon className='-mr-1' />} onClick={() => router.push(`/admins/riwayat-ajuan/${item.jenis_layanan}/${item.id}`)}>Lihat Ajuan</ButtonIcon>
+                                        </Stack>
                                     </>
                                 );
                             })}
-                            <Stack direction='row' justifyContent='flex-end' spacing={1} marginBottom={1} marginTop={3}>
-                                <ButtonIcon variant='contained' icon={<CancelIcon className='-mr-1' />} onClick={handleClose}>Tutup</ButtonIcon>
-                                <ButtonIcon variant='outlined' icon={<ArrowForwardIcon className='-mr-1' />}>Lihat Ajuan</ButtonIcon>
-                            </Stack>
                         </Box>
                     </Box>
                 </Fade>

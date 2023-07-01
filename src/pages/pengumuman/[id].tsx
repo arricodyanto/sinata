@@ -37,7 +37,7 @@ export default function PengumumanView() {
   }, [isReady, query.id]);
 
   if (!pengumuman) {
-    return null; // Tampilkan loading atau komponen lain saat data masih diambil
+    return null;
   }
 
   return (
