@@ -22,3 +22,13 @@ export async function getOneLayananPeliputan(id: string) {
     token: true,
   });
 }
+
+export async function deleteOneLayananPeliputan(id: string) {
+  const url = `${HOST}/${VERSION}/${URL}/${id}/delete`;
+  return callAPI({
+    url,
+    method: 'DELETE',
+    data: id,
+    token: true,
+  });
+}

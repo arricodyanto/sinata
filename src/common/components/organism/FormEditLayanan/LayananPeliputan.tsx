@@ -1,33 +1,29 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import TextfieldLabel from '../../atoms/TextfieldLabel';
-import { Button, FormControl, FormLabel, MenuItem, Stack, Typography } from '@mui/material';
-import Link from 'next/link';
-import FileUpload from '../../atoms/FileUpload';
-import AutocompleteTitle from '../../atoms/AutocompleteTitle';
-import AutocompleteCustom from '../../atoms/AutocompleteCustom';
-import SelectLabel from '../../atoms/SelectLabel';
-import DateFieldBasic from '../../atoms/DateFieldBasic';
-import TimePickerBasic from '../../atoms/TimePickerBasic';
-import dayjs from 'dayjs';
 import { TLayananPeliputanProps } from '@/common/types';
 import { getAllDataKegiatan } from '@/services/data-kegiatan';
-import { useRouter } from 'next/router';
-import { getAllUsers } from '@/services/accounts';
-import { dateFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
-import Image from 'next/image';
-import DisabledFormDataKegiatan from '../FormDataKegiatan/disabledFormDataKegiatan';
-import ButtonIcon from '../../atoms/ButtonIcon';
-import CloseIcon from '@mui/icons-material/Close';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import SaveIcon from '@mui/icons-material/Save';
+import { Box, Button, FormLabel, MenuItem, Stack, Typography } from '@mui/material';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useState } from 'react';
+import AutocompleteTitle from '@/common/components/atoms/AutocompleteTitle';
+import ButtonIcon from '@/common/components/atoms/ButtonIcon';
+import FileUpload from '@/common/components/atoms/FileUpload';
+import SelectLabel from '@/common/components/atoms/SelectLabel';
+import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
+import DisabledFormDataKegiatan from '../FormDataKegiatan/DisabledFormDataKegiatan';
+import { deleteOneLayananPeliputan } from '@/services/layanan-peliputan';
+import DialogConfirmation from '../../atoms/DialogConfirmation';
+import ButtonBasic from '../../atoms/ButtonBasic';
 
 export default function LayananPeliputan(props: TLayananPeliputanProps) {
     const { data, id } = props;
     let rows = data;
 
-    const { isReady } = useRouter();
+    const { isReady, push } = useRouter();
     const api_image = process.env.NEXT_PUBLIC_API_IMG;
 
     // Editable File Input
@@ -52,7 +48,6 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
     };
 
     const getDataKegiatan = useCallback(async () => {
-        const params = '';
         const response = await getAllDataKegiatan();
         setDataKegiatan(response.data);
         const judul_kegiatan = response.data.map((item: any) => item.judul_kegiatan);
@@ -65,15 +60,28 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
         }
     }, [isReady]);
 
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleDelete = async (id: string) => {
+        await deleteOneLayananPeliputan(id);
+        push('/admins/semua-ajuan');
+    };
+
     // console.log(autocomplete);
-    console.log(rows);
     return (
-        <>  <Typography variant='h5' className='mb-6'>Layanan Peliputan</Typography>
+        <>
+            <Typography variant='h5' className='mb-6'>Layanan Peliputan</Typography>
             {rows.map((data: any) => {
-                // console.log(data);
                 return (
                     <>
-                        <TextfieldLabel name='id' label='ID Pengajuan' defaultValue={data.id} disabled />
+                        <TextfieldLabel name='id' label='ID Pengajuan' value={data.id} disabled />
                         {leaflet == false && data.leaflet_kegiatan != null ? (
                             <>
                                 <FormLabel className='mb-2 text-sm'>Leaflet Kegiatan</FormLabel>
@@ -94,7 +102,7 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
                                 ) : null}
                             </>
                         )}
-                        <AutocompleteTitle name='judul_kegiatan' label='Judul Kegiatan' data={dataKegiatan} onChange={handleJudulChange} defaultValue={dataKegiatan.find((item: any) => item.id === data.id_kegiatan)} readOnly={!editable} />
+                        <AutocompleteTitle name='judul_kegiatan' label='Judul Kegiatan' data={dataKegiatan} onChange={handleJudulChange} defaultValue={dataKegiatan.find((item: any) => item.id == data.id_kegiatan)} readOnly={!editable} />
                         <DisabledFormDataKegiatan judul_kegiatan={autocomplete} />
                         <SelectLabel name='status' label='Status' defaultValue={data.status} inputProps={{ readOnly: !editable }}>
                             <MenuItem value='Pending'>Pending</MenuItem>
@@ -120,20 +128,26 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
                                 </Stack>
                             </>
                         )}
+                        <Stack direction='row' justifyContent='flex-end' spacing={1} marginBottom={1} marginTop={6}>
+                            {editable ? (
+                                <Stack direction='row' spacing={1}>
+                                    <ButtonIcon variant='contained' color='success' icon={<SaveIcon className='-mr-1' />}>Simpan</ButtonIcon>
+                                    <ButtonIcon variant='contained' color='primary' onClick={handleCancelEdit} icon={<CancelIcon className='-mr-1' />}>Batal</ButtonIcon>
+                                </Stack>
+                            ) : (
+                                <ButtonIcon variant='contained' color='primary' onClick={handleEdit} icon={<EditRoundedIcon className='-mr-1' />}>Ubah</ButtonIcon>
+                            )}
+                            <ButtonIcon variant='outlined' color='error' onClick={handleOpen} icon={<DeleteIcon className='-mr-1' />}>Hapus</ButtonIcon>
+                        </Stack>
+                        <DialogConfirmation title='Hapus' body='Apakah Anda yakin ingin menghapus data ini?' open={open} onClose={handleClose}>
+                            <Stack direction='row' spacing={1} className='mt-4 px-2'>
+                                <ButtonBasic variant='contained' onClick={handleClose}>Batal</ButtonBasic>
+                                <ButtonBasic variant='outlined' color='error' onClick={() => handleDelete(data.id)}>Hapus</ButtonBasic>
+                            </Stack>
+                        </DialogConfirmation>
                     </>
                 );
             })}
-            <Stack direction='row' justifyContent='flex-end' spacing={1} marginBottom={1} marginTop={6}>
-                {editable ? (
-                    <Stack direction='row' spacing={1}>
-                        <ButtonIcon variant='contained' color='success' icon={<SaveIcon className='-mr-1' />}>Simpan</ButtonIcon>
-                        <ButtonIcon variant='contained' color='primary' onClick={handleCancelEdit} icon={<CancelIcon className='-mr-1' />}>Batal</ButtonIcon>
-                    </Stack>
-                ) : (
-                    <ButtonIcon variant='contained' color='primary' onClick={handleEdit} icon={<EditRoundedIcon className='-mr-1' />}>Ubah</ButtonIcon>
-                )}
-                <ButtonIcon variant='outlined' color='error' icon={<DeleteIcon className='-mr-1' />}>Hapus</ButtonIcon>
-            </Stack>
         </>
     );
 }

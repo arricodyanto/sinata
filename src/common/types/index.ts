@@ -1,3 +1,5 @@
+import React from 'react';
+
 export type TTableRiwayatProps = {
   rows: {
     jenisLayanan: string;
@@ -16,4 +18,12 @@ export type TLayananPeliputanProps = {
 
 export type TDisabledFormDataKegiatanProps = {
   judul_kegiatan: string;
+};
+
+export type TDialogConfirmation = {
+  title?: string;
+  body: string;
+  open: boolean;
+  onClose: () => void;
+  children?: React.ReactNode;
 };
