@@ -15,24 +15,57 @@ import FileUpload from '@/common/components/atoms/FileUpload';
 import SelectLabel from '@/common/components/atoms/SelectLabel';
 import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
 import DisabledFormDataKegiatan from '../FormDataKegiatan/DisabledFormDataKegiatan';
-import { deleteOneLayananPeliputan } from '@/services/layanan-peliputan';
+import { deleteOneLayananPeliputan, updateLayananPeliputan } from '@/services/layanan-peliputan';
 import DialogConfirmation from '../../atoms/DialogConfirmation';
 import ButtonBasic from '../../atoms/ButtonBasic';
+import { toast } from 'react-toastify';
+import { ActualFileObject, FilePondFile } from 'filepond';
+import { delay } from '@/common/utils/delay.util';
 
 export default function LayananPeliputan(props: TLayananPeliputanProps) {
     const { data, id } = props;
     let rows = data;
 
-    const { isReady, push } = useRouter();
+    const { isReady, push, asPath } = useRouter();
     const api_image = process.env.NEXT_PUBLIC_API_IMG;
 
     // Editable File Input
     const [leaflet, setLeaflet] = useState(false);
-    const [disposisi, setDisposisi] = useState(false);
+    const [disposisiInput, setDisposisiInput] = useState(false);
     const [editable, setEditable] = useState(false);
 
     const [autocomplete, setAutocomplete] = useState<any>(); // Handle autocomplete
     const [dataKegiatan, setDataKegiatan] = useState<Array<any>>([]); // Handle autocomplete
+
+    // Input Form
+    const [leaflet_kegiatan, setLeaflet_kegiatan] = useState<any>(null);
+    const [id_kegiatan, setId_kegiatan] = useState('');
+    const [status, setStatus] = useState('');
+    const [disposisi, setDisposisi] = useState<any>(null);
+    const handleFormChange = (setState: React.Dispatch<React.SetStateAction<string>>) => (event: React.ChangeEvent<HTMLInputElement>) => {
+        setState(event.target.value);
+    };
+
+    const onSave = async () => {
+        const data = new FormData();
+        data.append('leaflet_kegiatan', leaflet_kegiatan);
+        data.append('status', status);
+        data.append('disposisi', disposisi);
+
+        const response = await updateLayananPeliputan(id, data);
+        if (response.error === true) {
+            toast.error(response.message, {
+                theme: 'colored',
+            });
+        }
+        if (response.error === false) {
+            toast.success(response.message, {
+                theme: 'colored'
+            });
+            delay(3000);
+            window.location.reload();
+        }
+    };
 
     const handleJudulChange = (event: any, value: any) => {
         if (value == null) setAutocomplete(value);
@@ -58,7 +91,11 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
         if (isReady) {
             getDataKegiatan();
         }
-    }, [isReady]);
+    }, [isReady, rows]);
+
+    if (!rows) {
+        return null;
+    }
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => {
@@ -71,17 +108,17 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
 
     const handleDelete = async (id: string) => {
         await deleteOneLayananPeliputan(id);
+        toast.error('Data berhasil dihapus.', {
+            theme: 'colored'
+        });
         push('/admins/semua-ajuan');
     };
-
-    // console.log(autocomplete);
     return (
         <>
             <Typography variant='h5' className='mb-6'>Layanan Peliputan</Typography>
             {rows.map((data: any) => {
                 return (
                     <>
-                        <TextfieldLabel name='id' label='ID Pengajuan' value={data.id} disabled />
                         {leaflet == false && data.leaflet_kegiatan != null ? (
                             <>
                                 <FormLabel className='mb-2 text-sm'>Leaflet Kegiatan</FormLabel>
@@ -94,7 +131,12 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
                             </>
                         ) : (
                             <>
-                                <FileUpload name='leaflet_kegiatan' label='Leaflet Kegiatan' allowMultiple={false} allowReorder={false} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
+                                <FileUpload name='leaflet_kegiatan' label='Leaflet Kegiatan' onupdatefiles={(fileItems: FilePondFile[]) => {
+                                    const file = fileItems[0]?.file;
+                                    if (file) {
+                                        setLeaflet_kegiatan(file);
+                                    }
+                                }} allowMultiple={false} allowReorder={false} acceptedFileTypes={['image/png', 'image/jpeg']} labelFileTypeNotAllowed='Hanya file JPEG dan PNG yang diijinkan' />
                                 {data.leaflet_kegiatan != null ? (
                                     <Stack direction='row-reverse' className='-mt-2'>
                                         <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setLeaflet(false)} disabled={!editable}>Cancel</Button>
@@ -102,36 +144,41 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
                                 ) : null}
                             </>
                         )}
-                        <AutocompleteTitle name='judul_kegiatan' label='Judul Kegiatan' data={dataKegiatan} onChange={handleJudulChange} defaultValue={dataKegiatan.find((item: any) => item.id == data.id_kegiatan)} readOnly={!editable} />
+                        <AutocompleteTitle name='judul_kegiatan' label='Judul Kegiatan' data={dataKegiatan} onChange={handleJudulChange} defaultValue={dataKegiatan.find((item: any) => item.id == data.id_kegiatan)} disabled={!editable} />
                         <DisabledFormDataKegiatan judul_kegiatan={autocomplete} />
-                        <SelectLabel name='status' label='Status' defaultValue={data.status} inputProps={{ readOnly: !editable }}>
+                        <SelectLabel name='status' label='Status' value={data.status} onChange={handleFormChange(setStatus)} disabled={!editable}>
                             <MenuItem value='Pending'>Pending</MenuItem>
                             <MenuItem value='Approved & On Progress'>Approved & On Progress</MenuItem>
                             <MenuItem value='Completed'>Complete</MenuItem>
                             <MenuItem value='Rejected'>Rejected</MenuItem>
                         </SelectLabel>
-                        {disposisi == false ? (
+                        {disposisiInput == false ? (
                             <>
                                 <FormLabel className='mb-2 text-sm'>Disposisi</FormLabel>
                                 <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
                                     <Link href={`${api_image}/${data.disposisi}`} target='_blank'>
                                         <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.disposisi}</Typography>
                                     </Link>
-                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisi(true)} disabled={!editable}>Change File</Button>
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisiInput(true)} disabled={!editable}>Change File</Button>
                                 </Stack>
                             </>
                         ) : (
                             <>
-                                <FileUpload name='disposisi' label='Disposisi' allowMultiple={false} allowReorder={false} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
+                                <FileUpload name='disposisi' label='Disposisi' allowMultiple={false} allowReorder={false} onupdatefiles={(fileItems: FilePondFile[]) => {
+                                    const file = fileItems[0]?.file;
+                                    if (file) {
+                                        setDisposisi(file);
+                                    }
+                                }} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
                                 <Stack direction='row-reverse' className='-mt-2 mb-4'>
-                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisi(false)} disabled={!editable}>Cancel</Button>
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisiInput(false)} disabled={!editable}>Cancel</Button>
                                 </Stack>
                             </>
                         )}
                         <Stack direction='row' justifyContent='flex-end' spacing={1} marginBottom={1} marginTop={6}>
                             {editable ? (
                                 <Stack direction='row' spacing={1}>
-                                    <ButtonIcon variant='contained' color='success' icon={<SaveIcon className='-mr-1' />}>Simpan</ButtonIcon>
+                                    <ButtonIcon variant='contained' color='success' onClick={onSave} icon={<SaveIcon className='-mr-1' />}>Simpan</ButtonIcon>
                                     <ButtonIcon variant='contained' color='primary' onClick={handleCancelEdit} icon={<CancelIcon className='-mr-1' />}>Batal</ButtonIcon>
                                 </Stack>
                             ) : (

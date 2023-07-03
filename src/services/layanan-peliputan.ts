@@ -32,3 +32,13 @@ export async function deleteOneLayananPeliputan(id: string) {
     token: true,
   });
 }
+
+export async function updateLayananPeliputan(id: string, data: any) {
+  const url = `${HOST}/${VERSION}/${URL}/${id}/edit`;
+  return callAPI({
+    url,
+    method: 'PUT',
+    data,
+    token: true,
+  });
+}

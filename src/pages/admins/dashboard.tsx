@@ -138,7 +138,7 @@ export const listMenuAdmin = [
         subheader: 'Manajemen',
         title: 'Manajemen Kegiatan',
         icon: <DateRangeOutlinedIcon sx={{ color: '#9ca3af' }} fontSize='small' />,
-        link: '',
+        link: '#',
         divider: null,
         subItem: [
             {
@@ -158,7 +158,7 @@ export const listMenuAdmin = [
         subheader: '',
         title: 'Manajemen Layanan',
         icon: <AssignmentOutlinedIcon sx={{ color: '#9ca3af' }} fontSize='small' />,
-        link: '',
+        link: '#',
         divider: null,
         subItem: [
             {
@@ -197,7 +197,7 @@ export const listMenuAdmin = [
         subheader: 'Arsip',
         title: 'Arsip Layanan',
         icon: <Inventory2OutlinedIcon sx={{ color: '#9ca3af' }} fontSize='small' />,
-        link: '',
+        link: '#',
         divider: <Divider light className='border-gray-600 mx-5 mb-4' />,
         subItem: [
             {

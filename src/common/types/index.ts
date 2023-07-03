@@ -1,4 +1,5 @@
 import React from 'react';
+import { FilePondProps } from 'react-filepond';
 
 export type TTableRiwayatProps = {
   rows: {
@@ -26,4 +27,8 @@ export type TDialogConfirmation = {
   open: boolean;
   onClose: () => void;
   children?: React.ReactNode;
+};
+
+export type TFileUploadProps = Partial<FilePondProps> & {
+  label?: string;
 };
