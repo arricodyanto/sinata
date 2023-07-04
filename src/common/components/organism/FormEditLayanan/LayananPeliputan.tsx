@@ -1,27 +1,25 @@
-import { TLayananPeliputanProps } from '@/common/types';
-import { getAllDataKegiatan } from '@/services/data-kegiatan';
-import CancelIcon from '@mui/icons-material/Cancel';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import SaveIcon from '@mui/icons-material/Save';
-import { Box, Button, FormControl, FormLabel, MenuItem, SelectChangeEvent, Stack, Typography } from '@mui/material';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useCallback, useEffect, useState } from 'react';
 import AutocompleteTitle from '@/common/components/atoms/AutocompleteTitle';
 import ButtonIcon from '@/common/components/atoms/ButtonIcon';
 import FileUpload from '@/common/components/atoms/FileUpload';
 import SelectLabel from '@/common/components/atoms/SelectLabel';
-import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
-import DisabledFormDataKegiatan from '../FormDataKegiatan/DisabledFormDataKegiatan';
-import { deleteOneLayananPeliputan, updateLayananPeliputan } from '@/services/layanan-peliputan';
-import DialogConfirmation from '../../atoms/DialogConfirmation';
-import ButtonBasic from '../../atoms/ButtonBasic';
-import { toast } from 'react-toastify';
-import { ActualFileObject, FilePondFile } from 'filepond';
-import { delay } from '@/common/utils/delay.util';
+import { TLayananPeliputanProps } from '@/common/types';
 import { dateStringFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
+import { getAllDataKegiatan } from '@/services/data-kegiatan';
+import { deleteOneLayananPeliputan, updateLayananPeliputan } from '@/services/layanan-peliputan';
+import CancelIcon from '@mui/icons-material/Cancel';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import SaveIcon from '@mui/icons-material/Save';
+import { Button, FormControl, FormLabel, MenuItem, Stack, Typography } from '@mui/material';
+import { FilePondFile } from 'filepond';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import ButtonBasic from '../../atoms/ButtonBasic';
+import DialogConfirmation from '../../atoms/DialogConfirmation';
+import DisabledFormDataKegiatan from '../FormDataKegiatan/DisabledFormDataKegiatan';
 
 export default function LayananPeliputan(props: TLayananPeliputanProps) {
     const { data, id } = props;
@@ -90,18 +88,21 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
         setEditable(false);
     };
 
+    const judulFromProps = data.map(item => item.tb_kegiatan.judul_kegiatan);
     const getDataKegiatan = useCallback(async () => {
         const response = await getAllDataKegiatan();
         setDataKegiatan(response.data);
+        if (judulFromProps.length > 0) {
+            setAutocomplete(judulFromProps[0]);
+        }
     }, []);
 
     useEffect(() => {
         if (isReady) {
             getDataKegiatan();
         }
-    }, [isReady]);
+    }, [isReady, rows]);
 
-    const judulFromProps = data.map(item => item.tb_kegiatan.judul_kegiatan);
     useEffect(() => {
         if (judulFromProps.length > 0) {
             setAutocomplete(judulFromProps[0]);
