@@ -4,7 +4,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import SaveIcon from '@mui/icons-material/Save';
-import { Box, Button, FormLabel, MenuItem, Stack, Typography } from '@mui/material';
+import { Box, Button, FormControl, FormLabel, MenuItem, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -46,11 +46,21 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
         setState(event.target.value);
     };
 
+    const handleStatusChange = (event: any) => {
+        setStatus(event.target.value);
+    };
+
     const onSave = async () => {
         const data = new FormData();
-        data.append('leaflet_kegiatan', leaflet_kegiatan);
-        data.append('status', status);
-        data.append('disposisi', disposisi);
+        if (leaflet_kegiatan != null) {
+            data.append('leaflet_kegiatan', leaflet_kegiatan);
+        }
+        if (disposisi != null) {
+            data.append('disposisi', disposisi);
+        }
+        if (status != '') {
+            data.append('status', status);
+        }
 
         const response = await updateLayananPeliputan(id, data);
         if (response.error === true) {
@@ -146,12 +156,14 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
                         )}
                         <AutocompleteTitle name='judul_kegiatan' label='Judul Kegiatan' data={dataKegiatan} onChange={handleJudulChange} defaultValue={dataKegiatan.find((item: any) => item.id == data.id_kegiatan)} disabled={!editable} />
                         <DisabledFormDataKegiatan judul_kegiatan={autocomplete} />
-                        <SelectLabel name='status' label='Status' value={data.status} onChange={handleFormChange(setStatus)} disabled={!editable}>
-                            <MenuItem value='Pending'>Pending</MenuItem>
-                            <MenuItem value='Approved & On Progress'>Approved & On Progress</MenuItem>
-                            <MenuItem value='Completed'>Complete</MenuItem>
-                            <MenuItem value='Rejected'>Rejected</MenuItem>
-                        </SelectLabel>
+                        <FormControl className='w-full'>
+                            <SelectLabel name='status' label='Status' defaultValue={data.status} onChange={handleStatusChange} disabled={!editable}>
+                                <MenuItem value='Pending'>Pending</MenuItem>
+                                <MenuItem value='Approved & On Progress'>Approved & On Progress</MenuItem>
+                                <MenuItem value='Completed'>Complete</MenuItem>
+                                <MenuItem value='Rejected'>Rejected</MenuItem>
+                            </SelectLabel>
+                        </FormControl>
                         {disposisiInput == false ? (
                             <>
                                 <FormLabel className='mb-2 text-sm'>Disposisi</FormLabel>
