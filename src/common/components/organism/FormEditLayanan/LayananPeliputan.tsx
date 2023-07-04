@@ -42,9 +42,6 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
     const [id_kegiatan, setId_kegiatan] = useState('');
     const [status, setStatus] = useState('');
     const [disposisi, setDisposisi] = useState<any>(null);
-    const handleFormChange = (setState: React.Dispatch<React.SetStateAction<string>>) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        setState(event.target.value);
-    };
 
     const handleStatusChange = (event: any) => {
         setStatus(event.target.value);
@@ -60,6 +57,9 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
         }
         if (status != '') {
             data.append('status', status);
+        }
+        if (id_kegiatan != '') {
+            data.append('id_kegiatan', id_kegiatan);
         }
 
         const response = await updateLayananPeliputan(id, data);
@@ -78,8 +78,8 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
     };
 
     const handleJudulChange = (event: any, value: any) => {
-        if (value == null) setAutocomplete(value);
-        if (value != null) setAutocomplete(value.judul_kegiatan);
+        setAutocomplete(value?.judul_kegiatan);
+        setId_kegiatan(value?.id);
     };
 
     const handleEdit = () => {

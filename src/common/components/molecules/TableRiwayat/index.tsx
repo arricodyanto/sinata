@@ -63,12 +63,13 @@ export default function TableRiwayat() {
         setData(response.data);
         setTotalRow(response.totalRow);
         setPage(response.page);
-        console.log(response.data);
     }, [setData, page, rowsPerPage]);
 
     useEffect(() => {
-        getRiwayatAjuan();
-    }, [getRiwayatAjuan]);
+        if (router.isReady) {
+            getRiwayatAjuan();
+        }
+    }, [router.isReady]);
     return (
         <>
             {data.length === 0 ?
