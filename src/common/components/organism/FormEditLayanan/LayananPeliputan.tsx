@@ -21,12 +21,13 @@ import ButtonBasic from '../../atoms/ButtonBasic';
 import { toast } from 'react-toastify';
 import { ActualFileObject, FilePondFile } from 'filepond';
 import { delay } from '@/common/utils/delay.util';
+import { dateStringFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
 
 export default function LayananPeliputan(props: TLayananPeliputanProps) {
     const { data, id } = props;
     let rows = data;
 
-    const { isReady, push, asPath } = useRouter();
+    const { isReady, push } = useRouter();
     const api_image = process.env.NEXT_PUBLIC_API_IMG;
 
     // Editable File Input
@@ -34,7 +35,7 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
     const [disposisiInput, setDisposisiInput] = useState(false);
     const [editable, setEditable] = useState(false);
 
-    const [autocomplete, setAutocomplete] = useState<any>(); // Handle autocomplete
+    const [autocomplete, setAutocomplete] = useState<string>(''); // Handle autocomplete
     const [dataKegiatan, setDataKegiatan] = useState<Array<any>>([]); // Handle autocomplete
 
     // Input Form
@@ -72,7 +73,6 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
             toast.success(response.message, {
                 theme: 'colored'
             });
-            delay(3000);
             window.location.reload();
         }
     };
@@ -93,27 +93,32 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
     const getDataKegiatan = useCallback(async () => {
         const response = await getAllDataKegiatan();
         setDataKegiatan(response.data);
-        const judul_kegiatan = response.data.map((item: any) => item.judul_kegiatan);
-        setAutocomplete(judul_kegiatan[0]);
     }, []);
 
     useEffect(() => {
         if (isReady) {
             getDataKegiatan();
         }
-    }, [isReady, rows]);
+    }, [isReady]);
+
+    const judulFromProps = data.map(item => item.tb_kegiatan.judul_kegiatan);
+    useEffect(() => {
+        if (judulFromProps.length > 0) {
+            setAutocomplete(judulFromProps[0]);
+        }
+    }, [rows]);
 
     if (!rows) {
         return null;
     }
 
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => {
-        setOpen(true);
+    const [openHapus, setOpenHapus] = useState(false);
+    const [openSimpan, setOpenSimpan] = useState(false);
+    const handleDialogOpen = (setState: React.Dispatch<React.SetStateAction<boolean>>) => () => {
+        setState(true);
     };
-
-    const handleClose = () => {
-        setOpen(false);
+    const handleDialogClose = (setState: React.Dispatch<React.SetStateAction<boolean>>) => () => {
+        setState(false);
     };
 
     const handleDelete = async (id: string) => {
@@ -187,21 +192,28 @@ export default function LayananPeliputan(props: TLayananPeliputanProps) {
                                 </Stack>
                             </>
                         )}
-                        <Stack direction='row' justifyContent='flex-end' spacing={1} marginBottom={1} marginTop={6}>
+                        <Stack direction='row' justifyContent='flex-end' spacing={1} marginTop={6}>
                             {editable ? (
                                 <Stack direction='row' spacing={1}>
-                                    <ButtonIcon variant='contained' color='success' onClick={onSave} icon={<SaveIcon className='-mr-1' />}>Simpan</ButtonIcon>
+                                    <ButtonIcon variant='contained' color='success' onClick={handleDialogOpen(setOpenSimpan)} icon={<SaveIcon className='-mr-1' />}>Simpan</ButtonIcon>
                                     <ButtonIcon variant='contained' color='primary' onClick={handleCancelEdit} icon={<CancelIcon className='-mr-1' />}>Batal</ButtonIcon>
                                 </Stack>
                             ) : (
                                 <ButtonIcon variant='contained' color='primary' onClick={handleEdit} icon={<EditRoundedIcon className='-mr-1' />}>Ubah</ButtonIcon>
                             )}
-                            <ButtonIcon variant='outlined' color='error' onClick={handleOpen} icon={<DeleteIcon className='-mr-1' />}>Hapus</ButtonIcon>
+                            <ButtonIcon variant='outlined' color='error' onClick={handleDialogOpen(setOpenHapus)} icon={<DeleteIcon className='-mr-1' />}>Hapus</ButtonIcon>
                         </Stack>
-                        <DialogConfirmation title='Hapus' body='Apakah Anda yakin ingin menghapus data ini?' open={open} onClose={handleClose}>
+                        <Typography variant='caption' className='italic' marginTop={-4}>Terakhir diubah pada {dateStringFormatter(data.updatedAt)} - {timeFormatter(data.updatedAt)}</Typography>
+                        <DialogConfirmation title='Hapus' body='Apakah Anda yakin ingin menghapus data ini?' open={openHapus} onClose={handleDialogClose(setOpenHapus)}>
                             <Stack direction='row' spacing={1} className='mt-4 px-2'>
-                                <ButtonBasic variant='contained' onClick={handleClose}>Batal</ButtonBasic>
+                                <ButtonBasic variant='contained' onClick={handleDialogClose(setOpenHapus)}>Batal</ButtonBasic>
                                 <ButtonBasic variant='outlined' color='error' onClick={() => handleDelete(data.id)}>Hapus</ButtonBasic>
+                            </Stack>
+                        </DialogConfirmation>
+                        <DialogConfirmation title='Ubah Data' body='Apakah Anda yakin ingin menyimpan perubahan pada data ini?' open={openSimpan} onClose={handleDialogClose(setOpenSimpan)}>
+                            <Stack direction='row' spacing={1} className='mt-4 px-2'>
+                                <ButtonBasic variant='contained' onClick={handleDialogClose(setOpenSimpan)}>Batal</ButtonBasic>
+                                <ButtonBasic variant='contained' color='success' onClick={onSave}>Simpan</ButtonBasic>
                             </Stack>
                         </DialogConfirmation>
                     </>
