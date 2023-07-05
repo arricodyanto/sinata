@@ -37,12 +37,8 @@ export default function LayananPeminformasi(props: TFormEditLayananProps) {
     const [disposisiInput, setDisposisiInput] = useState(false);
     const [editable, setEditable] = useState(false);
 
-    const [users, setUsers] = useState<Array<any>>([]); // Handle autocomplete
-
-    const handleFormChange = (setState: React.Dispatch<React.SetStateAction<any>>, fieldName: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        setState(event.target.value);
-        form.set(fieldName, event.target.value);
-    };
+    // Handle autocomplete
+    const [users, setUsers] = useState<Array<any>>([]);
 
     const handleUserChange = (event: any, value: any) => {
         form.set('id_account', value.id);
@@ -58,7 +54,6 @@ export default function LayananPeminformasi(props: TFormEditLayananProps) {
         const formattedForm = formDataFormatter(form);
         const isSame = JSON.stringify(formattedForm) === JSON.stringify(originalForm);
 
-        console.log(formattedForm);
         if (isSame === true) {
             toast.warning('Tidak ada perubahan pada data.', {
                 theme: 'colored'
@@ -226,7 +221,7 @@ export default function LayananPeminformasi(props: TFormEditLayananProps) {
                             )}
                             <ButtonIcon variant='outlined' color='error' onClick={handleDialogOpen(setOpenHapus)} icon={<DeleteIcon className='-mr-1' />}>Hapus</ButtonIcon>
                         </Stack>
-                        <Typography variant='caption' className='italic' marginTop={-4}>Terakhir diubah pada {dateStringFormatter(data.updatedAt)} - {timeFormatter(data.updatedAt)}</Typography>
+                        <Typography variant='caption' className='italic' marginTop={-4}>Terakhir diubah pada {dateStringFormatter(data.updatedAt)} - {timeFormatter(data.updatedAt)} WIB</Typography>
                         <DialogConfirmation title='Hapus' body='Apakah Anda yakin ingin menghapus data ini?' open={openHapus} onClose={handleDialogClose(setOpenHapus)}>
                             <Stack direction='row' spacing={1} className='mt-4 px-2'>
                                 <ButtonBasic variant='contained' onClick={handleDialogClose(setOpenHapus)}>Batal</ButtonBasic>

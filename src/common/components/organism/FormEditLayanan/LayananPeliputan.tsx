@@ -20,6 +20,9 @@ import { toast } from 'react-toastify';
 import ButtonBasic from '../../atoms/ButtonBasic';
 import DialogConfirmation from '../../atoms/DialogConfirmation';
 import DisabledFormDataKegiatan from '../FormDataKegiatan/DisabledFormDataKegiatan';
+import { formDataFormatter } from '@/common/utils/formDataFormatter';
+
+const form = new FormData();
 
 export default function LayananPeliputan(props: TFormEditLayananProps) {
     const { data, id } = props;
@@ -30,53 +33,47 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 
     // Editable File Input
     const [leaflet, setLeaflet] = useState(false);
-    const [disposisiInput, setDisposisiInput] = useState(false);
+    const [disposisi, setDisposisi] = useState(false);
     const [editable, setEditable] = useState(false);
 
     const [autocomplete, setAutocomplete] = useState<string>(''); // Handle autocomplete
     const [dataKegiatan, setDataKegiatan] = useState<Array<any>>([]); // Handle autocomplete
 
-    // Input Form
-    const [leaflet_kegiatan, setLeaflet_kegiatan] = useState<any>(null);
-    const [id_kegiatan, setId_kegiatan] = useState('');
-    const [status, setStatus] = useState('');
-    const [disposisi, setDisposisi] = useState<any>(null);
-
     const handleStatusChange = (event: any) => {
-        setStatus(event.target.value);
+        form.set('status', event.target.value);
     };
 
+    const originalForm: Array<any> = [];
+
     const onSave = async () => {
-        const data = new FormData();
-        if (leaflet_kegiatan != null) {
-            data.append('leaflet_kegiatan', leaflet_kegiatan);
-        }
-        if (disposisi != null) {
-            data.append('disposisi', disposisi);
-        }
-        if (status != '') {
-            data.append('status', status);
-        }
-        if (id_kegiatan != '') {
-            data.append('id_kegiatan', id_kegiatan);
-        }
-        const response = await updateLayananPeliputan(id, data);
-        if (response.error === true) {
-            toast.error(response.message, {
-                theme: 'colored',
-            });
-        }
-        if (response.error === false) {
-            toast.success(response.message, {
+        const formattedForm = formDataFormatter(form);
+        const isSame = JSON.stringify(formattedForm) === JSON.stringify(originalForm);
+
+        if (isSame === true) {
+            toast.warning('Tidak ada perubahan pada data.', {
                 theme: 'colored'
             });
-            window.location.reload();
         }
+        if (isSame === false) {
+            const response = await updateLayananPeliputan(id, form);
+            if (response.error === true) {
+                toast.error(response.message, {
+                    theme: 'colored',
+                });
+            }
+            if (response.error === false) {
+                toast.success(response.message, {
+                    theme: 'colored'
+                });
+                window.location.reload();
+            }
+        }
+        setOpenSimpan(false);
     };
 
     const handleJudulChange = (event: any, value: any) => {
         setAutocomplete(value?.judul_kegiatan);
-        setId_kegiatan(value?.id);
+        form.set('id_kegiatan', value.id);
     };
 
     const handleEdit = () => {
@@ -134,13 +131,17 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
             {rows.map((data: any) => {
                 return (
                     <>
-                        {leaflet == false && data.leaflet_kegiatan != null ? (
+                        {leaflet === false ? (
                             <>
                                 <FormLabel className='mb-2 text-sm'>Leaflet Kegiatan</FormLabel>
                                 <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems='flex-start' className='mb-4'>
-                                    <Link href={`${api_image}/${data.leaflet_kegiatan}`} target='blank' className='w-[20rem] mt-2'>
-                                        <Image src={`${api_image}/${data.leaflet_kegiatan}`} alt={`${data.tb_kegiatan.judul_kegiatan}`} quality={80} layout='responsive' width={20} height={20} className='rounded-lg' />
-                                    </Link>
+                                    {data.leaflet_kegiatan ? (
+                                        <Link href={`${api_image}/${data.leaflet_kegiatan}`} target='blank' className='w-[20rem] mt-2'>
+                                            <Image src={`${api_image}/${data.leaflet_kegiatan}`} alt={`${data.tb_kegiatan.judul_kegiatan}`} quality={80} layout='responsive' width={20} height={20} className='rounded-lg' />
+                                        </Link>
+                                    ) : (
+                                        <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                                    )}
                                     <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3 mt-2' onClick={() => setLeaflet(true)} disabled={!editable}>Change File</Button>
                                 </Stack>
                             </>
@@ -149,14 +150,12 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
                                 <FileUpload name='leaflet_kegiatan' label='Leaflet Kegiatan' onupdatefiles={(fileItems: FilePondFile[]) => {
                                     const file = fileItems[0]?.file;
                                     if (file) {
-                                        setLeaflet_kegiatan(file);
+                                        form.set('leaflet_kegiatan', file);
                                     }
                                 }} allowMultiple={false} allowReorder={false} acceptedFileTypes={['image/png', 'image/jpeg']} labelFileTypeNotAllowed='Hanya file JPEG dan PNG yang diijinkan' />
-                                {data.leaflet_kegiatan != null ? (
-                                    <Stack direction='row-reverse' className='-mt-2'>
-                                        <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setLeaflet(false)} disabled={!editable}>Cancel</Button>
-                                    </Stack>
-                                ) : null}
+                                <Stack direction='row-reverse' className='-mt-2'>
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setLeaflet(false)} disabled={!editable}>Cancel</Button>
+                                </Stack>
                             </>
                         )}
                         <AutocompleteTitle name='judul_kegiatan' label='Judul Kegiatan' data={dataKegiatan} onChange={handleJudulChange} defaultValue={dataKegiatan.find((item: any) => item.id == data.id_kegiatan)} disabled={!editable} />
@@ -169,14 +168,18 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
                                 <MenuItem value='Rejected'>Rejected</MenuItem>
                             </SelectLabel>
                         </FormControl>
-                        {disposisiInput == false ? (
+                        {disposisi === false ? (
                             <>
                                 <FormLabel className='mb-2 text-sm'>Disposisi</FormLabel>
                                 <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
-                                    <Link href={`${api_image}/${data.disposisi}`} target='_blank'>
-                                        <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.disposisi}</Typography>
-                                    </Link>
-                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisiInput(true)} disabled={!editable}>Change File</Button>
+                                    {data.disposisi ? (
+                                        <Link href={`${api_image}/${data.disposisi}`} target='_blank'>
+                                            <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.disposisi}</Typography>
+                                        </Link>
+                                    ) : (
+                                        <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                                    )}
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisi(true)} disabled={!editable}>Change File</Button>
                                 </Stack>
                             </>
                         ) : (
@@ -184,11 +187,11 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
                                 <FileUpload name='disposisi' label='Disposisi' allowMultiple={false} allowReorder={false} onupdatefiles={(fileItems: FilePondFile[]) => {
                                     const file = fileItems[0]?.file;
                                     if (file) {
-                                        setDisposisi(file);
+                                        form.set('disposisi', file);
                                     }
                                 }} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
                                 <Stack direction='row-reverse' className='-mt-2 mb-4'>
-                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisiInput(false)} disabled={!editable}>Cancel</Button>
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisi(false)} disabled={!editable}>Cancel</Button>
                                 </Stack>
                             </>
                         )}
@@ -203,7 +206,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
                             )}
                             <ButtonIcon variant='outlined' color='error' onClick={handleDialogOpen(setOpenHapus)} icon={<DeleteIcon className='-mr-1' />}>Hapus</ButtonIcon>
                         </Stack>
-                        <Typography variant='caption' className='italic' marginTop={-4}>Terakhir diubah pada {dateStringFormatter(data.updatedAt)} - {timeFormatter(data.updatedAt)}</Typography>
+                        <Typography variant='caption' className='italic' marginTop={-4}>Terakhir diubah pada {dateStringFormatter(data.updatedAt)} - {timeFormatter(data.updatedAt)} WIB</Typography>
                         <DialogConfirmation title='Hapus' body='Apakah Anda yakin ingin menghapus data ini?' open={openHapus} onClose={handleDialogClose(setOpenHapus)}>
                             <Stack direction='row' spacing={1} className='mt-4 px-2'>
                                 <ButtonBasic variant='contained' onClick={handleDialogClose(setOpenHapus)}>Batal</ButtonBasic>
