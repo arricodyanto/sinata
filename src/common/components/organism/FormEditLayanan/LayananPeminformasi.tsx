@@ -39,27 +39,16 @@ export default function LayananPeminformasi(props: TFormEditLayananProps) {
 
     const [users, setUsers] = useState<Array<any>>([]); // Handle autocomplete
 
-    // Input Form
-    const [judul_permohonan, setJudul_permohonan] = useState('');
-    const [id_user, setId_user] = useState<string>('');
-    const [bahan_publikasi, setBahan_publikasi] = useState<any>(null);
-    const [surat_permohonan, setSurat_permohonan] = useState<any>(null);
-    const [status, setStatus] = useState('');
-    const [disposisi, setDisposisi] = useState<any>(null);
-    const [luaran_layanan, setLuaran_layanan] = useState('');
-
     const handleFormChange = (setState: React.Dispatch<React.SetStateAction<any>>, fieldName: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
         setState(event.target.value);
         form.set(fieldName, event.target.value);
     };
 
     const handleUserChange = (event: any, value: any) => {
-        setId_user(value.id);
         form.set('id_account', value.id);
     };
 
     const handleStatusChange = (event: any) => {
-        setStatus(event.target.value);
         form.set('status', event.target.value);
     };
 
@@ -138,7 +127,7 @@ export default function LayananPeminformasi(props: TFormEditLayananProps) {
             {rows.map((data: any) => {
                 return (
                     <>
-                        <TextfieldLabel name='judul_permohonan' label='Judul Permohonan' defaultValue={data.judul_permohonan} onChange={handleFormChange(setJudul_permohonan, 'judul_permohonan')} disabled={!editable} />
+                        <TextfieldLabel name='judul_permohonan' label='Judul Permohonan' defaultValue={data.judul_permohonan} onChange={(event: any) => form.set('judul_permohonan', event.target.value)} disabled={!editable} />
                         <AutocompleteCustom name='name' label='User Pemohon' data={users} onChange={handleUserChange} getOptionLabel={(data) => data.name} defaultValue={users.find((item: any) => item.name == data.tb_account.name)} disabled={!editable} />
                         {suratPermohonan === false ? (
                             <>
@@ -155,7 +144,6 @@ export default function LayananPeminformasi(props: TFormEditLayananProps) {
                                 <FileUpload name='surat_permohonan' label='Surat Permohonan' allowMultiple={false} allowReorder={false} onupdatefiles={(fileItems: FilePondFile[]) => {
                                     const file = fileItems[0]?.file;
                                     if (file) {
-                                        setSurat_permohonan(file);
                                         form.set('surat_permohonan', file);
                                     }
                                 }} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
@@ -183,7 +171,6 @@ export default function LayananPeminformasi(props: TFormEditLayananProps) {
                                 <FileUpload name='bahanPublikasi' label='bahanPublikasi' allowMultiple={false} allowReorder={false} onupdatefiles={(fileItems) => {
                                     const file = fileItems[0]?.file;
                                     if (file) {
-                                        setBahan_publikasi(file);
                                         form.set('bahan_publikasi', file);
                                     }
                                 }} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
@@ -219,7 +206,6 @@ export default function LayananPeminformasi(props: TFormEditLayananProps) {
                                 <FileUpload name='disposisi' label='Disposisi' allowMultiple={false} allowReorder={false} onupdatefiles={(fileItems: FilePondFile[]) => {
                                     const file = fileItems[0]?.file;
                                     if (file) {
-                                        setDisposisi(file);
                                         form.set('disposisi', file);
                                     }
                                 }} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
@@ -228,7 +214,7 @@ export default function LayananPeminformasi(props: TFormEditLayananProps) {
                                 </Stack>
                             </>
                         )}
-                        <TextfieldLabel label='Luaran Layanan' defaultValue={data.luaran_layanan} disabled={!editable} onChange={handleFormChange(setLuaran_layanan, 'luaran_layanan')} multiline maxRows={5} />
+                        <TextfieldLabel label='Luaran Layanan' defaultValue={data.luaran_layanan} disabled={!editable} onChange={(event: any) => form.set('luaran_layanan', event.target.value)} multiline maxRows={5} />
                         <Stack direction='row' justifyContent='flex-end' spacing={1} marginTop={6}>
                             {editable ? (
                                 <Stack direction='row' spacing={1}>

@@ -11,6 +11,8 @@ import { listMenuAdmin } from '../../dashboard';
 import Image from 'next/image';
 import { getOneKonpers } from '@/services/layanan-konpers';
 import LayananKonpers from '@/common/components/organism/FormEditLayanan/LayananKonpers';
+import { getOneLayananPeminformasi } from '@/services/layanan-peminformasi';
+import LayananPeminformasi from '@/common/components/organism/FormEditLayanan/LayananPeminformasi';
 
 export default function RiwayatAjuanPage() {
     const { query, isReady } = useRouter();
@@ -25,6 +27,11 @@ export default function RiwayatAjuanPage() {
         if (jenis_layanan === 'Layanan Konferensi Pers') {
             const response = await getOneKonpers(id);
             setData(response.data);
+        }
+        if (jenis_layanan === 'Layanan Pembaruan Informasi') {
+            const response = await getOneLayananPeminformasi(id);
+            setData(response.data);
+            console.log(response);
         }
     }, [jenis_layanan, id]);
 
@@ -51,6 +58,8 @@ export default function RiwayatAjuanPage() {
                                     <LayananPeliputan data={data} id={id} />
                                 ) : jenis_layanan === 'Layanan Konferensi Pers' ? (
                                     <LayananKonpers data={data} id={id} />
+                                ) : jenis_layanan === 'Layanan Pembaruan Informasi' ? (
+                                    <LayananPeminformasi data={data} id={id} />
                                 ) : null}
                             </Paper>
                         </Grid>
