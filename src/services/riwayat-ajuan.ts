@@ -68,7 +68,7 @@ export async function getAllRiwayatAjuan(params: string) {
       id: item.id,
       id_account: item.id_account,
       pemohon: item.tb_account.username,
-      jenis_layanan: 'Layanan Pembaruan Informasi di Laman UNS',
+      jenis_layanan: 'Layanan Pembaruan Informasi',
       judul: item.judul_permohonan,
       file: item.bahan_publikasi,
       tgl_kegiatan: item.tgl_kegiatan,
