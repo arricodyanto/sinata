@@ -1,3 +1,10 @@
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 export function dateFormatter(inputDate: Date) {
   const dateOrigin = inputDate;
   const date = new Date(dateOrigin);
@@ -45,4 +52,15 @@ export function dateStringFormatter(inputDate: Date) {
     year: 'numeric',
   });
   return formattedDate;
+}
+
+export function dateISOFormatter(inputDate: Date) {
+  const convertedDate = inputDate.toISOString();
+  const zonedDate = dayjs(convertedDate).format('YYYY/MM/DD HH:mm:ss');
+  return zonedDate;
+}
+export function timeISOFormatter(inputDate: Date) {
+  const convertedDate = inputDate.toISOString();
+  const zonedTime = dayjs(convertedDate).format('HH:mm');
+  return zonedTime;
 }

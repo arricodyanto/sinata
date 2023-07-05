@@ -12,7 +12,7 @@ export type TTableRiwayatProps = {
   }[];
 };
 
-export type TLayananPeliputanProps = {
+export type TFormEditLayananProps = {
   data: Array<any>;
   id: any;
 };

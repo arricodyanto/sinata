@@ -12,9 +12,10 @@ import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import TableData from '@/common/components/molecules/TableData';
-import TableDataSkeleton from '@/common/components/molecules/TableDataSkeleton';
+import TableDataSkeleton from '@/common/components/molecules/TableDataSkeleton/TableDataSkeleton';
 import ButtonSplit from '../../atoms/ButtonSplit';
 import { useRouter } from 'next/router';
+import TableDataEmpty from '../TableDataSkeleton/TableDataEmpty';
 
 export default function TableRiwayat() {
     const router = useRouter();
@@ -72,18 +73,27 @@ export default function TableRiwayat() {
     }, [router.isReady]);
     return (
         <>
-            {data.length === 0 ?
+            {router.isReady ? (
+                <>
+                    {data.length === 0 ? (
+                        <TableDataEmpty headers={tableHeaders} />
+                    ) : (
+                        <TableData headers={tableHeaders} columns={tableColumns} rows={data} status={true} actionOnClick={handleOpen}
+                            page={page} limit={rowsPerPage} totalRow={totalRow} changedPage={handleChangePage} changedLimit={handleChangeLimit}
+                            addButton={
+                                <Stack direction='row-reverse'>
+                                    <ButtonSplit options={ajuanOptions} redirect={redirect} />
+                                </Stack>
+                            }
+                        />
+                    )}
+                </>
+            ) : (
                 <>
                     <Skeleton variant='rounded' width={210} height={25} className='mb-6' />
                     <TableDataSkeleton headers={tableHeaders} />
                 </>
-                :
-                <TableData headers={tableHeaders} columns={tableColumns} rows={data} status={true} actionOnClick={handleOpen} page={page} limit={rowsPerPage} totalRow={totalRow} changedPage={handleChangePage} changedLimit={handleChangeLimit} addButton={
-                    <Stack direction='row-reverse'>
-                        <ButtonSplit options={ajuanOptions} redirect={redirect} />
-                    </Stack>
-                } />
-            }
+            )}
             <Modal open={open} onClose={handleClose}>
                 <Fade in={open}>
                     <Box className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white py-4 px-6 rounded-md xs:w-[calc(100%-40px)] md:w-[600px]'>

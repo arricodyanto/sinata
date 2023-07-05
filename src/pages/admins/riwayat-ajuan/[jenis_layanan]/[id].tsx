@@ -9,24 +9,30 @@ import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { listMenuAdmin } from '../../dashboard';
 import Image from 'next/image';
+import { getOneKonpers } from '@/services/layanan-konpers';
+import LayananKonpers from '@/common/components/organism/FormEditLayanan/LayananKonpers';
 
 export default function RiwayatAjuanPage() {
     const { query, isReady } = useRouter();
     const { jenis_layanan, id } = query;
 
     const [data, setData] = useState<Array<any>>([]);
-    const getPeliputan = useCallback(async (id: any) => {
-        const response = await getOneLayananPeliputan(id);
-        setData(response.data);
-    }, []);
+    const getData = useCallback(async (id: any) => {
+        if (jenis_layanan === 'Layanan Peliputan') {
+            const response = await getOneLayananPeliputan(id);
+            setData(response.data);
+        }
+        if (jenis_layanan === 'Layanan Konferensi Pers') {
+            const response = await getOneKonpers(id);
+            setData(response.data);
+        }
+    }, [jenis_layanan, id]);
 
     useEffect(() => {
         if (isReady) {
-            getPeliputan(id);
+            getData(id);
         }
-    }, [isReady, id]);
-    // if (jenis_layanan === 'Layanan Peliputan') {
-    // }
+    }, [isReady, getData]);
     // console.log(data);
     return (
         <>
@@ -41,7 +47,11 @@ export default function RiwayatAjuanPage() {
                     <Grid container spacing={2}>
                         <Grid item spacing={1} xs={12} md={8}>
                             <Paper className='shadow-md xs:p-4 md:p-6'>
-                                <LayananPeliputan data={data} id={id} />
+                                {jenis_layanan === 'Layanan Peliputan' ? (
+                                    <LayananPeliputan data={data} id={id} />
+                                ) : jenis_layanan === 'Layanan Konferensi Pers' ? (
+                                    <LayananKonpers data={data} id={id} />
+                                ) : null}
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={4}>

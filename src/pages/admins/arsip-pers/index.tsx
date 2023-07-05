@@ -1,6 +1,6 @@
 import React from 'react';
 import tb_peliputan from '@/json/tb_laypeliputan.json';
-import TableDataSkeleton from '@/common/components/molecules/TableDataSkeleton';
+import TableDataSkeleton from '@/common/components/molecules/TableDataSkeleton/TableDataSkeleton';
 import { Box, Chip, Fade, FormControl, FormLabel, IconButton, MenuItem, Modal, Paper, Skeleton, Stack, TableCell, Typography } from '@mui/material';
 import TableData from '@/common/components/molecules/TableData';
 import TitlePage from '@/common/components/atoms/TitlePage';

@@ -35,4 +35,5 @@ export type TTableDataProps = {
 
 export type TTableDataSkeletonProps = {
   headers: string[];
+  addButton?: React.ReactNode;
 };

@@ -2,8 +2,7 @@ import AutocompleteTitle from '@/common/components/atoms/AutocompleteTitle';
 import ButtonIcon from '@/common/components/atoms/ButtonIcon';
 import FileUpload from '@/common/components/atoms/FileUpload';
 import SelectLabel from '@/common/components/atoms/SelectLabel';
-import { TFormEditLayananProps } from '@/common/types';
-import { dateStringFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
+import { dateFormatter, dateISOFormatter, dateStringFormatter, timeFormatter, timeISOFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
 import { getAllDataKegiatan } from '@/services/data-kegiatan';
 import { deleteOneLayananPeliputan, updateLayananPeliputan } from '@/services/layanan-peliputan';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -19,9 +18,16 @@ import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import ButtonBasic from '../../atoms/ButtonBasic';
 import DialogConfirmation from '../../atoms/DialogConfirmation';
-import DisabledFormDataKegiatan from '../FormDataKegiatan/DisabledFormDataKegiatan';
+import { TFormEditLayananProps } from '@/common/types';
+import TextfieldLabel from '../../atoms/TextfieldLabel';
+import AutocompleteCustom from '../../atoms/AutocompleteCustom';
+import DatePickerBasic from '../../atoms/DatePickerBasic';
+import TimePickerBasic from '../../atoms/TimePickerBasic';
+import dayjs, { Dayjs } from 'dayjs';
+import { getAllUsers } from '@/services/accounts';
+import { updateLayananKonpers } from '@/services/layanan-konpers';
 
-export default function LayananPeliputan(props: TFormEditLayananProps) {
+export default function LayananKonpers(props: TFormEditLayananProps) {
     const { data, id } = props;
     let rows = data;
 
@@ -29,27 +35,56 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
     const api_image = process.env.NEXT_PUBLIC_API_IMG;
 
     // Editable File Input
-    const [leaflet, setLeaflet] = useState(false);
+    const [suratPermohonan, setSuratPermohonan] = useState(false);
     const [disposisiInput, setDisposisiInput] = useState(false);
     const [editable, setEditable] = useState(false);
 
-    const [autocomplete, setAutocomplete] = useState<string>(''); // Handle autocomplete
-    const [dataKegiatan, setDataKegiatan] = useState<Array<any>>([]); // Handle autocomplete
+    const [users, setUsers] = useState<Array<any>>([]); // Handle autocomplete
 
     // Input Form
-    const [leaflet_kegiatan, setLeaflet_kegiatan] = useState<any>(null);
-    const [id_kegiatan, setId_kegiatan] = useState('');
+    const [judul_kegiatan, setJudul_kegiatan] = useState('');
+    const [id_user, setId_user] = useState<string>('');
+    const [tgl_kegiatan, setTgl_kegiatan] = useState<any>();
+    const [waktu_kegiatan, setWaktu_kegiatan] = useState<any>();
     const [status, setStatus] = useState('');
+    const [surat_permohonan, setSurat_permohonan] = useState<any>(null);
     const [disposisi, setDisposisi] = useState<any>(null);
+
+    const handleFormChange = (setState: React.Dispatch<React.SetStateAction<any>>) => (event: React.ChangeEvent<HTMLInputElement>) => {
+        setState(event.target.value);
+    };
+
+    const handleUserChange = (event: any, value: any) => {
+        setId_user(value.id);
+    };
+
+    const handleDateChange = (value: any) => {
+        setTgl_kegiatan(value);
+    };
+
+    const handleTimeChange = (value: any) => {
+        setWaktu_kegiatan(value);
+    };
 
     const handleStatusChange = (event: any) => {
         setStatus(event.target.value);
     };
-
     const onSave = async () => {
         const data = new FormData();
-        if (leaflet_kegiatan != null) {
-            data.append('leaflet_kegiatan', leaflet_kegiatan);
+        if (judul_kegiatan != '') {
+            data.append('judul_kegiatan', judul_kegiatan);
+        }
+        if (id_user != '') {
+            data.append('id_account', id_user);
+        }
+        if (tgl_kegiatan) {
+            data.append('tgl_kegiatan', dateISOFormatter(tgl_kegiatan));
+        }
+        if (waktu_kegiatan) {
+            data.append('waktu_kegiatan', timeISOFormatter(waktu_kegiatan));
+        }
+        if (surat_permohonan != null) {
+            data.append('surat_permohonan', surat_permohonan);
         }
         if (disposisi != null) {
             data.append('disposisi', disposisi);
@@ -57,10 +92,8 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
         if (status != '') {
             data.append('status', status);
         }
-        if (id_kegiatan != '') {
-            data.append('id_kegiatan', id_kegiatan);
-        }
-        const response = await updateLayananPeliputan(id, data);
+
+        const response = await updateLayananKonpers(id, data);
         if (response.error === true) {
             toast.error(response.message, {
                 theme: 'colored',
@@ -74,11 +107,6 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
         }
     };
 
-    const handleJudulChange = (event: any, value: any) => {
-        setAutocomplete(value?.judul_kegiatan);
-        setId_kegiatan(value?.id);
-    };
-
     const handleEdit = () => {
         setEditable(true);
     };
@@ -87,26 +115,16 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
         setEditable(false);
     };
 
-    const judulFromProps = data.map(item => item.tb_kegiatan.judul_kegiatan);
-    const getDataKegiatan = useCallback(async () => {
-        const response = await getAllDataKegiatan();
-        setDataKegiatan(response.data);
-        if (judulFromProps.length > 0) {
-            setAutocomplete(judulFromProps[0]);
-        }
+    const getUsers = useCallback(async () => {
+        const response = await getAllUsers();
+        setUsers(response.data);
     }, []);
 
     useEffect(() => {
         if (isReady) {
-            getDataKegiatan();
+            getUsers();
         }
     }, [isReady, rows]);
-
-    useEffect(() => {
-        if (judulFromProps.length > 0) {
-            setAutocomplete(judulFromProps[0]);
-        }
-    }, [rows]);
 
     if (!rows) {
         return null;
@@ -128,39 +146,30 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
         });
         push('/admins/semua-ajuan');
     };
+
     return (
         <>
-            <Typography variant='h5' className='mb-6'>Layanan Peliputan</Typography>
+            <Typography variant='h5' className='mb-6'>Layanan Konferensi Pers</Typography>
             {rows.map((data: any) => {
                 return (
                     <>
-                        {leaflet == false && data.leaflet_kegiatan != null ? (
-                            <>
-                                <FormLabel className='mb-2 text-sm'>Leaflet Kegiatan</FormLabel>
-                                <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems='flex-start' className='mb-4'>
-                                    <Link href={`${api_image}/${data.leaflet_kegiatan}`} target='blank' className='w-[20rem] mt-2'>
-                                        <Image src={`${api_image}/${data.leaflet_kegiatan}`} alt={`${data.tb_kegiatan.judul_kegiatan}`} quality={80} layout='responsive' width={20} height={20} className='rounded-lg' />
-                                    </Link>
-                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3 mt-2' onClick={() => setLeaflet(true)} disabled={!editable}>Change File</Button>
-                                </Stack>
-                            </>
-                        ) : (
-                            <>
-                                <FileUpload name='leaflet_kegiatan' label='Leaflet Kegiatan' onupdatefiles={(fileItems: FilePondFile[]) => {
-                                    const file = fileItems[0]?.file;
-                                    if (file) {
-                                        setLeaflet_kegiatan(file);
-                                    }
-                                }} allowMultiple={false} allowReorder={false} acceptedFileTypes={['image/png', 'image/jpeg']} labelFileTypeNotAllowed='Hanya file JPEG dan PNG yang diijinkan' />
-                                {data.leaflet_kegiatan != null ? (
-                                    <Stack direction='row-reverse' className='-mt-2'>
-                                        <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setLeaflet(false)} disabled={!editable}>Cancel</Button>
-                                    </Stack>
-                                ) : null}
-                            </>
-                        )}
-                        <AutocompleteTitle name='judul_kegiatan' label='Judul Kegiatan' data={dataKegiatan} onChange={handleJudulChange} defaultValue={dataKegiatan.find((item: any) => item.id == data.id_kegiatan)} disabled={!editable} />
-                        <DisabledFormDataKegiatan judul_kegiatan={autocomplete} />
+                        <TextfieldLabel name='judul_kegiatan' label='Judul Konferensi Pers' defaultValue={data.judul_kegiatan} onChange={handleFormChange(setJudul_kegiatan)} disabled={!editable} />
+                        <AutocompleteCustom name='name' label='User Pemohon' data={users} onChange={handleUserChange} getOptionLabel={(data) => data.name} defaultValue={users.find((item: any) => item.name == data.tb_account.name)} disabled={!editable} />
+                        <Stack direction='row' spacing={1} className='mb-6'>
+                            <FormControl className='w-full'>
+                                <FormLabel className='mb-1 text-sm'>
+                                    Tanggal Kegiatan
+                                </FormLabel>
+                                <DatePickerBasic defaultValue={dayjs(dateFormatter(data.tgl_kegiatan), 'DD/MM/YYYY')} onChange={handleDateChange} disabled={!editable} />
+                            </FormControl>
+                            <FormControl className='w-full'>
+                                <FormLabel className='mb-1 text-sm'>
+                                    Waktu Kegiatan
+                                </FormLabel>
+                                <TimePickerBasic defaultValue={dayjs(dateFormatter(data.tgl_kegiatan) + ' ' + timeStrictFormatter(data.waktu_kegiatan), 'DD/MM/YYYY hh:mm')} onChange={handleTimeChange} disabled={!editable} />
+                            </FormControl>
+                        </Stack>
+                        <TextfieldLabel name='tempat_kegiatan' label='Tempat Kegiatan' defaultValue={data.tempat_kegiatan} disabled={!editable} />
                         <FormControl className='w-full'>
                             <SelectLabel name='status' label='Status' defaultValue={data.status} onChange={handleStatusChange} disabled={!editable}>
                                 <MenuItem value='Pending'>Pending</MenuItem>
@@ -169,13 +178,41 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
                                 <MenuItem value='Rejected'>Rejected</MenuItem>
                             </SelectLabel>
                         </FormControl>
+                        {suratPermohonan === false ? (
+                            <>
+                                <FormLabel className='mb-2 text-sm'>Surat Permohonan</FormLabel>
+                                <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
+                                    <Link href='/' target='_blank'>
+                                        <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.surat_permohonan}</Typography>
+                                    </Link>
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' disabled={!editable} onClick={() => setSuratPermohonan(true)}>Change File</Button>
+                                </Stack>
+                            </>
+                        ) : (
+                            <>
+                                <FileUpload name='surat_permohonan' label='Surat Permohonan' allowMultiple={false} allowReorder={false} onupdatefiles={(fileItems: FilePondFile[]) => {
+                                    const file = fileItems[0]?.file;
+                                    if (file) {
+                                        setSurat_permohonan(file);
+                                    }
+                                }} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
+                                <Stack direction='row-reverse' className='-mt-2 mb-4'>
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setSuratPermohonan(false)}>Cancel</Button>
+                                </Stack>
+                            </>
+                        )
+                        }
                         {disposisiInput == false ? (
                             <>
                                 <FormLabel className='mb-2 text-sm'>Disposisi</FormLabel>
                                 <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
-                                    <Link href={`${api_image}/${data.disposisi}`} target='_blank'>
-                                        <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.disposisi}</Typography>
-                                    </Link>
+                                    {data.disposisi ? (
+                                        <Link href={`${api_image}/${data.disposisi}`} target='_blank'>
+                                            <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.disposisi}</Typography>
+                                        </Link>
+                                    ) : (
+                                        <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                                    )}
                                     <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisiInput(true)} disabled={!editable}>Change File</Button>
                                 </Stack>
                             </>
