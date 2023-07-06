@@ -17,6 +17,8 @@ import { getOneLayananLiveStreaming } from '@/services/layanan-livestreaming';
 import LayananLiveStreaming from '@/common/components/organism/FormEditLayanan/LayananLiveStreaming';
 import { getOneLayananPublikasiAgenda } from '@/services/layanan-pubagenda';
 import LayananPublikasiAgenda from '@/common/components/organism/FormEditLayanan/LayananPublikasiAgenda';
+import { getOneLayananMajalah } from '@/services/layanan-majalah';
+import LayananPublikasiMajalah from '@/common/components/organism/FormEditLayanan/LayananPublikasiMajalah';
 
 export default function RiwayatAjuanPage() {
     const { query, isReady } = useRouter();
@@ -44,6 +46,10 @@ export default function RiwayatAjuanPage() {
             const response = await getOneLayananPublikasiAgenda(id);
             setData(response.data);
         }
+        if (jenis_layanan === 'Layanan Publikasi di Majalah') {
+            const response = await getOneLayananMajalah(id);
+            setData(response.data);
+        }
     }, [jenis_layanan, id]);
 
     useEffect(() => {
@@ -51,7 +57,7 @@ export default function RiwayatAjuanPage() {
             getData(id);
         }
     }, [isReady, getData]);
-    // console.log(data);
+    console.log(data);
     return (
         <>
             <Box className='bg-grey'>
@@ -75,6 +81,8 @@ export default function RiwayatAjuanPage() {
                                     <LayananLiveStreaming data={data} id={id} />
                                 ) : jenis_layanan === 'Layanan Publikasi Agenda' ? (
                                     <LayananPublikasiAgenda data={data} id={id} />
+                                ) : jenis_layanan === 'Layanan Publikasi di Majalah' ? (
+                                    <LayananPublikasiMajalah data={data} id={id} />
                                 ) : null}
                             </Paper>
                         </Grid>

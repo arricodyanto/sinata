@@ -1,8 +1,8 @@
 import { useEffect, useCallback, useState } from 'react';
 import EventCard from '@/common/components/molecules/EventCard';
 import { Carousel } from 'react-daisyui';
-import { getKalenderEvents } from '@/services/agenda';
 import { dateFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
+import { getKalenderEvents } from '@/services/layanan-pubagenda';
 
 export default function DaisyCarousel() {
   const [cardData, setCardData] = useState<Array<any>>([]);

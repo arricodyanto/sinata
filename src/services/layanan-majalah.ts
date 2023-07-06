@@ -2,9 +2,9 @@ import callAPI from './config';
 
 const HOST = process.env.NEXT_PUBLIC_API_HOST;
 const VERSION = process.env.NEXT_PUBLIC_API_VERSION;
-const URL = 'publikasi-agenda';
+const URL = 'majalah';
 
-export async function getAllLayananPublikasiAgenda(params?: string) {
+export async function getAllLayananMajalah(params?: string) {
   const URLparams = params || '';
   const url = `${HOST}/${VERSION}/${URL}/lihat/?${URLparams}`;
   return callAPI({
@@ -13,7 +13,7 @@ export async function getAllLayananPublikasiAgenda(params?: string) {
   });
 }
 
-export async function getOneLayananPublikasiAgenda(id: string) {
+export async function getOneLayananMajalah(id: string) {
   const url = `${HOST}/${VERSION}/${URL}/${id}/lihat`;
   return callAPI({
     url,
@@ -22,7 +22,7 @@ export async function getOneLayananPublikasiAgenda(id: string) {
   });
 }
 
-export async function updateLayananPublikasiAgenda(id: string, data: any) {
+export async function updateLayananMajalah(id: string, data: any) {
   const url = `${HOST}/${VERSION}/${URL}/${id}/edit`;
   return callAPI({
     url,
@@ -32,19 +32,11 @@ export async function updateLayananPublikasiAgenda(id: string, data: any) {
   });
 }
 
-export async function deleteOneLayananPublikasi(id: string) {
+export async function deleteOneLayananMajalah(id: string) {
   const url = `${HOST}/${VERSION}/${URL}/${id}/delete`;
   return callAPI({
     url,
     method: 'DELETE',
     token: true,
-  });
-}
-
-export async function getKalenderEvents() {
-  const url = `${HOST}/${VERSION}/${URL}/kalenderdata?limit=999`;
-  return callAPI({
-    url,
-    method: 'GET',
   });
 }

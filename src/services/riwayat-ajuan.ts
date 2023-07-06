@@ -129,12 +129,38 @@ export async function getAllRiwayatAjuan(params: string) {
     };
   });
 
+  async function getPublikasMajalah() {
+    const response = await callAPI({
+      url: `${HOST}/${VERSION}/majalah/lihat`,
+      method: 'GET',
+      token: true,
+    });
+    return response;
+  }
+  const publikasiMajalah = await getPublikasMajalah();
+  const modifiedPublikasiMajalah = publikasiMajalah.data.map((item: any) => {
+    return {
+      id: item.id,
+      id_account: item.tb_kegiatan.id_account,
+      pemohon: item.tb_kegiatan.name,
+      jenis_layanan: 'Layanan Publikasi di Majalah',
+      judul: item.tb_kegiatan.judul_kegiatan,
+      file: item.bahan_publikasi,
+      tgl_kegiatan: item.tb_kegiatan.tgl_kegiatan,
+      waktu_kegiatan: item.tb_kegiatan.waktu_kegiatan,
+      tempat_kegiatan: item.tb_kegiatan.tempat_kegiatan,
+      status: item.status,
+      createdAt: item.createdAt,
+    };
+  });
+
   const dataResults = [
     ...modifiedPeliputan,
     ...modifiedKonpers,
     ...modifiedPeminformasi,
     ...modifiedLiveStreaming,
     ...modifiedPublikasiAgenda,
+    ...modifiedPublikasiMajalah,
   ];
 
   const sortedResults = dataResults.sort((a, b) => {

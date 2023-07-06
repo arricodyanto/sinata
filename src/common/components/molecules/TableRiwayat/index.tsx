@@ -71,6 +71,11 @@ export default function TableRiwayat() {
             getRiwayatAjuan();
         }
     }, [router.isReady]);
+
+    useEffect(() => {
+        getRiwayatAjuan();
+    }, [page, rowsPerPage]);
+    // console.log(data);
     return (
         <>
             {router.isReady ? (
