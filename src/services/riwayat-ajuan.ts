@@ -104,11 +104,37 @@ export async function getAllRiwayatAjuan(params: string) {
     };
   });
 
+  async function getPublikasiAgenda() {
+    const response = await callAPI({
+      url: `${HOST}/${VERSION}/publikasi-agenda/lihat`,
+      method: 'GET',
+      token: true,
+    });
+    return response;
+  }
+  const publikasiAgenda = await getPublikasiAgenda();
+  const modifiedPublikasiAgenda = publikasiAgenda.data.map((item: any) => {
+    return {
+      id: item.id,
+      id_account: item.tb_kegiatan.id_account,
+      pemohon: item.tb_kegiatan.name,
+      jenis_layanan: 'Layanan Publikasi Agenda',
+      judul: item.tb_kegiatan.judul_kegiatan,
+      file: item.leaflet_kegiatan,
+      tgl_kegiatan: item.tb_kegiatan.tgl_kegiatan,
+      waktu_kegiatan: item.tb_kegiatan.waktu_kegiatan,
+      tempat_kegiatan: item.tb_kegiatan.tempat_kegiatan,
+      status: item.status,
+      createdAt: item.createdAt,
+    };
+  });
+
   const dataResults = [
     ...modifiedPeliputan,
     ...modifiedKonpers,
     ...modifiedPeminformasi,
     ...modifiedLiveStreaming,
+    ...modifiedPublikasiAgenda,
   ];
 
   const sortedResults = dataResults.sort((a, b) => {

@@ -135,7 +135,7 @@ export default function LayananLiveStreaming(props: TFormEditLayananProps) {
                     <>
                         {thumbnail_kegiatan === false ? (
                             <>
-                                <FormLabel className='mb-2 text-sm'>Leaflet Kegiatan</FormLabel>
+                                <FormLabel className='mb-2 text-sm'>Thumbnail Kegiatan</FormLabel>
                                 <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems='flex-start' className='mb-4'>
                                     {data.thumbnail_kegiatan ? (
                                         <Link href={`${api_file}/${data.thumbnail_kegiatan}`} target='blank' className='w-[20rem] mt-2'>

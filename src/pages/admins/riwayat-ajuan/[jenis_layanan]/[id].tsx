@@ -15,6 +15,8 @@ import { getOneLayananPeminformasi } from '@/services/layanan-peminformasi';
 import LayananPeminformasi from '@/common/components/organism/FormEditLayanan/LayananPeminformasi';
 import { getOneLayananLiveStreaming } from '@/services/layanan-livestreaming';
 import LayananLiveStreaming from '@/common/components/organism/FormEditLayanan/LayananLiveStreaming';
+import { getOneLayananPublikasiAgenda } from '@/services/layanan-pubagenda';
+import LayananPublikasiAgenda from '@/common/components/organism/FormEditLayanan/LayananPublikasiAgenda';
 
 export default function RiwayatAjuanPage() {
     const { query, isReady } = useRouter();
@@ -36,6 +38,10 @@ export default function RiwayatAjuanPage() {
         }
         if (jenis_layanan === 'Layanan Live Streaming') {
             const response = await getOneLayananLiveStreaming(id);
+            setData(response.data);
+        }
+        if (jenis_layanan === 'Layanan Publikasi Agenda') {
+            const response = await getOneLayananPublikasiAgenda(id);
             setData(response.data);
         }
     }, [jenis_layanan, id]);
@@ -67,6 +73,8 @@ export default function RiwayatAjuanPage() {
                                     <LayananPeminformasi data={data} id={id} />
                                 ) : jenis_layanan === 'Layanan Live Streaming' ? (
                                     <LayananLiveStreaming data={data} id={id} />
+                                ) : jenis_layanan === 'Layanan Publikasi Agenda' ? (
+                                    <LayananPublikasiAgenda data={data} id={id} />
                                 ) : null}
                             </Paper>
                         </Grid>
