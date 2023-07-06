@@ -21,6 +21,8 @@ import { getOneLayananMajalah } from '@/services/layanan-majalah';
 import LayananPublikasiMajalah from '@/common/components/organism/FormEditLayanan/LayananPublikasiMajalah';
 import { getOneLayananOpini } from '@/services/layanan-opini';
 import LayananOpini from '@/common/components/organism/FormEditLayanan/LayananOpini';
+import { getOneLayananVideotron } from '@/services/layanan-videotron';
+import LayananVideotron from '@/common/components/organism/FormEditLayanan/LayananVideotron';
 
 export default function RiwayatAjuanPage() {
     const { query, isReady } = useRouter();
@@ -54,6 +56,10 @@ export default function RiwayatAjuanPage() {
         }
         if (jenis_layanan === 'Layanan Opini di Media') {
             const response = await getOneLayananOpini(id);
+            setData(response.data);
+        }
+        if (jenis_layanan === 'Layanan Penayangan Konten di Videotron') {
+            const response = await getOneLayananVideotron(id);
             setData(response.data);
         }
     }, [jenis_layanan, id]);
@@ -90,6 +96,8 @@ export default function RiwayatAjuanPage() {
                                     <LayananPublikasiMajalah data={data} id={id} />
                                 ) : jenis_layanan === 'Layanan Opini di Media' ? (
                                     <LayananOpini data={data} id={id} />
+                                ) : jenis_layanan === 'Layanan Penayangan Konten di Videotron' ? (
+                                    <LayananVideotron data={data} id={id} />
                                 ) : null}
                             </Paper>
                         </Grid>

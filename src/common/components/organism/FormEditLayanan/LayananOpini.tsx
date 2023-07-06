@@ -132,7 +132,7 @@ export default function LayananOpini(props: TFormEditLayananProps) {
 
     return (
         <>
-            <Typography variant='h5' className='mb-6'>Layanan Pembaruan Informasi di Laman UNS</Typography>
+            <Typography variant='h5' className='mb-6'>Layanan Opini di Media</Typography>
             {rows.map((data: any) => {
                 return (
                     <>
@@ -255,7 +255,7 @@ export default function LayananOpini(props: TFormEditLayananProps) {
                                 <FormLabel className='mb-1 text-sm'>
                                     Tanggal, Waktu Upload
                                 </FormLabel>
-                                <DateTimePickerBasic defaultValue={dayjs(dateTimeFormatter(data.tgl_waktu_upload), 'DD/MM/YYYY hh:mm')} onChange={(value: any) => form.set('tgl_waktu_upload', value)} disabled={!editable} />
+                                <DateTimePickerBasic defaultValue={dayjs(dateTimeFormatter(data.tgl_waktu_upload), 'DD/MM/YYYY HH:mm')} onChange={(value: any) => form.set('tgl_waktu_upload', value)} disabled={!editable} />
                             </FormControl>
                             <AutocompleteCustom label='Admin' data={users} onChange={handleAdminChange} getOptionLabel={(data) => data.name} defaultValue={users.find((item: any) => item.name == data.admin)} disabled={!editable} />
                         </Stack>
@@ -266,7 +266,7 @@ export default function LayananOpini(props: TFormEditLayananProps) {
                                 <FormLabel className='mb-1 text-sm'>
                                     Tanggal, Waktu Upload Terjemahan
                                 </FormLabel>
-                                <DateTimePickerBasic defaultValue={dayjs(dateTimeFormatter(data.tgl_waktu_upload_terj), 'DD/MM/YYYY hh:mm')} onChange={(value: any) => form.set('tgl_waktu_upload_terj', value)} disabled={!editable} />
+                                <DateTimePickerBasic defaultValue={dayjs(dateTimeFormatter(data.tgl_waktu_upload_terj), 'DD/MM/YYYY HH:mm')} onChange={(value: any) => form.set('tgl_waktu_upload_terj', value)} disabled={!editable} />
                             </FormControl>
                             <AutocompleteCustom label='Admin' data={users} onChange={handleAdminTerjChange} getOptionLabel={(data) => data.name} defaultValue={users.find((item: any) => item.name == data.admin_terj)} disabled={!editable} />
                         </Stack>
