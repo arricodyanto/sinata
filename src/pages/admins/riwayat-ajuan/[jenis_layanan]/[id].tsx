@@ -19,6 +19,8 @@ import { getOneLayananPublikasiAgenda } from '@/services/layanan-pubagenda';
 import LayananPublikasiAgenda from '@/common/components/organism/FormEditLayanan/LayananPublikasiAgenda';
 import { getOneLayananMajalah } from '@/services/layanan-majalah';
 import LayananPublikasiMajalah from '@/common/components/organism/FormEditLayanan/LayananPublikasiMajalah';
+import { getOneLayananOpini } from '@/services/layanan-opini';
+import LayananOpini from '@/common/components/organism/FormEditLayanan/LayananOpini';
 
 export default function RiwayatAjuanPage() {
     const { query, isReady } = useRouter();
@@ -48,6 +50,10 @@ export default function RiwayatAjuanPage() {
         }
         if (jenis_layanan === 'Layanan Publikasi di Majalah') {
             const response = await getOneLayananMajalah(id);
+            setData(response.data);
+        }
+        if (jenis_layanan === 'Layanan Opini di Media') {
+            const response = await getOneLayananOpini(id);
             setData(response.data);
         }
     }, [jenis_layanan, id]);
@@ -82,6 +88,8 @@ export default function RiwayatAjuanPage() {
                                     <LayananPublikasiAgenda data={data} id={id} />
                                 ) : jenis_layanan === 'Layanan Publikasi di Majalah' ? (
                                     <LayananPublikasiMajalah data={data} id={id} />
+                                ) : jenis_layanan === 'Layanan Opini di Media' ? (
+                                    <LayananOpini data={data} id={id} />
                                 ) : null}
                             </Paper>
                         </Grid>

@@ -71,9 +71,9 @@ export async function getAllRiwayatAjuan(params: string) {
       jenis_layanan: 'Layanan Pembaruan Informasi',
       judul: item.judul_permohonan,
       file: item.bahan_publikasi,
-      tgl_kegiatan: item.tgl_kegiatan,
-      waktu_kegiatan: item.waktu_kegiatan,
-      tempat_kegiatan: item.tempat_kegiatan,
+      tgl_kegiatan: null,
+      waktu_kegiatan: null,
+      tempat_kegiatan: null,
       status: item.status,
       createdAt: item.createdAt,
     };
@@ -154,6 +154,32 @@ export async function getAllRiwayatAjuan(params: string) {
     };
   });
 
+  async function getOpini() {
+    const response = await callAPI({
+      url: `${HOST}/${VERSION}/opini/lihat`,
+      method: 'GET',
+      token: true,
+    });
+    return response;
+  }
+
+  const opini = await getOpini();
+  const modifiedOpini = opini.data.map((item: any) => {
+    return {
+      id: item.id,
+      id_account: item.id_account,
+      pemohon: item.tb_account.username,
+      jenis_layanan: 'Layanan Opini di Media',
+      judul: item.judul_pembahasan,
+      file: item.bahan_publikasi,
+      tgl_kegiatan: null,
+      waktu_kegiatan: null,
+      tempat_kegiatan: null,
+      status: item.status,
+      createdAt: item.createdAt,
+    };
+  });
+
   const dataResults = [
     ...modifiedPeliputan,
     ...modifiedKonpers,
@@ -161,6 +187,7 @@ export async function getAllRiwayatAjuan(params: string) {
     ...modifiedLiveStreaming,
     ...modifiedPublikasiAgenda,
     ...modifiedPublikasiMajalah,
+    ...modifiedOpini,
   ];
 
   const sortedResults = dataResults.sort((a, b) => {
