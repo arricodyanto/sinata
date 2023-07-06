@@ -10,7 +10,7 @@ import Footer from "@/common/components/organism/Footer";
 import TodaysEvent from "@/common/components/organism/TodaysEvent";
 import TomorrowsEvent from "@/common/components/organism/TomorrowsEvent";
 import { dateStringFormatter, timeStrictFormatter } from "@/common/utils/dateFormatter.util";
-import { getAllAgenda } from "@/services/agenda";
+import { getAllLayananPublikasiAgenda } from "@/services/layanan-pubagenda";
 import { Box, Grid, Pagination, Stack, Typography } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 
@@ -27,7 +27,7 @@ export default function Events() {
 
   const getAgenda = useCallback(async () => {
     const params = `limit=12&page=${page}`;
-    const response = await getAllAgenda(params);
+    const response = await getAllLayananPublikasiAgenda(params);
     setAgenda(response.data);
     setTotalRow(response.totalRow);
   }, [page, setAgenda]);

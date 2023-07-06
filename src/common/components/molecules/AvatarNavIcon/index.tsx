@@ -32,10 +32,10 @@ export default function AvatarNavIcon() {
                 <Box className='xs:w-[85vw] md:w-52'>
                     <Stack direction='row' alignItems='center' justifyContent='space-between'>
                         <Typography variant='body2' className='text-gray-600 font-medium'>Selamat Datang!</Typography>
-                        <Chip label='User' variant='filled' color='primary' sx={{ height: 14 }} className='text-[10px]' />
+                        <Chip label={`${user.role}`} variant='filled' color='primary' sx={{ height: 14 }} className='text-[10px]' />
                     </Stack>
                     <Box className='mt-4'>
-                        <Link href=''>
+                        <Link href='/admins/profile'>
                             <Stack direction='row' alignItems='center' className='hover:text-primary text-gray-500 mb-2'>
                                 <PersonOutlinedIcon className='text-[16px]' />
                                 <Typography variant='body2' className='ml-2'>Profil Akun</Typography>

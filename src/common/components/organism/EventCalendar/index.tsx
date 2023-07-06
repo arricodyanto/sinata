@@ -6,8 +6,8 @@ import { DayCalendarSkeleton, LocalizationProvider, PickersDay, PickersDayProps,
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { Box, Divider, Modal, Typography } from '@mui/material';
 import EventModalItems from '../EventModalItems';
-import { getKalenderEvents } from '@/services/agenda';
 import { oneDigitdateFormatter } from '@/common/utils/dateFormatter.util';
+import { getKalenderEvents } from '@/services/layanan-pubagenda';
 
 export default function EventCalendar() {
   const initialValue = dayjs();
