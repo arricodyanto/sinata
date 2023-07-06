@@ -92,7 +92,7 @@ export async function getAllRiwayatAjuan(params: string) {
     return {
       id: item.id,
       id_account: item.tb_kegiatan.id_account,
-      pemohon: item.tb_kegiatan.name,
+      pemohon: item.tb_kegiatan.tb_account.username,
       jenis_layanan: 'Layanan Live Streaming',
       judul: item.tb_kegiatan.judul_kegiatan,
       file: item.thumbnail_kegiatan,
@@ -117,7 +117,7 @@ export async function getAllRiwayatAjuan(params: string) {
     return {
       id: item.id,
       id_account: item.tb_kegiatan.id_account,
-      pemohon: item.tb_kegiatan.name,
+      pemohon: item.tb_kegiatan.tb_account.username,
       jenis_layanan: 'Layanan Publikasi Agenda',
       judul: item.tb_kegiatan.judul_kegiatan,
       file: item.leaflet_kegiatan,
@@ -142,7 +142,7 @@ export async function getAllRiwayatAjuan(params: string) {
     return {
       id: item.id,
       id_account: item.tb_kegiatan.id_account,
-      pemohon: item.tb_kegiatan.name,
+      pemohon: item.tb_kegiatan.tb_account.username,
       jenis_layanan: 'Layanan Publikasi di Majalah',
       judul: item.tb_kegiatan.judul_kegiatan,
       file: item.bahan_publikasi,
@@ -193,8 +193,33 @@ export async function getAllRiwayatAjuan(params: string) {
     return {
       id: item.id,
       id_account: item.tb_kegiatan.id_account,
-      pemohon: item.tb_kegiatan.name,
+      pemohon: item.tb_kegiatan.tb_account.username,
       jenis_layanan: 'Layanan Penayangan Konten di Videotron',
+      judul: item.tb_kegiatan.judul_kegiatan,
+      file: item.bahan_publikasi,
+      tgl_kegiatan: item.tb_kegiatan.tgl_kegiatan,
+      waktu_kegiatan: item.tb_kegiatan.waktu_kegiatan,
+      tempat_kegiatan: item.tb_kegiatan.tempat_kegiatan,
+      status: item.status,
+      createdAt: item.createdAt,
+    };
+  });
+
+  async function getBaliho() {
+    const response = await callAPI({
+      url: `${HOST}/${VERSION}/baliho/lihat`,
+      method: 'GET',
+      token: true,
+    });
+    return response;
+  }
+  const baliho = await getBaliho();
+  const modifiedBaliho = baliho.data.map((item: any) => {
+    return {
+      id: item.id,
+      id_account: item.tb_kegiatan.id_account,
+      pemohon: item.tb_kegiatan.tb_account.username,
+      jenis_layanan: 'Layanan Pemasangan Baliho',
       judul: item.tb_kegiatan.judul_kegiatan,
       file: item.bahan_publikasi,
       tgl_kegiatan: item.tb_kegiatan.tgl_kegiatan,
@@ -214,6 +239,7 @@ export async function getAllRiwayatAjuan(params: string) {
     ...modifiedPublikasiMajalah,
     ...modifiedOpini,
     ...modifiedVideotron,
+    ...modifiedBaliho,
   ];
 
   const sortedResults = dataResults.sort((a, b) => {

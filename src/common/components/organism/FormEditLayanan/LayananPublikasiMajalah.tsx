@@ -16,6 +16,7 @@ import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import SaveIcon from '@mui/icons-material/Save';
 import { Button, FormControl, FormLabel, MenuItem, Stack, Typography } from '@mui/material';
 import { FilePondFile } from 'filepond';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
@@ -33,6 +34,7 @@ export default function LayananPublikasiMajalah(props: TFormEditLayananProps) {
     // Editable File Input
     const [bahan_publikasi, setBahan_publikasi] = useState(false);
     const [disposisi, setDisposisi] = useState(false);
+    const [luaran_layanan, setLuaran_layanan] = useState(false);
     const [editable, setEditable] = useState(false);
 
     const [autocomplete, setAutocomplete] = useState<string>(''); // Handle autocomplete
@@ -191,6 +193,33 @@ export default function LayananPublikasiMajalah(props: TFormEditLayananProps) {
                                 }} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
                                 <Stack direction='row-reverse' className='-mt-2 mb-4'>
                                     <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisi(false)} disabled={!editable}>Cancel</Button>
+                                </Stack>
+                            </>
+                        )}
+                        {luaran_layanan === false ? (
+                            <>
+                                <FormLabel className='mb-2 text-sm'>Luaran Layanan</FormLabel>
+                                <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems='flex-start' className='mb-4'>
+                                    {data.luaran_layanan ? (
+                                        <Link href={`${api_image}/${data.luaran_layanan}`} target='blank' className='w-[20rem] mt-2'>
+                                            <Image src={`${api_image}/${data.luaran_layanan}`} alt={`${data.tb_kegiatan.judul_kegiatan}`} quality={80} layout='responsive' width={20} height={20} className='rounded-lg' />
+                                        </Link>
+                                    ) : (
+                                        <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                                    )}
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3 mt-2' onClick={() => setLuaran_layanan(true)} disabled={!editable}>Change File</Button>
+                                </Stack>
+                            </>
+                        ) : (
+                            <>
+                                <FileUpload name='luaran_layanan' label='Luaran Layanan' onupdatefiles={(fileItems: FilePondFile[]) => {
+                                    const file = fileItems[0]?.file;
+                                    if (file) {
+                                        form.set('luaran_layanan', file);
+                                    }
+                                }} allowMultiple={false} allowReorder={false} acceptedFileTypes={['image/png', 'image/jpeg']} labelFileTypeNotAllowed='Hanya file JPEG dan PNG yang diijinkan' />
+                                <Stack direction='row-reverse' className='-mt-2'>
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setLuaran_layanan(false)} disabled={!editable}>Cancel</Button>
                                 </Stack>
                             </>
                         )}

@@ -1,30 +1,32 @@
 import AutocompleteTitle from '@/common/components/atoms/AutocompleteTitle';
+import ButtonBasic from '@/common/components/atoms/ButtonBasic';
 import ButtonIcon from '@/common/components/atoms/ButtonIcon';
+import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
 import FileUpload from '@/common/components/atoms/FileUpload';
 import SelectLabel from '@/common/components/atoms/SelectLabel';
+import DisabledFormDataKegiatan from '@/common/components/organism/FormDataKegiatan/DisabledFormDataKegiatan';
 import { TFormEditLayananProps } from '@/common/types';
-import { dateStringFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
+import { dateFormatter, dateStringFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
+import { formDataFormatter } from '@/common/utils/formDataFormatter';
 import { getAllDataKegiatan } from '@/services/data-kegiatan';
-import { deleteOneLayananPeliputan, updateLayananPeliputan } from '@/services/layanan-peliputan';
+import { deleteOneLayananBaliho, updateLayananBaliho } from '@/services/layanan-baliho';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import SaveIcon from '@mui/icons-material/Save';
 import { Button, FormControl, FormLabel, MenuItem, Stack, Typography } from '@mui/material';
+import dayjs from 'dayjs';
 import { FilePondFile } from 'filepond';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import ButtonBasic from '@/common/components/atoms/ButtonBasic';
-import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
-import DisabledFormDataKegiatan from '@/common/components/organism/FormDataKegiatan/DisabledFormDataKegiatan';
-import { formDataFormatter } from '@/common/utils/formDataFormatter';
+import DatePickerBasic from '../../atoms/DatePickerBasic';
 
 const form = new FormData();
 
-export default function LayananPeliputan(props: TFormEditLayananProps) {
+export default function LayananBaliho(props: TFormEditLayananProps) {
     const { data, id } = props;
     let rows = data;
 
@@ -32,8 +34,10 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
     const api_image = process.env.NEXT_PUBLIC_API_IMG;
 
     // Editable File Input
-    const [leaflet, setLeaflet] = useState(false);
+    const [bahan_publikasi, setBahan_publikasi] = useState(false);
+    const [bukti_pembayaran, setBukti_pembayaran] = useState(false);
     const [disposisi, setDisposisi] = useState(false);
+    const [luaran_layanan, setLuaran_layanan] = useState(false);
     const [editable, setEditable] = useState(false);
 
     const [autocomplete, setAutocomplete] = useState<string>(''); // Handle autocomplete
@@ -55,7 +59,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
             });
         }
         if (isSame === false) {
-            const response = await updateLayananPeliputan(id, form);
+            const response = await updateLayananBaliho(id, form);
             if (response.error === true) {
                 toast.error(response.message, {
                     theme: 'colored',
@@ -119,7 +123,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
     };
 
     const handleDelete = async (id: string) => {
-        await deleteOneLayananPeliputan(id);
+        await deleteOneLayananBaliho(id);
         toast.error('Data berhasil dihapus.', {
             theme: 'colored'
         });
@@ -127,36 +131,77 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
     };
     return (
         <>
-            <Typography variant='h5' className='mb-6'>Layanan Peliputan</Typography>
+            <Typography variant='h5' className='mb-6'>Layanan Pemasangan Baliho</Typography>
             {rows.map((data: any) => {
                 return (
                     <>
                         <AutocompleteTitle name='judul_kegiatan' label='Judul Kegiatan' data={dataKegiatan} onChange={handleJudulChange} defaultValue={dataKegiatan.find((item: any) => item.id == data.id_kegiatan)} disabled={!editable} />
                         <DisabledFormDataKegiatan judul_kegiatan={autocomplete} />
-                        {leaflet === false ? (
+                        {bahan_publikasi === false ? (
                             <>
-                                <FormLabel className='mb-2 text-sm'>Leaflet Kegiatan</FormLabel>
+                                <FormLabel className='mb-2 text-sm'>Bahan Publikasi</FormLabel>
                                 <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems='flex-start' className='mb-4'>
-                                    {data.leaflet_kegiatan ? (
-                                        <Link href={`${api_image}/${data.leaflet_kegiatan}`} target='blank' className='w-[20rem] mt-2'>
-                                            <Image src={`${api_image}/${data.leaflet_kegiatan}`} alt={`${data.tb_kegiatan.judul_kegiatan}`} quality={80} layout='responsive' width={20} height={20} className='rounded-lg' />
+                                    {data.bahan_publikasi ? (
+                                        <Link href={`${api_image}/${data.bahan_publikasi}`} target='blank' className='w-[20rem] mt-2'>
+                                            <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.bahan_publikasi}</Typography>
                                         </Link>
                                     ) : (
                                         <Typography variant='body2' className='italic'>Belum ada data.</Typography>
                                     )}
-                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3 mt-2' onClick={() => setLeaflet(true)} disabled={!editable}>Change File</Button>
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3 mt-2' onClick={() => setBahan_publikasi(true)} disabled={!editable}>Change File</Button>
                                 </Stack>
                             </>
                         ) : (
                             <>
-                                <FileUpload name='leaflet_kegiatan' label='Leaflet Kegiatan' onupdatefiles={(fileItems: FilePondFile[]) => {
+                                <FileUpload name='bahan_publikasi' label='Bahan Publikasi' onupdatefiles={(fileItems: FilePondFile[]) => {
                                     const file = fileItems[0]?.file;
                                     if (file) {
-                                        form.set('leaflet_kegiatan', file);
+                                        form.set('bahan_publikasi', file);
                                     }
-                                }} allowMultiple={false} allowReorder={false} acceptedFileTypes={['image/png', 'image/jpeg']} labelFileTypeNotAllowed='Hanya file JPEG dan PNG yang diijinkan' />
+                                }} allowMultiple={false} allowReorder={false} />
                                 <Stack direction='row-reverse' className='-mt-2'>
-                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setLeaflet(false)} disabled={!editable}>Cancel</Button>
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setBahan_publikasi(false)} disabled={!editable}>Cancel</Button>
+                                </Stack>
+                            </>
+                        )}
+                        <Stack direction='row' spacing={1} className='mb-6'>
+                            <FormControl className='w-full'>
+                                <FormLabel className='mb-1 text-sm'>
+                                    Tanggal Awal Terpasang
+                                </FormLabel>
+                                <DatePickerBasic defaultValue={dayjs(dateFormatter(data.tgl_awal), 'DD/MM/YYYY')} onChange={(value: any) => form.set('tgl_awal', value)} disabled={!editable} />
+                            </FormControl>
+                            <FormControl className='w-full'>
+                                <FormLabel className='mb-1 text-sm'>
+                                    Tanggal Akhir Terpasang
+                                </FormLabel>
+                                <DatePickerBasic defaultValue={dayjs(dateFormatter(data.tgl_akhir), 'DD/MM/YYYY')} onChange={(value: any) => form.set('tgl_akhir', value)} disabled={!editable} />
+                            </FormControl>
+                        </Stack>
+                        {bukti_pembayaran === false ? (
+                            <>
+                                <FormLabel className='mb-2 text-sm'>Bukti Pembayaran</FormLabel>
+                                <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems='flex-start' className='mb-4'>
+                                    {data.bukti_pembayaran ? (
+                                        <Link href={`${api_image}/${data.bukti_pembayaran}`} target='blank' className='w-[20rem] mt-2'>
+                                            <Image src={`${api_image}/${data.bukti_pembayaran}`} alt={`${data.tb_kegiatan.judul_kegiatan}`} quality={80} layout='responsive' width={20} height={20} className='rounded-lg' />
+                                        </Link>
+                                    ) : (
+                                        <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                                    )}
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3 mt-2' onClick={() => setBukti_pembayaran(true)} disabled={!editable}>Change File</Button>
+                                </Stack>
+                            </>
+                        ) : (
+                            <>
+                                <FileUpload name='bukti_pembayaran' label='Bukti Pembayaran' onupdatefiles={(fileItems: FilePondFile[]) => {
+                                    const file = fileItems[0]?.file;
+                                    if (file) {
+                                        form.set('bukti_pembayaran', file);
+                                    }
+                                }} allowMultiple={false} allowReorder={false} acceptedFileTypes={['image/png', 'image/jpeg']} labelFileTypeNotAllowed='Hanya file gambar (JPEG, PNG) yang diijinkan' />
+                                <Stack direction='row-reverse' className='-mt-2'>
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setBukti_pembayaran(false)} disabled={!editable}>Cancel</Button>
                                 </Stack>
                             </>
                         )}
@@ -195,6 +240,34 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
                                 </Stack>
                             </>
                         )}
+                        {luaran_layanan === false ? (
+                            <>
+                                <FormLabel className='mb-2 text-sm'>Luaran Layanan</FormLabel>
+                                <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems='flex-start' className='mb-4'>
+                                    {data.luaran_layanan ? (
+                                        <Link href={`${api_image}/${data.luaran_layanan}`} target='blank' className='w-[20rem] mt-2'>
+                                            <Image src={`${api_image}/${data.luaran_layanan}`} alt={`${data.tb_kegiatan.judul_kegiatan}`} quality={80} layout='responsive' width={20} height={20} className='rounded-lg' />
+                                        </Link>
+                                    ) : (
+                                        <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                                    )}
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3 mt-2' onClick={() => setLuaran_layanan(true)} disabled={!editable}>Change File</Button>
+                                </Stack>
+                            </>
+                        ) : (
+                            <>
+                                <FileUpload name='luaran_layanan' label='Luaran Layanan' onupdatefiles={(fileItems: FilePondFile[]) => {
+                                    const file = fileItems[0]?.file;
+                                    if (file) {
+                                        form.set('luaran_layanan', file);
+                                    }
+                                }} allowMultiple={false} allowReorder={false} acceptedFileTypes={['image/png', 'image/jpeg']} labelFileTypeNotAllowed='Hanya file gambar (JPEG, PNG) yang diijinkan' />
+                                <Stack direction='row-reverse' className='-mt-2'>
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setLuaran_layanan(false)} disabled={!editable}>Cancel</Button>
+                                </Stack>
+                            </>
+                        )}
+
                         <Stack direction='row' justifyContent='flex-end' spacing={1} marginTop={6}>
                             {editable ? (
                                 <Stack direction='row' spacing={1}>

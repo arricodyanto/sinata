@@ -75,7 +75,7 @@ export default function TableRiwayat() {
     useEffect(() => {
         getRiwayatAjuan();
     }, [page, rowsPerPage]);
-    // console.log(data);
+    console.log(data);
     return (
         <>
             {router.isReady ? (

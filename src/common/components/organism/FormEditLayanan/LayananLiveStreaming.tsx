@@ -129,10 +129,12 @@ export default function LayananLiveStreaming(props: TFormEditLayananProps) {
     };
     return (
         <>
-            <Typography variant='h5' className='mb-6'>Layanan Peliputan</Typography>
+            <Typography variant='h5' className='mb-6'>Layanan Live Streaming</Typography>
             {rows.map((data: any) => {
                 return (
                     <>
+                        <AutocompleteTitle name='judul_kegiatan' label='Judul Kegiatan' data={dataKegiatan} onChange={handleJudulChange} defaultValue={dataKegiatan.find((item: any) => item.id == data.id_kegiatan)} disabled={!editable} />
+                        <DisabledFormDataKegiatan judul_kegiatan={autocomplete} />
                         {thumbnail_kegiatan === false ? (
                             <>
                                 <FormLabel className='mb-2 text-sm'>Thumbnail Kegiatan</FormLabel>
@@ -160,8 +162,6 @@ export default function LayananLiveStreaming(props: TFormEditLayananProps) {
                                 </Stack>
                             </>
                         )}
-                        <AutocompleteTitle name='judul_kegiatan' label='Judul Kegiatan' data={dataKegiatan} onChange={handleJudulChange} defaultValue={dataKegiatan.find((item: any) => item.id == data.id_kegiatan)} disabled={!editable} />
-                        <DisabledFormDataKegiatan judul_kegiatan={autocomplete} />
                         <FormControl className='w-full'>
                             <SelectLabel name='status' label='Status' defaultValue={data.status} onChange={handleStatusChange} disabled={!editable}>
                                 <MenuItem value='Pending'>Pending</MenuItem>

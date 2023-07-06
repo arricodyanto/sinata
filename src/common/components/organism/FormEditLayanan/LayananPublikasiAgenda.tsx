@@ -21,6 +21,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import TextfieldLabel from '../../atoms/TextfieldLabel';
 
 const form = new FormData();
 
@@ -127,10 +128,12 @@ export default function LayananPublikasiAgenda(props: TFormEditLayananProps) {
     };
     return (
         <>
-            <Typography variant='h5' className='mb-6'>Layanan Peliputan</Typography>
+            <Typography variant='h5' className='mb-6'>Layanan Publikasi Agenda di Media Sosial dan Laman UNS</Typography>
             {rows.map((data: any) => {
                 return (
                     <>
+                        <AutocompleteTitle name='judul_kegiatan' label='Judul Kegiatan' data={dataKegiatan} onChange={handleJudulChange} defaultValue={dataKegiatan.find((item: any) => item.id == data.id_kegiatan)} disabled={!editable} />
+                        <DisabledFormDataKegiatan judul_kegiatan={autocomplete} />
                         {leaflet === false ? (
                             <>
                                 <FormLabel className='mb-2 text-sm'>Leaflet Kegiatan</FormLabel>
@@ -158,8 +161,6 @@ export default function LayananPublikasiAgenda(props: TFormEditLayananProps) {
                                 </Stack>
                             </>
                         )}
-                        <AutocompleteTitle name='judul_kegiatan' label='Judul Kegiatan' data={dataKegiatan} onChange={handleJudulChange} defaultValue={dataKegiatan.find((item: any) => item.id == data.id_kegiatan)} disabled={!editable} />
-                        <DisabledFormDataKegiatan judul_kegiatan={autocomplete} />
                         <FormControl className='w-full'>
                             <SelectLabel name='status' label='Status' defaultValue={data.status} onChange={handleStatusChange} disabled={!editable}>
                                 <MenuItem value='Pending'>Pending</MenuItem>
@@ -195,6 +196,7 @@ export default function LayananPublikasiAgenda(props: TFormEditLayananProps) {
                                 </Stack>
                             </>
                         )}
+                        <TextfieldLabel label='Luaran Layanan' defaultValue={data.luaran_layanan} disabled={!editable} onChange={(event: any) => form.set('luaran_layanan', event.target.value)} multiline maxRows={8} />
                         <Stack direction='row' justifyContent='flex-end' spacing={1} marginTop={6}>
                             {editable ? (
                                 <Stack direction='row' spacing={1}>

@@ -268,7 +268,7 @@ export default function LayananOpini(props: TFormEditLayananProps) {
                                 </FormLabel>
                                 <DateTimePickerBasic defaultValue={dayjs(dateTimeFormatter(data.tgl_waktu_upload_terj), 'DD/MM/YYYY HH:mm')} onChange={(value: any) => form.set('tgl_waktu_upload_terj', value)} disabled={!editable} />
                             </FormControl>
-                            <AutocompleteCustom label='Admin' data={users} onChange={handleAdminTerjChange} getOptionLabel={(data) => data.name} defaultValue={users.find((item: any) => item.name == data.admin_terj)} disabled={!editable} />
+                            <AutocompleteCustom label='Admin Terjemahan' data={users} onChange={handleAdminTerjChange} getOptionLabel={(data) => data.name} defaultValue={users.find((item: any) => item.name == data.admin_terj)} disabled={!editable} />
                         </Stack>
                         <TextfieldLabel label='Tautan Terjemahan' defaultValue={data.link_terj} disabled={!editable} onChange={(event: any) => form.set('link_terj', event.target.value)} multiline maxRows={2} />
                         <Stack direction='row' justifyContent='flex-end' spacing={1} marginTop={6}>

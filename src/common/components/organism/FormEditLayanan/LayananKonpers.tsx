@@ -23,6 +23,7 @@ import DatePickerBasic from '../../atoms/DatePickerBasic';
 import DialogConfirmation from '../../atoms/DialogConfirmation';
 import TextfieldLabel from '../../atoms/TextfieldLabel';
 import TimePickerBasic from '../../atoms/TimePickerBasic';
+import Image from 'next/image';
 
 const form = new FormData();
 
@@ -34,6 +35,7 @@ export default function LayananKonpers(props: TFormEditLayananProps) {
     const api_file = process.env.NEXT_PUBLIC_API_IMG;
 
     // Editable File Input
+    const [leaflet_kegiatan, setLeaflet_kegiatan] = useState(false);
     const [suratPermohonan, setSuratPermohonan] = useState(false);
     const [disposisiInput, setDisposisiInput] = useState(false);
     const [editable, setEditable] = useState(false);
@@ -180,8 +182,34 @@ export default function LayananKonpers(props: TFormEditLayananProps) {
                                     <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setSuratPermohonan(false)}>Cancel</Button>
                                 </Stack>
                             </>
-                        )
-                        }
+                        )}
+                        {leaflet_kegiatan === false ? (
+                            <>
+                                <FormLabel className='mb-2 text-sm'>Leaflet Kegiatan</FormLabel>
+                                <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
+                                    {data.leaflet_kegiatan ? (
+                                        <Link href={`${api_file}/${data.leaflet_kegiatan}`} target='blank' className='w-[20rem] mt-2'>
+                                            <Image src={`${api_file}/${data.leaflet_kegiatan}`} alt={`${data.judul_kegiatan}`} quality={80} layout='responsive' width={20} height={20} className='rounded-lg' />
+                                        </Link>
+                                    ) : (
+                                        <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                                    )}
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' disabled={!editable} onClick={() => setLeaflet_kegiatan(true)}>Change File</Button>
+                                </Stack>
+                            </>
+                        ) : (
+                            <>
+                                <FileUpload name='leaflet_kegiatan' label='Leaflet Kegiatan' allowMultiple={false} allowReorder={false} onupdatefiles={(fileItems: FilePondFile[]) => {
+                                    const file = fileItems[0]?.file;
+                                    if (file) {
+                                        form.set('leaflet_kegiatan', file);
+                                    }
+                                }} acceptedFileTypes={['image/png', 'image/jpeg']} labelFileTypeNotAllowed='Hanya file JPEG dan PNG yang diijinkan' />
+                                <Stack direction='row-reverse' className='-mt-2 mb-4'>
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setLeaflet_kegiatan(false)}>Cancel</Button>
+                                </Stack>
+                            </>
+                        )}
                         {disposisiInput == false ? (
                             <>
                                 <FormLabel className='mb-2 text-sm'>Disposisi</FormLabel>

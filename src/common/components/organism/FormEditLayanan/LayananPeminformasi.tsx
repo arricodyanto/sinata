@@ -167,7 +167,7 @@ export default function LayananPeminformasi(props: TFormEditLayananProps) {
                                     if (file) {
                                         form.set('bahan_publikasi', file);
                                     }
-                                }} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
+                                }} acceptedFileTypes={['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']} labelFileTypeNotAllowed='Hanya file Doc dan PDF yang diijinkan' />
                                 <Stack direction='row-reverse' className='-mt-2 mb-4'>
                                     <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setBahanPublikasiInput(false)}>Cancel</Button>
                                 </Stack>

@@ -23,6 +23,8 @@ import { getOneLayananOpini } from '@/services/layanan-opini';
 import LayananOpini from '@/common/components/organism/FormEditLayanan/LayananOpini';
 import { getOneLayananVideotron } from '@/services/layanan-videotron';
 import LayananVideotron from '@/common/components/organism/FormEditLayanan/LayananVideotron';
+import LayananBaliho from '@/common/components/organism/FormEditLayanan/LayananBaliho';
+import { getOneLayananBaliho } from '@/services/layanan-baliho';
 
 export default function RiwayatAjuanPage() {
     const { query, isReady } = useRouter();
@@ -62,6 +64,10 @@ export default function RiwayatAjuanPage() {
             const response = await getOneLayananVideotron(id);
             setData(response.data);
         }
+        if (jenis_layanan === 'Layanan Pemasangan Baliho') {
+            const response = await getOneLayananBaliho(id);
+            setData(response.data);
+        }
     }, [jenis_layanan, id]);
 
     useEffect(() => {
@@ -98,6 +104,8 @@ export default function RiwayatAjuanPage() {
                                     <LayananOpini data={data} id={id} />
                                 ) : jenis_layanan === 'Layanan Penayangan Konten di Videotron' ? (
                                     <LayananVideotron data={data} id={id} />
+                                ) : jenis_layanan === 'Layanan Pemasangan Baliho' ? (
+                                    <LayananBaliho data={data} id={id} />
                                 ) : null}
                             </Paper>
                         </Grid>
