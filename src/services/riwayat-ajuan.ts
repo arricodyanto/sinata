@@ -79,10 +79,36 @@ export async function getAllRiwayatAjuan(params: string) {
     };
   });
 
+  async function getLiveStreaming() {
+    const response = await callAPI({
+      url: `${HOST}/${VERSION}/live-streaming/lihat`,
+      method: 'GET',
+      token: true,
+    });
+    return response;
+  }
+  const liveStreaming = await getLiveStreaming();
+  const modifiedLiveStreaming = liveStreaming.data.map((item: any) => {
+    return {
+      id: item.id,
+      id_account: item.tb_kegiatan.id_account,
+      pemohon: item.tb_kegiatan.name,
+      jenis_layanan: 'Layanan Live Streaming',
+      judul: item.tb_kegiatan.judul_kegiatan,
+      file: item.thumbnail_kegiatan,
+      tgl_kegiatan: item.tb_kegiatan.tgl_kegiatan,
+      waktu_kegiatan: item.tb_kegiatan.waktu_kegiatan,
+      tempat_kegiatan: item.tb_kegiatan.tempat_kegiatan,
+      status: item.status,
+      createdAt: item.createdAt,
+    };
+  });
+
   const dataResults = [
     ...modifiedPeliputan,
     ...modifiedKonpers,
     ...modifiedPeminformasi,
+    ...modifiedLiveStreaming,
   ];
 
   const sortedResults = dataResults.sort((a, b) => {
@@ -113,13 +139,4 @@ export async function getAllRiwayatAjuan(params: string) {
   };
 
   return results;
-
-  //   async function getKonpers() {
-  //     const response = await callAPI({
-  //       url: `${HOST}/${VERSION}/peliputan/lihat`,
-  //       method: 'GET',
-  //       token: true,
-  //     });
-  //     return response;
-  //   }
 }

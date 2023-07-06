@@ -17,9 +17,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import ButtonBasic from '../../atoms/ButtonBasic';
-import DialogConfirmation from '../../atoms/DialogConfirmation';
-import DisabledFormDataKegiatan from '../FormDataKegiatan/DisabledFormDataKegiatan';
+import ButtonBasic from '@/common/components/atoms/ButtonBasic';
+import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
+import DisabledFormDataKegiatan from '@/common/components/organism/FormDataKegiatan/DisabledFormDataKegiatan';
 import { formDataFormatter } from '@/common/utils/formDataFormatter';
 
 const form = new FormData();

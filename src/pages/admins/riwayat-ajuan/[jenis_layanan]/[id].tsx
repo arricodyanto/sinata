@@ -13,6 +13,8 @@ import { getOneKonpers } from '@/services/layanan-konpers';
 import LayananKonpers from '@/common/components/organism/FormEditLayanan/LayananKonpers';
 import { getOneLayananPeminformasi } from '@/services/layanan-peminformasi';
 import LayananPeminformasi from '@/common/components/organism/FormEditLayanan/LayananPeminformasi';
+import { getOneLayananLiveStreaming } from '@/services/layanan-livestreaming';
+import LayananLiveStreaming from '@/common/components/organism/FormEditLayanan/LayananLiveStreaming';
 
 export default function RiwayatAjuanPage() {
     const { query, isReady } = useRouter();
@@ -31,7 +33,10 @@ export default function RiwayatAjuanPage() {
         if (jenis_layanan === 'Layanan Pembaruan Informasi') {
             const response = await getOneLayananPeminformasi(id);
             setData(response.data);
-            console.log(response);
+        }
+        if (jenis_layanan === 'Layanan Live Streaming') {
+            const response = await getOneLayananLiveStreaming(id);
+            setData(response.data);
         }
     }, [jenis_layanan, id]);
 
@@ -60,6 +65,8 @@ export default function RiwayatAjuanPage() {
                                     <LayananKonpers data={data} id={id} />
                                 ) : jenis_layanan === 'Layanan Pembaruan Informasi' ? (
                                     <LayananPeminformasi data={data} id={id} />
+                                ) : jenis_layanan === 'Layanan Live Streaming' ? (
+                                    <LayananLiveStreaming data={data} id={id} />
                                 ) : null}
                             </Paper>
                         </Grid>

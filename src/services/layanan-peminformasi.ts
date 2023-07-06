@@ -22,3 +22,12 @@ export async function updateLayananPeminformasi(id: string, data: any) {
     token: true,
   });
 }
+
+export async function deleteOneLayananPeminformasi(id: string) {
+  const url = `${HOST}/${VERSION}/${URL}/${id}/delete`;
+  return callAPI({
+    url,
+    method: 'DELETE',
+    token: true,
+  });
+}

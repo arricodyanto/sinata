@@ -3,9 +3,9 @@ import FileUpload from '@/common/components/atoms/FileUpload';
 import SelectLabel from '@/common/components/atoms/SelectLabel';
 import { TFormEditLayananProps } from '@/common/types';
 import { dateFormatter, dateISOFormatter, dateStringFormatter, timeFormatter, timeISOFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
+import { formDataFormatter } from '@/common/utils/formDataFormatter';
 import { getAllUsers } from '@/services/accounts';
-import { updateLayananKonpers } from '@/services/layanan-konpers';
-import { deleteOneLayananPeliputan } from '@/services/layanan-peliputan';
+import { deleteOneLayananKonpers, updateLayananKonpers } from '@/services/layanan-konpers';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
@@ -23,7 +23,6 @@ import DatePickerBasic from '../../atoms/DatePickerBasic';
 import DialogConfirmation from '../../atoms/DialogConfirmation';
 import TextfieldLabel from '../../atoms/TextfieldLabel';
 import TimePickerBasic from '../../atoms/TimePickerBasic';
-import { formDataFormatter } from '@/common/utils/formDataFormatter';
 
 const form = new FormData();
 
@@ -114,7 +113,7 @@ export default function LayananKonpers(props: TFormEditLayananProps) {
     };
 
     const handleDelete = async (id: string) => {
-        await deleteOneLayananPeliputan(id);
+        await deleteOneLayananKonpers(id);
         toast.error('Data berhasil dihapus.', {
             theme: 'colored'
         });

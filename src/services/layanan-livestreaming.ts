@@ -2,9 +2,9 @@ import callAPI from './config';
 
 const HOST = process.env.NEXT_PUBLIC_API_HOST;
 const VERSION = process.env.NEXT_PUBLIC_API_VERSION;
-const URL = 'konpers';
+const URL = 'live-streaming';
 
-export async function getOneKonpers(id: string) {
+export async function getOneLayananLiveStreaming(id: string) {
   const url = `${HOST}/${VERSION}/${URL}/${id}/lihat`;
   return callAPI({
     url,
@@ -13,7 +13,7 @@ export async function getOneKonpers(id: string) {
   });
 }
 
-export async function updateLayananKonpers(id: string, data: any) {
+export async function updateLayananLiveStreaming(id: string, data: any) {
   const url = `${HOST}/${VERSION}/${URL}/${id}/edit`;
   return callAPI({
     url,
@@ -23,7 +23,7 @@ export async function updateLayananKonpers(id: string, data: any) {
   });
 }
 
-export async function deleteOneLayananKonpers(id: string) {
+export async function deleteOneLayananLiveStreaming(id: string) {
   const url = `${HOST}/${VERSION}/${URL}/${id}/delete`;
   return callAPI({
     url,

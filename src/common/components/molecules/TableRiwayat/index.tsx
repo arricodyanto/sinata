@@ -132,12 +132,18 @@ export default function TableRiwayat() {
                                             : null}
                                         <FormLabel className='mb-2 -mt-2 text-sm'>Lampiran File Pemohon</FormLabel>
                                         <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center'>
-                                            <Link href={`${api_image}/${item.file}`} target='_blank'>
-                                                <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{item.file}</Typography>
-                                            </Link>
-                                            <Link href={`${api_image}/${item.file}`} target='_blank'>
-                                                <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3 min-w-[90px]'>Open File</Button>
-                                            </Link>
+                                            {item.file ? (
+                                                <>
+                                                    <Link href={`${api_image}/${item.file}`} target='_blank'>
+                                                        <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{item.file}</Typography>
+                                                    </Link>
+                                                    <Link href={`${api_image}/${item.file}`} target='_blank'>
+                                                        <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3 min-w-[90px]'>Open File</Button>
+                                                    </Link>
+                                                </>
+                                            ) : (
+                                                <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                                            )}
                                         </Stack>
                                         <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='baseline' className='mb-4'>
                                             <Stack direction='row' spacing={1} className='mb-2 mt-6'>
