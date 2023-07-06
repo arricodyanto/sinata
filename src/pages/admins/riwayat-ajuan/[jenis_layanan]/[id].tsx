@@ -57,11 +57,10 @@ export default function RiwayatAjuanPage() {
             getData(id);
         }
     }, [isReady, getData]);
-    console.log(data);
     return (
         <>
             <Box className='bg-grey'>
-                <TitlePage title='Ajuan Layanan Peliputan - Sinata' />
+                <TitlePage title={isReady ? `Ajuan ${jenis_layanan} - Sinata` : 'Sinata Loading...'} />
                 <DashboardPanel listMenu={listMenuAdmin}>
                     <HeaderBreadcrumbs pageHeader='Riwayat Ajuan Layanan' currentPage='Riwayat Ajuan'>
                         <Link href='/admins/semua-ajuan' className='text-zinc-900 hover:underline hover:decoration-1 hover:underline-offset-2'>

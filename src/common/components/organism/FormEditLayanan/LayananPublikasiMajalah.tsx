@@ -1,26 +1,25 @@
 import AutocompleteTitle from '@/common/components/atoms/AutocompleteTitle';
+import ButtonBasic from '@/common/components/atoms/ButtonBasic';
 import ButtonIcon from '@/common/components/atoms/ButtonIcon';
+import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
 import FileUpload from '@/common/components/atoms/FileUpload';
 import SelectLabel from '@/common/components/atoms/SelectLabel';
+import DisabledFormDataKegiatan from '@/common/components/organism/FormDataKegiatan/DisabledFormDataKegiatan';
 import { TFormEditLayananProps } from '@/common/types';
 import { dateStringFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
+import { formDataFormatter } from '@/common/utils/formDataFormatter';
 import { getAllDataKegiatan } from '@/services/data-kegiatan';
-import { deleteOneLayananPeliputan, updateLayananPeliputan } from '@/services/layanan-peliputan';
+import { deleteOneLayananMajalah, updateLayananMajalah } from '@/services/layanan-majalah';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import SaveIcon from '@mui/icons-material/Save';
 import { Button, FormControl, FormLabel, MenuItem, Stack, Typography } from '@mui/material';
 import { FilePondFile } from 'filepond';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import ButtonBasic from '@/common/components/atoms/ButtonBasic';
-import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
-import DisabledFormDataKegiatan from '@/common/components/organism/FormDataKegiatan/DisabledFormDataKegiatan';
-import { formDataFormatter } from '@/common/utils/formDataFormatter';
 
 const form = new FormData();
 
@@ -32,7 +31,7 @@ export default function LayananPublikasiMajalah(props: TFormEditLayananProps) {
     const api_image = process.env.NEXT_PUBLIC_API_IMG;
 
     // Editable File Input
-    const [leaflet, setLeaflet] = useState(false);
+    const [bahan_publikasi, setBahan_publikasi] = useState(false);
     const [disposisi, setDisposisi] = useState(false);
     const [editable, setEditable] = useState(false);
 
@@ -55,7 +54,7 @@ export default function LayananPublikasiMajalah(props: TFormEditLayananProps) {
             });
         }
         if (isSame === false) {
-            const response = await updateLayananPeliputan(id, form);
+            const response = await updateLayananMajalah(id, form);
             if (response.error === true) {
                 toast.error(response.message, {
                     theme: 'colored',
@@ -119,7 +118,7 @@ export default function LayananPublikasiMajalah(props: TFormEditLayananProps) {
     };
 
     const handleDelete = async (id: string) => {
-        await deleteOneLayananPeliputan(id);
+        await deleteOneLayananMajalah(id);
         toast.error('Data berhasil dihapus.', {
             theme: 'colored'
         });
@@ -127,39 +126,39 @@ export default function LayananPublikasiMajalah(props: TFormEditLayananProps) {
     };
     return (
         <>
-            <Typography variant='h5' className='mb-6'>Layanan Peliputan</Typography>
+            <Typography variant='h5' className='mb-6'>Layanan Publikasi di Majalah</Typography>
             {rows.map((data: any) => {
                 return (
                     <>
-                        {leaflet === false ? (
+                        <AutocompleteTitle name='judul_kegiatan' label='Judul Kegiatan' data={dataKegiatan} onChange={handleJudulChange} defaultValue={dataKegiatan.find((item: any) => item.id == data.id_kegiatan)} disabled={!editable} />
+                        <DisabledFormDataKegiatan judul_kegiatan={autocomplete} />
+                        {bahan_publikasi === false ? (
                             <>
-                                <FormLabel className='mb-2 text-sm'>Leaflet Kegiatan</FormLabel>
-                                <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems='flex-start' className='mb-4'>
-                                    {data.leaflet_kegiatan ? (
-                                        <Link href={`${api_image}/${data.leaflet_kegiatan}`} target='blank' className='w-[20rem] mt-2'>
-                                            <Image src={`${api_image}/${data.leaflet_kegiatan}`} alt={`${data.tb_kegiatan.judul_kegiatan}`} quality={80} layout='responsive' width={20} height={20} className='rounded-lg' />
+                                <FormLabel className='mb-2 text-sm'>Bahan Publikasi</FormLabel>
+                                <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
+                                    {data.bahan_publikasi ? (
+                                        <Link href={`${api_image}/${data.bahan_publikasi}`} target='_blank'>
+                                            <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.bahan_publikasi}</Typography>
                                         </Link>
                                     ) : (
                                         <Typography variant='body2' className='italic'>Belum ada data.</Typography>
                                     )}
-                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3 mt-2' onClick={() => setLeaflet(true)} disabled={!editable}>Change File</Button>
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setBahan_publikasi(true)} disabled={!editable}>Change File</Button>
                                 </Stack>
                             </>
                         ) : (
                             <>
-                                <FileUpload name='leaflet_kegiatan' label='Leaflet Kegiatan' onupdatefiles={(fileItems: FilePondFile[]) => {
+                                <FileUpload label='Bahan Publikasi' onupdatefiles={(fileItems: FilePondFile[]) => {
                                     const file = fileItems[0]?.file;
                                     if (file) {
-                                        form.set('leaflet_kegiatan', file);
+                                        form.set('bahan_publikasi', file);
                                     }
-                                }} allowMultiple={false} allowReorder={false} acceptedFileTypes={['image/png', 'image/jpeg']} labelFileTypeNotAllowed='Hanya file JPEG dan PNG yang diijinkan' />
+                                }} allowMultiple={false} allowReorder={false} acceptedFileTypes={['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']} labelFileTypeNotAllowed='Hanya file Doc dan PDF yang diijinkan' />
                                 <Stack direction='row-reverse' className='-mt-2'>
-                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setLeaflet(false)} disabled={!editable}>Cancel</Button>
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setBahan_publikasi(false)} disabled={!editable}>Cancel</Button>
                                 </Stack>
                             </>
                         )}
-                        <AutocompleteTitle name='judul_kegiatan' label='Judul Kegiatan' data={dataKegiatan} onChange={handleJudulChange} defaultValue={dataKegiatan.find((item: any) => item.id == data.id_kegiatan)} disabled={!editable} />
-                        <DisabledFormDataKegiatan judul_kegiatan={autocomplete} />
                         <FormControl className='w-full'>
                             <SelectLabel name='status' label='Status' defaultValue={data.status} onChange={handleStatusChange} disabled={!editable}>
                                 <MenuItem value='Pending'>Pending</MenuItem>
