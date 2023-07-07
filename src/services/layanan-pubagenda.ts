@@ -41,8 +41,9 @@ export async function deleteOneLayananPublikasi(id: string) {
   });
 }
 
-export async function getKalenderEvents() {
-  const url = `${HOST}/${VERSION}/${URL}/kalenderdata?limit=999`;
+export async function getKalenderEvents(params?: string) {
+  const URLparams = params || 'limit=999';
+  const url = `${HOST}/${VERSION}/${URL}/kalenderdata?${URLparams}`;
   return callAPI({
     url,
     method: 'GET',

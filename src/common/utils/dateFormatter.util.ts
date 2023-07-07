@@ -9,7 +9,7 @@ dayjs.extend(timezone);
 dayjs.locale(id);
 dayjs.extend(localizedFormat);
 
-export function dateFormatter(inputDate: Date) {
+export function dateFormatter(inputDate: any) {
   const date = dayjs(inputDate);
   const formattedDate = date.format('DD/MM/YYYY');
   return formattedDate;

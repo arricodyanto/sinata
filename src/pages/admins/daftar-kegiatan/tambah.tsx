@@ -2,15 +2,14 @@ import TitlePage from '@/common/components/atoms/TitlePage';
 import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import TambahKegiatanForm from '@/common/components/organism/TambahKegiatanForm';
+import { formDataFormatter } from '@/common/utils/formDataFormatter';
+import { setOneDataKegiatan } from '@/services/data-kegiatan';
 import { Box, Grid, Paper } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
-import { listMenuAdmin } from '../dashboard';
-import { formDataFormatter } from '@/common/utils/formDataFormatter';
-import { setOneDataKegiatan } from '@/services/data-kegiatan';
-import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
-import { delay } from '@/common/utils/delay.util';
+import { toast } from 'react-toastify';
+import { listMenuAdmin } from '../dashboard';
 
 export default function TambahDataKegiatan() {
     const router = useRouter();
@@ -31,7 +30,6 @@ export default function TambahDataKegiatan() {
         }
         if (!isEmpty) {
             if (formattedForm[0].judul_kegiatan || formattedForm[0].sifat_kegiatan || formattedForm[0].tgl_kegiatan || formattedForm[0].waktu_kegiatan || formattedForm[0].surat_permohonan || formattedForm[0].sik) {
-                // if (formattedForm[0].judul_kegiatan) {
                 if (!isUser) {
                     toast.error('Error! User tidak ditemukan', {
                         theme: 'colored',
@@ -63,7 +61,7 @@ export default function TambahDataKegiatan() {
             <DashboardPanel listMenu={listMenuAdmin}>
                 <HeaderBreadcrumbs pageHeader='Tambahkan Data Kegiatan' currentPage='Tambah Data'>
                     <Link href='/admins/daftar-kegiatan' className='text-zinc-900 hover:underline hover:decoration-1 hover:underline-offset-2'>
-                        Manajemen Data Kegiatan
+                        Daftar Kegiatan
                     </Link>
                 </HeaderBreadcrumbs>
                 <Grid container spacing={2}>
