@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
+import DateFieldBasic from '@/common/components/atoms/DateFieldBasic';
 import SelectLabel from '@/common/components/atoms/SelectLabel';
-import { Box, Button, FormControl, FormLabel, MenuItem, Stack, Typography } from '@mui/material';
-import DateFieldBasic from '../../atoms/DateFieldBasic';
-import TimePickerBasic from '../../atoms/TimePickerBasic';
-import dayjs from 'dayjs';
-import { dateFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
-import Link from 'next/link';
+import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
+import TimePickerBasic from '@/common/components/atoms/TimePickerBasic';
 import { TDisabledFormDataKegiatanProps } from '@/common/types';
+import { dateFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
 import { getAllDataKegiatan } from '@/services/data-kegiatan';
+import { Box, Button, FormControl, FormLabel, MenuItem, Stack, Typography } from '@mui/material';
+import dayjs from 'dayjs';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useCallback, useEffect, useState } from 'react';
 
-export default function DisabledFormDataKegiatan(props: TDisabledFormDataKegiatanProps) {
+export default function FormDataKegiatan(props: TDisabledFormDataKegiatanProps) {
     const { judul_kegiatan } = props;
     let autocomplete = judul_kegiatan;
 
@@ -59,15 +59,11 @@ export default function DisabledFormDataKegiatan(props: TDisabledFormDataKegiata
                         </Stack>
                         <TextfieldLabel name='tempat_kegiatan' label='Tempat Kegiatan' value={item.tempat_kegiatan} disabled />
                         <FormControl className='w-full'>
-                            <FormLabel className='text-sm'>Surat Permohonan</FormLabel>
+                            <FormLabel className='mb-2 text-sm'>Surat Permohonan</FormLabel>
                             <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
-                                {item.surat_permohonan ? (
-                                    <Link href={`${api_image}/${item.surat_permohonan}`} target='_blank'>
-                                        <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{item.surat_permohonan}</Typography>
-                                    </Link>
-                                ) : (
-                                    <Typography variant='body2' className='italic'>Belum ada item</Typography>
-                                )}
+                                <Link href={`${api_image}/${item.surat_permohonan}`} target='_blank'>
+                                    <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{item.surat_permohonan}</Typography>
+                                </Link>
                                 <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' disabled>Change File</Button>
                             </Stack>
                         </FormControl>

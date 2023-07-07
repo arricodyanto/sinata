@@ -51,6 +51,12 @@ export default function TableData(props: TTableDataProps) {
         setSheet(0);
     };
 
+    const getSourceValue = (item: any, column: any) => {
+        const sourceTableName = column.source;
+        const sourceTableItem = sourceTableName ? item[sourceTableName]?.name : null;
+        return sourceTableItem ? sourceTableItem : null;
+    };
+
     return (
         <>
             <Stack direction='row' justifyContent='space-between' alignItems='center' spacing={1} marginTop={1} marginBottom={2}>
@@ -72,9 +78,18 @@ export default function TableData(props: TTableDataProps) {
                         {rows.filter((item) => {
                             let match = false;
                             for (const key in item) {
-                                if (item[key].toString().toLowerCase().includes(search.toLowerCase())) {
+                                if (item[key] && item[key].toString().toLowerCase().includes(search.toLowerCase())) {
                                     match = true;
                                     break;
+                                } else {
+                                    const sourceColumn = columns.find((column) => column.source === key);
+                                    if (sourceColumn) {
+                                        const sourceValue = getSourceValue(item, sourceColumn);
+                                        if (sourceValue && sourceValue.toString().toLowerCase().includes(search.toLowerCase())) {
+                                            match = true;
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                             return match;
@@ -86,7 +101,7 @@ export default function TableData(props: TTableDataProps) {
                                             return (
                                                 <TableCell key={column.id}>
                                                     <Typography variant='body2' className='xs:line-clamp-4 md:line-clamp-3'>
-                                                        {column.source ? row[column.source][0][column.label]
+                                                        {column.source ? row[column.source][column.label]
                                                             : column.label == 'tgl_kegiatan' && row[column.label] ? dateFormatter(row[column.label])
                                                                 : column.label == 'waktu_kegiatan' && row[column.label] ? timeStrictFormatter(row[column.label])
                                                                     : row[column.label]}
