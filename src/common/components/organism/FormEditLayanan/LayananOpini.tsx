@@ -120,7 +120,7 @@ export default function LayananOpini(props: TFormEditLayananProps) {
 
     const handleDelete = async (id: string) => {
         await deleteOneLayananOpini(id);
-        toast.error('Data berhasil dihapus.', {
+        toast.success('Data berhasil dihapus.', {
             theme: 'colored'
         });
         push('/admins/semua-ajuan');

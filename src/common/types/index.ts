@@ -32,3 +32,8 @@ export type TDialogConfirmation = {
 export type TFileUploadProps = Partial<FilePondProps> & {
   label?: string;
 };
+
+export type TTambahKegiatanFormProps = {
+  onSave: (form: any) => void;
+  admin?: Boolean;
+};

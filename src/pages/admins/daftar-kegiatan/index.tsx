@@ -36,7 +36,7 @@ export default function DaftarKegiatan() {
     const [currIndex, setCurrIndex] = React.useState(0);
     const handleOpen = (index: number) => {
         setOpen(true);
-        setCurrIndex(index);
+        setCurrIndex(index || 0);
     };
     const handleClose = () => setOpen(false);
     const tableHeaders = [
@@ -72,17 +72,13 @@ export default function DaftarKegiatan() {
         setData(response.data);
         setTotalRow(response.totalRow);
         setRowsPerPage(response.rowsPerPage);
-    }, [setData, page, rowsPerPage]);
+    }, [getAllDataKegiatan, page, rowsPerPage]);
 
     useEffect(() => {
         if (isReady) {
             getDataKegiatan();
         }
-    }, [isReady, getDataKegiatan]);
-
-    useEffect(() => {
-        getDataKegiatan();
-    }, [page, rowsPerPage]);
+    }, [isReady, page, rowsPerPage]);
 
     // Editable File Input
     const [permohonan, setPermohonan] = React.useState(false);
@@ -134,7 +130,7 @@ export default function DaftarKegiatan() {
 
     const onDelete = async (id: string) => {
         await deleteOneDataKegiatan(id);
-        toast.error('Data berhasil dihapus.', {
+        toast.success('Data berhasil dihapus.', {
             theme: 'colored'
         });
         window.location.reload();

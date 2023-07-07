@@ -33,6 +33,11 @@ export default function TableData(props: TTableDataProps) {
     const [rowsPerPage, setRowsPerPage] = useState<number>(limit);
     const [totalItem, setTotalItem] = useState<number>(totalRow);
 
+    React.useEffect(() => {
+        setTotalItem(totalRow);
+        setRowsPerPage(limit);
+    }, [totalRow, limit]);
+
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         setSheet(newPage);
         changedPage(newPage);

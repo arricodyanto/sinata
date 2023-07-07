@@ -121,7 +121,7 @@ export default function LayananPublikasiAgenda(props: TFormEditLayananProps) {
 
     const handleDelete = async (id: string) => {
         await deleteOneLayananPublikasi(id);
-        toast.error('Data berhasil dihapus.', {
+        toast.success('Data berhasil dihapus.', {
             theme: 'colored'
         });
         push('/admins/semua-ajuan');

@@ -105,7 +105,7 @@ export default function LayananPeminformasi(props: TFormEditLayananProps) {
 
     const handleDelete = async (id: string) => {
         await deleteOneLayananPeminformasi(id);
-        toast.error('Data berhasil dihapus.', {
+        toast.success('Data berhasil dihapus.', {
             theme: 'colored'
         });
         push('/admins/semua-ajuan');
