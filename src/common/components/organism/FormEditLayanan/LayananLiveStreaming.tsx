@@ -122,7 +122,7 @@ export default function LayananLiveStreaming(props: TFormEditLayananProps) {
 
     const handleDelete = async (id: string) => {
         await deleteOneLayananPeliputan(id);
-        toast.error('Data berhasil dihapus.', {
+        toast.success('Data berhasil dihapus.', {
             theme: 'colored'
         });
         push('/admins/semua-ajuan');

@@ -22,3 +22,32 @@ export async function getOneDataKegiatan(id: string) {
     token: true,
   });
 }
+
+export async function setOneDataKegiatan(data: any) {
+  const url = `${HOST}/${VERSION}/${URL}/tambah`;
+  return callAPI({
+    url,
+    method: 'POST',
+    token: true,
+    data,
+  });
+}
+
+export async function updateOneDataKegiatan(id: string, data: any) {
+  const url = `${HOST}/${VERSION}/${URL}/${id}/edit`;
+  return callAPI({
+    url,
+    method: 'PUT',
+    data,
+    token: true,
+  });
+}
+
+export async function deleteOneDataKegiatan(id: string) {
+  const url = `${HOST}/${VERSION}/${URL}/${id}/delete`;
+  return callAPI({
+    url,
+    method: 'DELETE',
+    token: true,
+  });
+}

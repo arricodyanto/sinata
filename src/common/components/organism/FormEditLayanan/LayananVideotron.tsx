@@ -123,7 +123,7 @@ export default function LayananVideotron(props: TFormEditLayananProps) {
 
     const handleDelete = async (id: string) => {
         await deleteOneLayananVideotron(id);
-        toast.error('Data berhasil dihapus.', {
+        toast.success('Data berhasil dihapus.', {
             theme: 'colored'
         });
         push('/admins/semua-ajuan');

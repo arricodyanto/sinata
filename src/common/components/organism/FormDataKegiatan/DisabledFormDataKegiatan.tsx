@@ -59,11 +59,15 @@ export default function DisabledFormDataKegiatan(props: TDisabledFormDataKegiata
                         </Stack>
                         <TextfieldLabel name='tempat_kegiatan' label='Tempat Kegiatan' value={item.tempat_kegiatan} disabled />
                         <FormControl className='w-full'>
-                            <FormLabel className='mb-2 text-sm'>Surat Permohonan</FormLabel>
+                            <FormLabel className='text-sm'>Surat Permohonan</FormLabel>
                             <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
-                                <Link href={`${api_image}/${item.surat_permohonan}`} target='_blank'>
-                                    <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{item.surat_permohonan}</Typography>
-                                </Link>
+                                {item.surat_permohonan ? (
+                                    <Link href={`${api_image}/${item.surat_permohonan}`} target='_blank'>
+                                        <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{item.surat_permohonan}</Typography>
+                                    </Link>
+                                ) : (
+                                    <Typography variant='body2' className='italic'>Belum ada item</Typography>
+                                )}
                                 <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' disabled>Change File</Button>
                             </Stack>
                         </FormControl>

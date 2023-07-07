@@ -1,35 +1,35 @@
-import { Box, Divider, Grid, Paper, Stack, Typography } from '@mui/material'
-import React from 'react'
-import TitlePage from '@/common/components/atoms/TitlePage'
-import FlowCard from '@/common/components/molecules/FlowCard'
-import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs'
-import ArrowCircleDownOutlinedIcon from '@mui/icons-material/ArrowCircleDownOutlined'
-import PendingOutlinedIcon from '@mui/icons-material/PendingOutlined'
-import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined'
-import BasicDonutChart from '@/common/components/atoms/BasicDonutChart'
-import DaisyCarousel from '@/common/components/organism/DaisyCarousel'
-import TableRiwayat from '@/common/components/molecules/TableRiwayat'
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
-import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined'
-import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined'
-import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined'
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
-import rows from '@/json/riwayatAjuan.json'
-import DashboardPanel from '@/common/components/organism/DashboardPanel'
+import { Box, Divider, Grid, Paper, Stack, Typography } from '@mui/material';
+import React from 'react';
+import TitlePage from '@/common/components/atoms/TitlePage';
+import FlowCard from '@/common/components/molecules/FlowCard';
+import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
+import ArrowCircleDownOutlinedIcon from '@mui/icons-material/ArrowCircleDownOutlined';
+import PendingOutlinedIcon from '@mui/icons-material/PendingOutlined';
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+import BasicDonutChart from '@/common/components/atoms/BasicDonutChart';
+import DaisyCarousel from '@/common/components/organism/DaisyCarousel';
+import TableRiwayat from '@/common/components/molecules/TableRiwayat';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import rows from '@/json/riwayatAjuan.json';
+import DashboardPanel from '@/common/components/organism/DashboardPanel';
 
 export default function Dashboard() {
-  const [loginInfo, setLoginInfo] = React.useState('')
+  const [loginInfo, setLoginInfo] = React.useState('');
   React.useEffect(() => {
-    const login = localStorage.getItem("loginInfo")
+    const login = localStorage.getItem("loginInfo");
     if (login) {
-      setLoginInfo(JSON.parse(login))
+      setLoginInfo(JSON.parse(login));
     }
-  }, [])
-  console.log(loginInfo)
-  const dark = '#1f2937'
-  const primary = '#0ea5e9'
-  const pending = '#f59e0b'
-  const complete = '#22c55e'
+  }, []);
+  // console.log(loginInfo)
+  const dark = '#1f2937';
+  const primary = '#0ea5e9';
+  const pending = '#f59e0b';
+  const complete = '#22c55e';
   const data = [
     { x: 'Jan', y: 40 },
     { x: 'Feb', y: 30 },
@@ -53,7 +53,7 @@ export default function Dashboard() {
     { x: 'Apr', y: 51 },
     { x: 'May', y: 27 },
     { x: 'Jun', y: 33 },
-  ]
+  ];
   const donutData = [
     { x: 'Layanan Peliputan', y: 71 },
     { x: 'Layanan Konferensi Pers', y: 0 },
@@ -64,7 +64,7 @@ export default function Dashboard() {
     { x: 'Layanan Opini di Media', y: 0 },
     { x: 'Layanan Penayangan Konten di Videotron', y: 17 },
     { x: 'Layanan Pemasangan Baliho', y: 2 },
-  ]
+  ];
   return (
     <>
       <Box className='bg-grey'>
@@ -73,13 +73,13 @@ export default function Dashboard() {
           <HeaderBreadcrumbs pageHeader='Dashboard' currentPage='Dashboard' />
           <Grid container marginBottom={{ xs: 2, md: 4 }} rowSpacing={2} columnSpacing={4}>
             <Grid item xs={12} md={4}>
-              <FlowCard text={dark} lineColor={primary} data={data} headline='Layanan diajukan' icon={<ArrowCircleDownOutlinedIcon fontSize='large' className='text-primary'/>} />
+              <FlowCard text={dark} lineColor={primary} data={data} headline='Layanan diajukan' icon={<ArrowCircleDownOutlinedIcon fontSize='large' className='text-primary' />} />
             </Grid>
             <Grid item xs={12} md={4}>
-              <FlowCard text={dark} lineColor={pending} data={data1} headline='Layanan dalam proses' icon={<PendingOutlinedIcon fontSize='large' className='text-pending'/>} />
+              <FlowCard text={dark} lineColor={pending} data={data1} headline='Layanan dalam proses' icon={<PendingOutlinedIcon fontSize='large' className='text-pending' />} />
             </Grid>
             <Grid item xs={12} md={4}>
-              <FlowCard text={dark} lineColor={complete} data={data2} headline='Layanan selesai' icon={<CheckCircleOutlinedIcon fontSize='large' className='text-complete'/>} />
+              <FlowCard text={dark} lineColor={complete} data={data2} headline='Layanan selesai' icon={<CheckCircleOutlinedIcon fontSize='large' className='text-complete' />} />
             </Grid>
           </Grid>
           <Grid container spacing={2}>
@@ -107,7 +107,7 @@ export default function Dashboard() {
         </DashboardPanel>
       </Box>
     </>
-  )
+  );
 }
 
 export const listMenuUser = [
@@ -115,12 +115,12 @@ export const listMenuUser = [
     id: 1,
     subheader: '',
     title: 'Dashboard',
-    icon: <HomeOutlinedIcon sx={{ color: '#9ca3af'}} fontSize='small'/>,
+    icon: <HomeOutlinedIcon sx={{ color: '#9ca3af' }} fontSize='small' />,
     link: '/users/dashboard',
     divider: <Divider light className='border-gray-600 mx-5 mb-4' />,
     subItem: [],
-},
-{
+  },
+  {
     id: 2,
     subheader: 'Layanan',
     title: 'Riwayat',
@@ -128,19 +128,19 @@ export const listMenuUser = [
     link: '',
     divider: null,
     subItem: [
-    {
+      {
         id: 1,
         subtitle: 'Riwayat Kegiatan',
         link: '/users/riwayat-kegiatan',
-    },
-    {
+      },
+      {
         id: 2,
         subtitle: 'Tambah Kegiatan',
         link: '/users/tambah-kegiatan',
-    },
+      },
     ],
-},
-{
+  },
+  {
     id: 3,
     subheader: '',
     title: 'Ajukan Layanan',
@@ -148,39 +148,39 @@ export const listMenuUser = [
     link: '',
     divider: <Divider light className='border-gray-600 mx-5 mb-4' />,
     subItem: [
-    {
+      {
         id: 1,
         subtitle: 'Layanan Hubungan Masyarakat',
         link: '/users/layanan-humas',
-    },
-    {
+      },
+      {
         id: 2,
         subtitle: 'Layanan Publikasi',
         link: '/users/layanan-publikasi',
-    },
-    {
+      },
+      {
         id: 3,
         subtitle: 'Layanan Media',
         link: '/users/layanan-media',
-    }
+      }
     ],
-},
-{
+  },
+  {
     id: 4,
     subheader: 'Akun',
     title: 'Profil Akun',
-    icon: <PersonOutlinedIcon sx={{ color: '#9ca3af'}} fontSize='small'/>,
+    icon: <PersonOutlinedIcon sx={{ color: '#9ca3af' }} fontSize='small' />,
     link: '/users/profile',
     divider: null,
     subItem: [],
-},
-{
+  },
+  {
     id: 5,
     subheader: '',
     title: 'Sign Out',
-    icon: <LogoutOutlinedIcon sx={{ color: '#9ca3af'}} fontSize='small'/>,
+    icon: <LogoutOutlinedIcon sx={{ color: '#9ca3af' }} fontSize='small' />,
     link: '/sign-in',
     divider: null,
     subItem: [],
-},      
-]
+  },
+];

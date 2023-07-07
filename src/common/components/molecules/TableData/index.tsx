@@ -33,6 +33,11 @@ export default function TableData(props: TTableDataProps) {
     const [rowsPerPage, setRowsPerPage] = useState<number>(limit);
     const [totalItem, setTotalItem] = useState<number>(totalRow);
 
+    React.useEffect(() => {
+        setTotalItem(totalRow);
+        setRowsPerPage(limit);
+    }, [totalRow, limit]);
+
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         setSheet(newPage);
         changedPage(newPage);
@@ -49,6 +54,12 @@ export default function TableData(props: TTableDataProps) {
     const handleSearch = (value: string) => {
         setSearch(value);
         setSheet(0);
+    };
+
+    const getSourceValue = (item: any, column: any) => {
+        const sourceTableName = column.source;
+        const sourceTableItem = sourceTableName ? item[sourceTableName]?.name : null;
+        return sourceTableItem ? sourceTableItem : null;
     };
 
     return (
@@ -72,9 +83,18 @@ export default function TableData(props: TTableDataProps) {
                         {rows.filter((item) => {
                             let match = false;
                             for (const key in item) {
-                                if (item[key].toString().toLowerCase().includes(search.toLowerCase())) {
+                                if (item[key] && item[key].toString().toLowerCase().includes(search.toLowerCase())) {
                                     match = true;
                                     break;
+                                } else {
+                                    const sourceColumn = columns.find((column) => column.source === key);
+                                    if (sourceColumn) {
+                                        const sourceValue = getSourceValue(item, sourceColumn);
+                                        if (sourceValue && sourceValue.toString().toLowerCase().includes(search.toLowerCase())) {
+                                            match = true;
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                             return match;
@@ -86,7 +106,7 @@ export default function TableData(props: TTableDataProps) {
                                             return (
                                                 <TableCell key={column.id}>
                                                     <Typography variant='body2' className='xs:line-clamp-4 md:line-clamp-3'>
-                                                        {column.source ? row[column.source][0][column.label]
+                                                        {column.source ? row[column.source][column.label]
                                                             : column.label == 'tgl_kegiatan' && row[column.label] ? dateFormatter(row[column.label])
                                                                 : column.label == 'waktu_kegiatan' && row[column.label] ? timeStrictFormatter(row[column.label])
                                                                     : row[column.label]}
