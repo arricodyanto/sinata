@@ -4,6 +4,16 @@ const HOST = process.env.NEXT_PUBLIC_API_HOST;
 const VERSION = process.env.NEXT_PUBLIC_API_VERSION;
 const URL = 'konpers';
 
+export async function getAllLayananKonpers(params?: string) {
+  const URLparams = params || '';
+  const url = `${HOST}/${VERSION}/${URL}/lihat?${URLparams}`;
+  return callAPI({
+    url,
+    method: 'GET',
+    token: true,
+  });
+}
+
 export async function getOneKonpers(id: string) {
   const url = `${HOST}/${VERSION}/${URL}/${id}/lihat`;
   return callAPI({

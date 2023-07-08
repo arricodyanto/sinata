@@ -12,6 +12,7 @@ type TColumn = {
   id: number;
   label: string;
   source?: string;
+  uppersource?: string;
 };
 
 type TRow = {

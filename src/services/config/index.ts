@@ -43,30 +43,16 @@ export default async function callAPI({
     };
     return res;
   } else {
-    if (response.data.page) {
-      const res = {
-        error: false,
-        status: response.status,
-        message: response.data.message,
-        page: response.data.page || undefined,
-        totalPage: response.data.totalPage || undefined,
-        totalRow: response.data.totalRow || undefined,
-        rowsPerPage: response.data.rowsPerPage || undefined,
-        data: response.data.data,
-      };
-      return res;
-    } else {
-      const res = {
-        error: true,
-        status: response.status,
-        message: response.data.message,
-        page: undefined,
-        totalPage: undefined,
-        totalRow: undefined,
-        rowsPerPage: undefined,
-        data: null,
-      };
-      return res;
-    }
+    const res = {
+      error: false,
+      status: response.status,
+      message: response.data.message,
+      page: response.data.page || undefined,
+      totalPage: response.data.totalPage || undefined,
+      totalRow: response.data.totalRow || undefined,
+      rowsPerPage: response.data.rowsPerPage || undefined,
+      data: response.data.data,
+    };
+    return res;
   }
 }

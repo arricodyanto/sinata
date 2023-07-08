@@ -1,153 +1,161 @@
-import React from 'react';
-import data1 from '@/json/tb_laypeminformasi.json';
-import data2 from '@/json/tb_account.json';
-import { Box, Button, Fade, FormLabel, IconButton, Modal, Skeleton, Stack, Typography } from '@mui/material';
-import TableDataSkeleton from '@/common/components/molecules/TableDataSkeleton/TableDataSkeleton';
-import TableData from '@/common/components/molecules/TableData';
 import ButtonIcon from '@/common/components/atoms/ButtonIcon';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
+import TableData from '@/common/components/molecules/TableData';
+import { getAllLayananPeminformasi } from '@/services/layanan-peminformasi';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CloseIcon from '@mui/icons-material/Close';
-import TextfieldLabel from '../../atoms/TextfieldLabel';
-import AutocompleteCustom from '../../atoms/AutocompleteCustom';
-import FileUpload from '../../atoms/FileUpload';
+import { Box, Button, Chip, Fade, FormLabel, IconButton, Modal, Stack, Typography } from '@mui/material';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useState } from 'react';
+import ButtonBasic from '../../atoms/ButtonBasic';
+import TextfieldLabel from '../../atoms/TextfieldLabel';
+import TableDataEmpty from '../../molecules/TableDataSkeleton/TableDataEmpty';
+import { dateStringFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
 
 export default function TableManajemenPembaruanInformasi() {
-  // Table Data Props
+  const { isReady, push } = useRouter();
+
   const headers = [
-    'ID', 'Judul Permohonan', 'User Pemohon', 'Bahan Publikasi', 'Surat Permohonan', 'Disposisi', 'Luaran Layanan', 'Aksi', 'Status'
+    'Judul Permohonan', 'User Pemohon', 'Bahan Publikasi', 'Surat Permohonan', 'Disposisi', 'Luaran Layanan', 'Aksi', 'Status'
   ];
   const columns = [
-    { id: 1, label: 'id' },
-    { id: 2, label: 'judul_permohonan' },
-    { id: 3, label: 'name' },
-    { id: 4, label: 'bahan_publikasi' },
-    { id: 5, label: 'surat_permohonan' },
-    { id: 6, label: 'disposisi' },
-    { id: 7, label: 'luaran_layanan' },
+    { id: 1, label: 'judul_permohonan' },
+    { id: 2, label: 'name', source: 'tb_account' },
+    { id: 3, label: 'bahan_publikasi' },
+    { id: 4, label: 'surat_permohonan' },
+    { id: 5, label: 'disposisi' },
+    { id: 6, label: 'luaran_layanan' },
   ];
+  const api_file = process.env.NEXT_PUBLIC_API_IMG;
 
-  // Fetch data from local json
-  const combinedData = data1.map((obj1: any) => {
-    const match = data2.find((obj2: any) => obj1.id_account === obj2.id);
-    return { ...obj1, ...match };
-  });
+  const [data, setData] = React.useState<Array<any>>([]);
 
-  const [data, setData] = React.useState(combinedData);
-
-  const rows = data.slice().reverse().map((row: any) => row);
-
-  // Modal state
   const [open, setOpen] = React.useState(false);
   const [currIndex, setCurrIndex] = React.useState(0);
   const handleOpen = (id: number) => {
     setOpen(true);
     setCurrIndex(id);
   };
-  const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation();
-  };
   const handleClose = () => setOpen(false);
 
-  // Editable File Input
-  const [bahanPublikasi, setBahanPublikasi] = React.useState(false);
-  const [suratPermohonan, setSuratPermohonan] = React.useState(false);
-  const [disposisi, setDisposisi] = React.useState(false);
+  const [page, setPage] = useState<number>(0);
+  const [totalRow, setTotalRow] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+
+  const handleChangePage = (newPage: number) => {
+    setPage(newPage + 1);
+  };
+
+  const handleChangeLimit = (limit: number) => {
+    setRowsPerPage(limit);
+  };
+
+  const getPeminformasi = useCallback(async () => {
+    const params = `limit=${rowsPerPage}&page=${page}`;
+    const response = await getAllLayananPeminformasi(params);
+    setData(response.data);
+    setTotalRow(response.totalRow);
+    setRowsPerPage(response.rowsPerPage);
+  }, [getAllLayananPeminformasi, page, rowsPerPage]);
+
+  useEffect(() => {
+    if (isReady) {
+      getPeminformasi();
+    }
+  }, [isReady, page, rowsPerPage]);
 
   return (
     <>
-      {rows.length === 0 ?
+      {data.length === 0 ?
         <>
-          <Skeleton variant='rounded' width={210} height={25} className='mb-6' />
-          <TableDataSkeleton headers={headers} />
+          <TableDataEmpty headers={headers}
+            addButton={
+              <Link href='/admins/riwayat-ajuan/Layanan Pembaruan Informasi/tambah'>
+                <ButtonBasic variant='contained'>Tambahkan Data</ButtonBasic>
+              </Link>
+            } />
         </>
         :
-        <TableData headers={headers} columns={columns} rows={rows} status={true} actionOnClick={handleOpen} />
-      }
-      <Modal open={open} onClose={handleClose} BackdropProps={{ onClick: handleBackdropClick }}>
+        <TableData headers={headers} columns={columns} rows={data} status={true} actionOnClick={handleOpen}
+          page={page} limit={rowsPerPage} totalRow={totalRow} changedPage={handleChangePage} changedLimit={handleChangeLimit}
+          addButton={
+            <Link href='/admins/riwayat-ajuan/Layanan Pembaruan Informasi/tambah'>
+              <ButtonBasic variant='contained'>Tambahkan Data</ButtonBasic>
+            </Link>
+          } />
+      }      <Modal open={open} onClose={handleClose}>
         <Fade in={open}>
           <Box className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-md xs:w-[calc(100%-40px)] md:w-[800px]'>
             <Stack direction='row' justifyContent='space-between' className='sticky py-2 px-6 bg-gray-100 rounded-t-md'>
               <Typography id="transition-modal-title" variant="subtitle1" component="h2" className='font-bold'>
-                Manajemen Layanan Peliputan
+                Manajemen Layanan Pembaruan Informasi di Laman UNS
               </Typography>
               <IconButton onClick={handleClose} aria-label='close' size='small' className='hover:text-primary'>
                 <CloseIcon fontSize='small' />
               </IconButton>
             </Stack>
             <Box sx={{ mt: 2 }} className='max-h-[80vh] overflow-y-auto pb-4 px-6'>
-              {rows.filter(item => item.id === currIndex).map(data => {
+              {data.filter(row => row.id === currIndex).map(item => {
                 return (
                   <>
-                    <TextfieldLabel name='id' label='ID Pengajuan' defaultValue={data.id} disabled />
-                    <TextfieldLabel name='judul_permohonan' label='Judul Permohonan' defaultValue={data.judul_permohonan} />
-                    <AutocompleteCustom name='name' label='User Pemohon' data={rows} getOptionLabel={(data) => data.name} defaultValue={rows.find((item: any) => item.name == data.name)} />
-                    {bahanPublikasi == false ? (
-                      <>
-                        <FormLabel className='mb-2 text-sm'>Bahan Publikasi</FormLabel>
-                        <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
-                          <Link href='/' target='_blank'>
-                            <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.bahan_publikasi}</Typography>
-                          </Link>
-                          <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setBahanPublikasi(true)}>Change File</Button>
-                        </Stack>
-                      </>
-                    ) : (
-                      <>
-                        <FileUpload name='bahanPublikasi' label='bahanPublikasi' allowMultiple={false} allowReorder={false} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
-                        <Stack direction='row-reverse' className='-mt-2 mb-4'>
-                          <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setBahanPublikasi(false)}>Cancel</Button>
-                        </Stack>
-                      </>
-                    )}
-                    {suratPermohonan === false ? (
-                      <>
-                        <FormLabel className='mb-2 text-sm'>Surat Permohonan</FormLabel>
-                        <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
-                          <Link href='/' target='_blank'>
-                            <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.surat_permohonan}</Typography>
-                          </Link>
-                          <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setSuratPermohonan(true)}>Change File</Button>
-                        </Stack>
-                      </>
-                    ) : (
-                      <>
-                        <FileUpload name='surat_permohonan' label='Surat Permohonan' allowMultiple={false} allowReorder={false} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
-                        <Stack direction='row-reverse' className='-mt-2 mb-4'>
-                          <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setSuratPermohonan(false)}>Cancel</Button>
-                        </Stack>
-                      </>
-                    )
-                    }
-                    {disposisi == false ? (
-                      <>
-                        <FormLabel className='mb-2 text-sm'>Disposisi</FormLabel>
-                        <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
-                          <Link href='/' target='_blank'>
-                            <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.disposisi}</Typography>
-                          </Link>
-                          <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisi(true)}>Change File</Button>
-                        </Stack>
-                      </>
-                    ) : (
-                      <>
-                        <FileUpload name='disposisi' label='Disposisi' allowMultiple={false} allowReorder={false} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
-                        <Stack direction='row-reverse' className='-mt-2 mb-4'>
-                          <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisi(false)}>Cancel</Button>
-                        </Stack>
-                      </>
-                    )}
+                    <TextfieldLabel label='Judul Permohonan' value={item.judul_permohonan} InputProps={{ readOnly: true }} />
+                    <TextfieldLabel label='User Pemohon' value={item.tb_account.name} InputProps={{ readOnly: true }} maxRows={3} />
+                    <FormLabel className='mb-2 text-sm'>Bahan Publikasi</FormLabel>
+                    <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
+                      {item.bahan_publikasi ? (
+                        <Link href={`${api_file}/${item.bahan_publikasi}`} target='_blank'>
+                          <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{item.bahan_publikasi}</Typography>
+                        </Link>
+                      ) : (
+                        <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                      )}
+                      <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' disabled>Change File</Button>
+                    </Stack>
+                    <FormLabel className='mb-2 text-sm'>Surat Permohonan</FormLabel>
+                    <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
+                      {item.surat_permohonan ? (
+                        <Link href={`${api_file}/${item.surat_permohonan}`} target='_blank'>
+                          <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{item.surat_permohonan}</Typography>
+                        </Link>
+                      ) : (
+                        <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                      )}
+                      <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' disabled>Change File</Button>
+                    </Stack>
+                    <FormLabel className='mb-2 text-sm'>Disposisi</FormLabel>
+                    <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
+                      {item.disposisi ? (
+                        <Link href={`${api_file}/${item.disposisi}`} target='_blank'>
+                          <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{item.disposisi}</Typography>
+                        </Link>
+                      ) : (
+                        <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                      )}
+                      <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' disabled>Change File</Button>
+                    </Stack>
+                    <TextfieldLabel label={'Luaran Layanan'} value={item.luaran_layanan} multiline maxRows={8} InputProps={{ readOnly: true }} />
+                    <Stack direction='row' spacing={1} className='mb-2 mt-6' justifyContent='space-between' alignItems={'center'}>
+                      <Stack direction={'row'} spacing={1}>
+                        <Typography variant='subtitle2' className='font-bold'>Status</Typography>
+                        {
+                          item.status === 'Pending' ? <Chip label={item.status} size='small' className='bg-pending text-white text-xs' />
+                            : item.status === 'Approved & On Progress' ? <Chip label={item.status} size='small' className='bg-primary text-white text-xs' />
+                              : item.status === 'Completed' ? <Chip label={item.status} size='small' className='bg-complete text-white text-xs' />
+                                : item.status === 'Rejected' ? <Chip label={item.status} size='small' className='bg-error text-white text-xs' />
+                                  : undefined
+                        }
+                      </Stack>
+                      <Typography variant='caption' className='italic' marginTop={-4}>Diajukan pada {dateStringFormatter(item.createdAt)} - {timeFormatter(item.createdAt)} WIB</Typography>
+                    </Stack>
                   </>
                 );
               })}
-              <Stack direction='row' justifyContent='flex-end' spacing={1} marginBottom={1} marginTop={4}>
-                <ButtonIcon variant='outlined' color='error' icon={<DeleteIcon className='-mr-1' />}>Hapus</ButtonIcon>
-                <ButtonIcon variant='contained' icon={<CancelIcon className='-mr-1' />} onClick={handleClose}>Tutup</ButtonIcon>
-                <ButtonIcon variant='contained' color='success' icon={<SaveIcon className='-mr-1' />}>Simpan</ButtonIcon>
-              </Stack>
             </Box>
+            <Stack direction='row' justifyContent='flex-end' spacing={1} margin={2} marginBottom={1}>
+              <ButtonIcon variant='contained' icon={<CancelIcon className='-mr-1' />} onClick={handleClose}>Tutup</ButtonIcon>
+              <ButtonIcon variant='outlined' icon={<ArrowForwardIcon className='-mr-1' />} onClick={() => push(`/admins/riwayat-ajuan/Layanan Pembaruan Informasi/${currIndex}`)}>Lihat Ajuan</ButtonIcon>
+            </Stack>
           </Box>
         </Fade>
       </Modal>

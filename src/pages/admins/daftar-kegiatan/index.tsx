@@ -9,6 +9,7 @@ import TimePickerBasic from '@/common/components/atoms/TimePickerBasic';
 import TitlePage from '@/common/components/atoms/TitlePage';
 import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
 import TableData from '@/common/components/molecules/TableData';
+import TableDataEmpty from '@/common/components/molecules/TableDataSkeleton/TableDataEmpty';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import { dateFormatter, dateISOFormatter, dateStringFormatter, timeISOFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
 import { formDataFormatter } from '@/common/utils/formDataFormatter';
@@ -154,13 +155,19 @@ export default function DaftarKegiatan() {
                     </Link>
                 </HeaderBreadcrumbs>
                 <Paper className='shadow-md px-6 py-4'>
-                    <TableData headers={tableHeaders} columns={tableColumns} rows={data} status={false} actionOnClick={handleOpen}
-                        page={page} limit={rowsPerPage} totalRow={totalRow} changedPage={handleChangePage} changedLimit={handleChangeLimit}
-                        addButton={
-                            <Link href='/admins/daftar-kegiatan/tambah'>
-                                <ButtonBasic variant='contained'>Tambahkan Kegiatan</ButtonBasic>
-                            </Link>
-                        } />
+                    {data.length === 0 ? (
+                        <TableDataEmpty headers={tableHeaders} />
+                    ) : (
+                        <>
+                            <TableData headers={tableHeaders} columns={tableColumns} rows={data} status={false} actionOnClick={handleOpen}
+                                page={page} limit={rowsPerPage} totalRow={totalRow} changedPage={handleChangePage} changedLimit={handleChangeLimit}
+                                addButton={
+                                    <Link href='/admins/daftar-kegiatan/tambah'>
+                                        <ButtonBasic variant='contained'>Tambahkan Kegiatan</ButtonBasic>
+                                    </Link>
+                                } />
+                        </>
+                    )}
                     <Modal open={open} onClose={handleClose}>
                         <Fade in={open}>
                             <Box className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-md xs:w-[calc(100%-40px)] md:w-[600px]'>

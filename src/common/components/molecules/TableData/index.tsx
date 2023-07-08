@@ -106,10 +106,23 @@ export default function TableData(props: TTableDataProps) {
                                             return (
                                                 <TableCell key={column.id}>
                                                     <Typography variant='body2' className='xs:line-clamp-4 md:line-clamp-3'>
-                                                        {column.source ? row[column.source][column.label]
-                                                            : column.label == 'tgl_kegiatan' && row[column.label] ? dateFormatter(row[column.label])
-                                                                : column.label == 'waktu_kegiatan' && row[column.label] ? timeStrictFormatter(row[column.label])
-                                                                    : row[column.label]}
+                                                        {column.uppersource && row[column.uppersource] && column.source && row[column.uppersource][column.source] && row[column.uppersource][column.source][column.label]
+                                                            ? column.label === 'tgl_kegiatan'
+                                                                ? dateFormatter(row[column.uppersource][column.source][column.label])
+                                                                : column.label === 'waktu_kegiatan'
+                                                                    ? timeStrictFormatter(row[column.uppersource][column.source][column.label])
+                                                                    : row[column.uppersource][column.source][column.label]
+                                                            : column.source && row[column.source] && row[column.source][column.label]
+                                                                ? column.label === 'tgl_kegiatan'
+                                                                    ? dateFormatter(row[column.source][column.label])
+                                                                    : column.label === 'waktu_kegiatan'
+                                                                        ? timeStrictFormatter(row[column.source][column.label])
+                                                                        : row[column.source][column.label]
+                                                                : column.label === 'tgl_kegiatan' && row[column.label] !== null
+                                                                    ? dateFormatter(row[column.label])
+                                                                    : column.label === 'waktu_kegiatan' && row[column.label] !== null
+                                                                        ? timeStrictFormatter(row[column.label])
+                                                                        : row[column.label]}
                                                     </Typography>
                                                 </TableCell>
                                             );
@@ -136,7 +149,7 @@ export default function TableData(props: TTableDataProps) {
                                         )}
                                         {statusPublikasi === false ? null : (
                                             <TableCell align='center'>{
-                                                row.arsip[0].status_publikasi === 'selesai' ? <Chip label={row.arsip[0].status_publikasi} size='small' className='bg-complete text-white text-xs capitalize' />
+                                                row.arsip[0].status_publikasi === 'Selesai' ? <Chip label={row.arsip[0].status_publikasi} size='small' className='bg-complete text-white text-xs capitalize' />
                                                     : row.arsip[0].status_publikasi === 'ID' ? <Chip label={row.arsip[0].status_publikasi} size='small' className='bg-primary text-white text-xs capitalize' />
                                                         : row.arsip[0].status_publikasi === 'EN' ? <Chip label={row.arsip[0].status_publikasi} size='small' className='bg-violet-400 text-white text-xs capitalize' /> : <Chip label='Pending' size='small' className='bg-pending text-white text-xs capitalize' />
                                             }</TableCell>
