@@ -13,8 +13,8 @@ import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
-import ButtonBasic from '../../atoms/ButtonBasic';
-import TableDataEmpty from '../../molecules/TableDataSkeleton/TableDataEmpty';
+import ButtonBasic from '@/common/components/atoms/ButtonBasic';
+import TableDataEmpty from '@/common/components/molecules/TableDataSkeleton/TableDataEmpty';
 import Image from 'next/image';
 
 export default function TableManajemenLiveStreaming() {
