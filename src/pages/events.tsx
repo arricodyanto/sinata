@@ -74,9 +74,9 @@ export default function Events() {
             {agenda.map(item => {
               return (
                 <Grid item key={item.id} xs={12} md={4}>
-                  <EventCardV2 image={`${api_image}/${item.leaflet_kegiatan}`} visibility={item.tb_kegiatan.sifat_kegiatan}
+                  <EventCardV2 id={item.id} image={`${api_image}/${item.leaflet_kegiatan}`} visibility={item.tb_kegiatan.sifat_kegiatan}
                     publisher={item.tb_kegiatan.tb_account.name} avatar={item.tb_kegiatan.tb_account.img_profil} title={item.tb_kegiatan.judul_kegiatan} description={item.caption}
-                    date={dateStringFormatter(item.tb_kegiatan.tgl_kegiatan)} time={timeStrictFormatter(item.tb_kegiatan.waktu_kegiatan)} location={item.tb_kegiatan.tempat_kegiatan} link={`/agenda/${item.id}`} />
+                    date={dateStringFormatter(item.tb_kegiatan.tgl_kegiatan)} time={timeStrictFormatter(item.tb_kegiatan.waktu_kegiatan)} location={item.tb_kegiatan.tempat_kegiatan} />
                 </Grid>
               );
             })}
