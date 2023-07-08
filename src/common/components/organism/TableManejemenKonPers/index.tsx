@@ -1,28 +1,21 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Box, Button, Chip, Fade, FormControl, FormLabel, IconButton, MenuItem, Modal, Skeleton, Stack, Typography } from '@mui/material';
-import TableDataSkeleton from '@/common/components/molecules/TableDataSkeleton/TableDataSkeleton';
-import TableData from '@/common/components/molecules/TableData';
-import CloseIcon from '@mui/icons-material/Close';
-import data1 from '@/json/tb_laykonpers.json';
-import data2 from '@/json/tb_account.json';
-import dayjs from 'dayjs';
-import Link from 'next/link';
-import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
-import AutocompleteCustom from '@/common/components/atoms/AutocompleteCustom';
-import TimePickerBasic from '@/common/components/atoms/TimePickerBasic';
-import DatePickerBasic from '@/common/components/atoms/DatePickerBasic';
-import SelectLabel from '@/common/components/atoms/SelectLabel';
-import FileUpload from '@/common/components/atoms/FileUpload';
 import ButtonIcon from '@/common/components/atoms/ButtonIcon';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Cancel';
-import TableDataEmpty from '../../molecules/TableDataSkeleton/TableDataEmpty';
-import { getAllLayananKonpers } from '@/services/layanan-konpers';
-import { useRouter } from 'next/router';
+import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
+import TimePickerBasic from '@/common/components/atoms/TimePickerBasic';
+import TableData from '@/common/components/molecules/TableData';
 import { dateFormatter, dateStringFormatter, timeFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
-import DateFieldBasic from '../../atoms/DateFieldBasic';
+import { getAllLayananKonpers } from '@/services/layanan-konpers';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import CancelIcon from '@mui/icons-material/Cancel';
+import CloseIcon from '@mui/icons-material/Close';
+import { Box, Button, Chip, Fade, FormControl, FormLabel, IconButton, Modal, Stack, Typography } from '@mui/material';
+import dayjs from 'dayjs';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useState } from 'react';
+import ButtonBasic from '@/common/components/atoms/ButtonBasic';
+import DateFieldBasic from '@/common/components/atoms/DateFieldBasic';
+import TableDataEmpty from '@/common/components/molecules/TableDataSkeleton/TableDataEmpty';
 
 export default function TableManajemenKonPers() {
   const { isReady, push } = useRouter();
@@ -41,7 +34,6 @@ export default function TableManajemenKonPers() {
 
   const api_file = process.env.NEXT_PUBLIC_API_IMG;
 
-  // Modal state
   const [open, setOpen] = React.useState(false);
   const [currIndex, setCurrIndex] = React.useState(0);
   const [data, setData] = useState<Array<any>>([]);
@@ -51,10 +43,6 @@ export default function TableManajemenKonPers() {
     setCurrIndex(id);
   };
   const handleClose = () => setOpen(false);
-
-  // Editable File Input
-  const [suratPermohonan, setSuratPermohonan] = React.useState(false);
-  const [disposisi, setDisposisi] = React.useState(false);
 
   const [page, setPage] = useState<number>(0);
   const [totalRow, setTotalRow] = useState<number>(0);
@@ -86,11 +74,21 @@ export default function TableManajemenKonPers() {
     <>
       {data.length === 0 ?
         <>
-          <TableDataEmpty headers={headers} />
+          <TableDataEmpty headers={headers}
+            addButton={
+              <Link href='/admins/riwayat-ajuan/Layanan Konferensi Pers/tambah'>
+                <ButtonBasic variant='contained'>Tambahkan Data</ButtonBasic>
+              </Link>
+            } />
         </>
         :
         <TableData headers={headers} columns={columns} rows={data} status={true} actionOnClick={handleOpen}
-          page={page} limit={rowsPerPage} totalRow={totalRow} changedPage={handleChangePage} changedLimit={handleChangeLimit} />
+          page={page} limit={rowsPerPage} totalRow={totalRow} changedPage={handleChangePage} changedLimit={handleChangeLimit}
+          addButton={
+            <Link href='/admins/riwayat-ajuan/Layanan Konferensi Pers/tambah'>
+              <ButtonBasic variant='contained'>Tambahkan Data</ButtonBasic>
+            </Link>
+          } />
       }
       <Modal open={open} onClose={handleClose}>
         <Fade in={open}>
@@ -173,12 +171,11 @@ export default function TableManajemenKonPers() {
                   </>
                 );
               })}
-              <Stack direction='row' justifyContent='flex-end' spacing={1} marginBottom={1} marginTop={4}>
-                <ButtonIcon variant='outlined' color='error' icon={<DeleteIcon className='-mr-1' />}>Hapus</ButtonIcon>
-                <ButtonIcon variant='contained' icon={<CancelIcon className='-mr-1' />} onClick={handleClose}>Tutup</ButtonIcon>
-                <ButtonIcon variant='contained' color='success' icon={<SaveIcon className='-mr-1' />}>Simpan</ButtonIcon>
-              </Stack>
             </Box>
+            <Stack direction='row' justifyContent='flex-end' spacing={1} margin={2} marginBottom={1}>
+              <ButtonIcon variant='contained' icon={<CancelIcon className='-mr-1' />} onClick={handleClose}>Tutup</ButtonIcon>
+              <ButtonIcon variant='outlined' icon={<ArrowForwardIcon className='-mr-1' />} onClick={() => push(`/admins/riwayat-ajuan/Layanan Konferensi Pers/${currIndex}`)}>Lihat Ajuan</ButtonIcon>
+            </Stack>
           </Box>
         </Fade>
       </Modal>

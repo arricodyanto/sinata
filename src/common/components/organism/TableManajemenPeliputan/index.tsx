@@ -12,14 +12,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
-import DateFieldBasic from '../../atoms/DateFieldBasic';
-import TextfieldLabel from '../../atoms/TextfieldLabel';
-import TimePickerBasic from '../../atoms/TimePickerBasic';
+import DateFieldBasic from '@/common/components/atoms/DateFieldBasic';
+import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
+import TimePickerBasic from '@/common/components/atoms/TimePickerBasic';
+import ButtonBasic from '@/common/components/atoms/ButtonBasic';
 
 export default function TableManajemenPeliputan() {
     const { isReady, push } = useRouter();
 
-    // Table Data
     const headers = [
         'Judul Kegiatan', 'User Pemohon', 'Tanggal Kegiatan', 'Waktu', 'Tempat', 'Disposisi', 'Aksi', 'Status'
     ];
@@ -34,7 +34,6 @@ export default function TableManajemenPeliputan() {
 
     const api_file = process.env.NEXT_PUBLIC_API_IMG;
 
-    // Modal state
     const [open, setOpen] = useState(false);
     const [currIndex, setCurrIndex] = useState(0);
     const [data, setData] = useState<Array<any>>([]);
@@ -74,11 +73,21 @@ export default function TableManajemenPeliputan() {
         <>
             {data.length === 0 ?
                 <>
-                    <TableDataEmpty headers={headers} />
+                    <TableDataEmpty headers={headers}
+                        addButton={
+                            <Link href='/admins/riwayat-ajuan/Layanan Peliputan/tambah'>
+                                <ButtonBasic variant='contained'>Tambahkan Data</ButtonBasic>
+                            </Link>
+                        } />
                 </>
                 :
                 <TableData headers={headers} columns={columns} rows={data} status={true} actionOnClick={handleOpen}
-                    page={page} limit={rowsPerPage} totalRow={totalRow} changedPage={handleChangePage} changedLimit={handleChangeLimit} />
+                    page={page} limit={rowsPerPage} totalRow={totalRow} changedPage={handleChangePage} changedLimit={handleChangeLimit}
+                    addButton={
+                        <Link href='/admins/riwayat-ajuan/Layanan Peliputan/tambah'>
+                            <ButtonBasic variant='contained'>Tambahkan Data</ButtonBasic>
+                        </Link>
+                    } />
             }
             <Modal open={open} onClose={handleClose}>
                 <Fade in={open}>
