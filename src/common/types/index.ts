@@ -37,3 +37,8 @@ export type TTambahKegiatanFormProps = {
   onSave: (form: any) => void;
   admin?: Boolean;
 };
+
+export type TTambahAkunFormProps = {
+  onSave: (form: object) => void;
+  isLoading?: boolean;
+};

@@ -1,15 +1,15 @@
+import TextfieldIcon from '@/common/components/atoms/TextfieldIcon';
+import TextfieldPass from '@/common/components/atoms/TextfieldPass';
+import { delay } from '@/common/utils/delay.util';
+import { setSignUp } from '@/services/auth';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import EmailIcon from '@mui/icons-material/Email';
 import KeyIcon from '@mui/icons-material/Key';
 import { Box, Button, Checkbox, FormControlLabel, Typography } from '@mui/material';
-import React, { useState } from 'react';
-import TextfieldIcon from '@/common/components/atoms/TextfieldIcon';
-import TextfieldPass from '@/common/components/atoms/TextfieldPass';
-import { toast } from 'react-toastify';
-import { setSignUp } from '@/services/auth';
-import { delay } from '@/common/utils/delay.util';
 import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function SignUpForm() {
   const router = useRouter();
