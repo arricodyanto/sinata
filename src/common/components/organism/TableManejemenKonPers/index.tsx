@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Button, Fade, FormControl, FormLabel, IconButton, MenuItem, Modal, Skeleton, Stack, Typography } from '@mui/material';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Box, Button, Chip, Fade, FormControl, FormLabel, IconButton, MenuItem, Modal, Skeleton, Stack, Typography } from '@mui/material';
 import TableDataSkeleton from '@/common/components/molecules/TableDataSkeleton/TableDataSkeleton';
 import TableData from '@/common/components/molecules/TableData';
 import CloseIcon from '@mui/icons-material/Close';
@@ -17,41 +17,38 @@ import ButtonIcon from '@/common/components/atoms/ButtonIcon';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
+import TableDataEmpty from '../../molecules/TableDataSkeleton/TableDataEmpty';
+import { getAllLayananKonpers } from '@/services/layanan-konpers';
+import { useRouter } from 'next/router';
+import { dateFormatter, dateStringFormatter, timeFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
+import DateFieldBasic from '../../atoms/DateFieldBasic';
+import Image from 'next/image';
 
 export default function TableManajemenKonPers() {
+  const { isReady, push } = useRouter();
   const headers = [
-    'ID', 'Judul Kegiatan', 'User Pemohon', 'Tanggal Kegiatan', 'Waktu', 'Tempat', 'Surat Permohonan', 'Disposisi', 'Aksi', 'Status'
+    'Judul Kegiatan', 'User Pemohon', 'Tanggal Kegiatan', 'Waktu', 'Tempat', 'Surat Permohonan', 'Disposisi', 'Aksi', 'Status'
   ];
   const columns = [
-    { id: 1, label: 'id' },
-    { id: 2, label: 'judul_kegiatan' },
-    { id: 3, label: 'name' },
-    { id: 4, label: 'tgl_kegiatan' },
-    { id: 5, label: 'waktu_kegiatan' },
-    { id: 6, label: 'tempat_kegiatan' },
-    { id: 7, label: 'surat_permohonan' },
-    { id: 8, label: 'disposisi' },
+    { id: 1, label: 'judul_kegiatan', source: 'tb_kegiatan' },
+    { id: 2, label: 'name', source: 'tb_account', uppersource: 'tb_kegiatan' },
+    { id: 3, label: 'tgl_kegiatan', source: 'tb_kegiatan' },
+    { id: 4, label: 'waktu_kegiatan', source: 'tb_kegiatan' },
+    { id: 5, label: 'tempat_kegiatan', source: 'tb_kegiatan' },
+    { id: 6, label: 'surat_permohonan' },
+    { id: 7, label: 'disposisi' },
   ];
 
-  // Fetch data from local json
-  const combinedData = data1.map((obj1: any) => {
-    const match = data2.find((obj2: any) => obj1.id_account === obj2.id);
-    return { ...obj1, ...match };
-  });
-
-  const [data, setData] = React.useState(combinedData);
-
-  const rows = data.slice().reverse().map((row: any) => row);
+  const api_file = process.env.NEXT_PUBLIC_API_IMG;
 
   // Modal state
   const [open, setOpen] = React.useState(false);
   const [currIndex, setCurrIndex] = React.useState(0);
+  const [data, setData] = useState<Array<any>>([]);
+
   const handleOpen = (id: number) => {
     setOpen(true);
     setCurrIndex(id);
-  };
-  const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation();
   };
   const handleClose = () => setOpen(false);
 
@@ -59,94 +56,120 @@ export default function TableManajemenKonPers() {
   const [suratPermohonan, setSuratPermohonan] = React.useState(false);
   const [disposisi, setDisposisi] = React.useState(false);
 
+  const [page, setPage] = useState<number>(0);
+  const [totalRow, setTotalRow] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+
+  const handleChangePage = (newPage: number) => {
+    setPage(newPage + 1);
+  };
+
+  const handleChangeLimit = (limit: number) => {
+    setRowsPerPage(limit);
+  };
+
+  const getKonpers = useCallback(async () => {
+    const params = `limit=${rowsPerPage}&page=${page}`;
+    const response = await getAllLayananKonpers(params);
+    setData(response.data);
+    setTotalRow(response.totalRow);
+    setRowsPerPage(response.rowsPerPage);
+  }, [getAllLayananKonpers, page, rowsPerPage]);
+
+  useEffect(() => {
+    if (isReady) {
+      getKonpers();
+    }
+  }, [isReady, page, rowsPerPage]);
+
   return (
     <>
-      {rows.length === 0 ?
+      {data.length === 0 ?
         <>
-          <Skeleton variant='rounded' width={210} height={25} className='mb-6' />
-          <TableDataSkeleton headers={headers} />
+          <TableDataEmpty headers={headers} />
         </>
         :
-        <TableData headers={headers} columns={columns} rows={rows} status={true} actionOnClick={handleOpen} />
+        <TableData headers={headers} columns={columns} rows={data} status={true} actionOnClick={handleOpen}
+          page={page} limit={rowsPerPage} totalRow={totalRow} changedPage={handleChangePage} changedLimit={handleChangeLimit} />
       }
-      <Modal open={open} onClose={handleClose} BackdropProps={{ onClick: handleBackdropClick }}>
+      <Modal open={open} onClose={handleClose}>
         <Fade in={open}>
           <Box className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-md xs:w-[calc(100%-40px)] md:w-[800px]'>
             <Stack direction='row' justifyContent='space-between' className='sticky py-2 px-6 bg-gray-100 rounded-t-md'>
               <Typography id="transition-modal-title" variant="subtitle1" component="h2" className='font-bold'>
-                Manajemen Layanan Peliputan
+                Manajemen Layanan Konferensi Pers
               </Typography>
               <IconButton onClick={handleClose} aria-label='close' size='small' className='hover:text-primary'>
                 <CloseIcon fontSize='small' />
               </IconButton>
             </Stack>
             <Box sx={{ mt: 2 }} className='max-h-[80vh] overflow-y-auto pb-4 px-6'>
-              {rows.filter(item => item.id === currIndex).map(data => {
+              {data.filter(row => row.id === currIndex).map(item => {
                 return (
                   <>
-                    <TextfieldLabel name='id' label='ID Pengajuan' defaultValue={data.id} disabled />
-                    <TextfieldLabel name='judul_kegiatan' label='Judul Konferensi Pers' defaultValue={data.judul_kegiatan} />
-                    <AutocompleteCustom name='name' label='User Pemohon' data={rows} getOptionLabel={(data) => data.name} defaultValue={rows.find((item: any) => item.name == data.name)} />
+                    <TextfieldLabel label='Judul Kegiatan' defaultValue={item.judul_kegiatan} InputProps={{ readOnly: true }} />
+                    <TextfieldLabel label='User Pemohon' defaultValue={item.tb_account.name} InputProps={{ readOnly: true }} maxRows={3} />
                     <Stack direction='row' spacing={1} className='mb-6'>
                       <FormControl className='w-full'>
                         <FormLabel className='mb-1 text-sm'>
                           Tanggal Kegiatan
                         </FormLabel>
-                        <DatePickerBasic defaultValue={dayjs(data.tgl_kegiatan, 'DD/MM/YYYY')} />
+                        <DateFieldBasic name='tgl_kegiatan' value={dayjs(dateFormatter(item.tgl_kegiatan), 'DD/MM/YYYY')} readOnly />
                       </FormControl>
                       <FormControl className='w-full'>
                         <FormLabel className='mb-1 text-sm'>
                           Waktu Kegiatan
                         </FormLabel>
-                        <TimePickerBasic defaultValue={dayjs(data.tgl_kegiatan + ' ' + data.waktu_kegiatan, 'DD/MM/YYYY hh:mm')} />
+                        <TimePickerBasic value={dayjs(dateFormatter(item.tgl_kegiatan) + ' ' + timeStrictFormatter(item.waktu_kegiatan), 'DD/MM/YYYY hh:mm')} readOnly />
                       </FormControl>
                     </Stack>
-                    <Stack direction='row' spacing={1}>
-                      <TextfieldLabel name='tempat_kegiatan' label='Tempat Kegiatan' defaultValue={data.tempat_kegiatan} />
-                      <SelectLabel name='status' label='Status' defaultValue={data.status}>
-                        <MenuItem value='pending'>Pending</MenuItem>
-                        <MenuItem value='approved & on progress'>Approved & On Progress</MenuItem>
-                        <MenuItem value='complete'>Complete</MenuItem>
-                        <MenuItem value='rejected'>Rejected</MenuItem>
-                      </SelectLabel>
+                    <TextfieldLabel name='tempat_kegiatan' label='Tempat Kegiatan' value={item.tempat_kegiatan} InputProps={{ readOnly: true }} />
+                    <FormLabel className='mb-2 text-sm'>Surat Permohonan</FormLabel>
+                    <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
+                      {item.surat_permohonan ? (
+                        <Link href={`${api_file}/${item.surat_permohonan}`} target='_blank'>
+                          <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{item.surat_permohonan}</Typography>
+                        </Link>
+                      ) : (
+                        <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                      )}
+                      <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' disabled>Change File</Button>
                     </Stack>
-                    {suratPermohonan === false ? (
-                      <>
-                        <FormLabel className='mb-2 text-sm'>Surat Permohonan</FormLabel>
-                        <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
-                          <Link href='/' target='_blank'>
-                            <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.surat_permohonan}</Typography>
-                          </Link>
-                          <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setSuratPermohonan(true)}>Change File</Button>
-                        </Stack>
-                      </>
-                    ) : (
-                      <>
-                        <FileUpload name='surat_permohonan' label='Surat Permohonan' allowMultiple={false} allowReorder={false} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
-                        <Stack direction='row-reverse' className='-mt-2 mb-4'>
-                          <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setSuratPermohonan(false)}>Cancel</Button>
-                        </Stack>
-                      </>
-                    )
-                    }
-                    {disposisi == false ? (
-                      <>
-                        <FormLabel className='mb-2 text-sm'>Disposisi</FormLabel>
-                        <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
-                          <Link href='/' target='_blank'>
-                            <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.disposisi}</Typography>
-                          </Link>
-                          <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisi(true)}>Change File</Button>
-                        </Stack>
-                      </>
-                    ) : (
-                      <>
-                        <FileUpload name='disposisi' label='Disposisi' allowMultiple={false} allowReorder={false} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
-                        <Stack direction='row-reverse' className='-mt-2 mb-4'>
-                          <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisi(false)}>Cancel</Button>
-                        </Stack>
-                      </>
-                    )}
+                    <FormLabel className='mb-2 text-sm'>Leaflet Kegiatan</FormLabel>
+                    <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems='flex-start' className='mb-4'>
+                      {item.leaflet_kegiatan ? (
+                        <Link href={`${api_file}/${item.leaflet_kegiatan}`} target='blank' className='w-[20rem] mt-2'>
+                          <Image src={`${api_file}/${item.leaflet_kegiatan}`} alt={`${item.judul_kegiatan}`} quality={80} layout='responsive' width={20} height={20} className='rounded-lg' />
+                        </Link>
+                      ) : (
+                        <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                      )}
+                      <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3 mt-2' disabled>Change File</Button>
+                    </Stack>
+                    <FormLabel className='mb-2 text-sm'>Disposisi</FormLabel>
+                    <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
+                      {item.disposisi ? (
+                        <Link href={`${api_file}/${item.disposisi}`} target='_blank'>
+                          <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{item.disposisi}</Typography>
+                        </Link>
+                      ) : (
+                        <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                      )}
+                      <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' disabled>Change File</Button>
+                    </Stack>
+                    <Stack direction='row' spacing={1} className='mb-2 mt-6' justifyContent='space-between' alignItems={'center'}>
+                      <Stack direction={'row'} spacing={1}>
+                        <Typography variant='subtitle2' className='font-bold'>Status</Typography>
+                        {
+                          item.status === 'Pending' ? <Chip label={item.status} size='small' className='bg-pending text-white text-xs' />
+                            : item.status === 'Approved & On Progress' ? <Chip label={item.status} size='small' className='bg-primary text-white text-xs' />
+                              : item.status === 'Completed' ? <Chip label={item.status} size='small' className='bg-complete text-white text-xs' />
+                                : item.status === 'Rejected' ? <Chip label={item.status} size='small' className='bg-error text-white text-xs' />
+                                  : undefined
+                        }
+                      </Stack>
+                      <Typography variant='caption' className='italic' marginTop={-4}>Diajukan pada {dateStringFormatter(item.createdAt)} - {timeFormatter(item.createdAt)} WIB</Typography>
+                    </Stack>
                   </>
                 );
               })}

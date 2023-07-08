@@ -95,13 +95,13 @@ export default function TableManajemenPeliputan() {
                             {data.filter((row: any) => row.id === currIndex).map((item: any) => {
                                 return (
                                     <>
-                                        <TextfieldLabel label='Judul Kegiatan' defaultValue={item.tb_kegiatan.judul_kegiatan} InputProps={{ readOnly: true }} />
+                                        <TextfieldLabel label='Judul Kegiatan' value={item.tb_kegiatan.judul_kegiatan} InputProps={{ readOnly: true }} />
                                         <TextfieldLabel label='Deskripsi Kegiatan' value={item.tb_kegiatan.des_kegiatan} multiline rows={3} InputProps={{ readOnly: true }} />
                                         <Stack direction={'row'} spacing={1}>
-                                            <TextfieldLabel label='Sifat Kegiatan' value={item.tb_kegiatan.sifat_kegiatan} />
-                                            <TextfieldLabel label='User Pemohon' defaultValue={item.tb_kegiatan.tb_account.name} InputProps={{ readOnly: true }} maxRows={3} />
+                                            <TextfieldLabel label='Sifat Kegiatan' value={item.tb_kegiatan.sifat_kegiatan === 'Terbuka' ? 'Terbuka untuk Umum' : item.tb_kegiatan.sifat_kegiatan} />
+                                            <TextfieldLabel label='User Pemohon' value={item.tb_kegiatan.tb_account.name} InputProps={{ readOnly: true }} maxRows={3} />
                                         </Stack>
-                                        <Stack direction='row' spacing={1} className='mb-6'>
+                                        <Stack direction='row' spacing={1} className='mb-4'>
                                             <FormControl className='w-full'>
                                                 <FormLabel className='mb-1 text-sm'>
                                                     Tanggal Kegiatan
@@ -116,15 +116,17 @@ export default function TableManajemenPeliputan() {
                                             </FormControl>
                                         </Stack>
                                         <TextfieldLabel name='tempat_kegiatan' label='Tempat Kegiatan' value={item.tb_kegiatan.tempat_kegiatan} InputProps={{ readOnly: true }} />
-                                        <FormControl className='w-full'>
-                                            <FormLabel className='mb-2 text-sm'>Surat Permohonan</FormLabel>
-                                            <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
-                                                <Link href='/' target='_blank'>
+                                        <FormLabel className='mb-2 text-sm'>Surat Permohonan</FormLabel>
+                                        <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
+                                            {item.tb_kegiatan.surat_permohonan ? (
+                                                <Link href={`${api_file}/${item.tb_kegiatan.surat_permohonan}`} target='_blank'>
                                                     <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{item.tb_kegiatan.surat_permohonan}</Typography>
                                                 </Link>
-                                                <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' disabled>Change File</Button>
-                                            </Stack>
-                                        </FormControl>
+                                            ) : (
+                                                <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                                            )}
+                                            <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' disabled>Change File</Button>
+                                        </Stack>
                                         <FormLabel className='mb-2 text-sm'>Leaflet Kegiatan</FormLabel>
                                         <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems='flex-start' className='mb-4'>
                                             {item.leaflet_kegiatan ? (
@@ -158,7 +160,7 @@ export default function TableManajemenPeliputan() {
                                                                     : undefined
                                                 }
                                             </Stack>
-                                            <Typography variant='caption' className='italic' marginTop={-4}>Diajuka pada {dateStringFormatter(item.createdAt)} - {timeFormatter(item.createdAt)} WIB</Typography>
+                                            <Typography variant='caption' className='italic' marginTop={-4}>Diajukan pada {dateStringFormatter(item.createdAt)} - {timeFormatter(item.createdAt)} WIB</Typography>
                                         </Stack>
                                     </>
                                 );

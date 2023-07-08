@@ -6,7 +6,7 @@ const URL = 'publikasi-agenda';
 
 export async function getAllLayananPublikasiAgenda(params?: string) {
   const URLparams = params || '';
-  const url = `${HOST}/${VERSION}/${URL}/lihat/?${URLparams}`;
+  const url = `${HOST}/${VERSION}/${URL}/lihat?${URLparams}`;
   return callAPI({
     url,
     method: 'GET',

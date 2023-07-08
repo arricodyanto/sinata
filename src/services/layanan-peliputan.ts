@@ -4,7 +4,7 @@ const HOST = process.env.NEXT_PUBLIC_API_HOST;
 const VERSION = process.env.NEXT_PUBLIC_API_VERSION;
 const URL = 'peliputan';
 
-export async function getAllLayananPeliputan(params: string) {
+export async function getAllLayananPeliputan(params?: string) {
   const URLparams = params || '';
   const url = `${HOST}/${VERSION}/${URL}/lihat?${URLparams}`;
   return callAPI({
