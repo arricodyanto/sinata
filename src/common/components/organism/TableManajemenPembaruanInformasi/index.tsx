@@ -1,5 +1,9 @@
+import ButtonBasic from '@/common/components/atoms/ButtonBasic';
 import ButtonIcon from '@/common/components/atoms/ButtonIcon';
+import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
 import TableData from '@/common/components/molecules/TableData';
+import TableDataEmpty from '@/common/components/molecules/TableDataSkeleton/TableDataEmpty';
+import { dateStringFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
 import { getAllLayananPeminformasi } from '@/services/layanan-peminformasi';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -8,10 +12,6 @@ import { Box, Button, Chip, Fade, FormLabel, IconButton, Modal, Stack, Typograph
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
-import ButtonBasic from '../../atoms/ButtonBasic';
-import TextfieldLabel from '../../atoms/TextfieldLabel';
-import TableDataEmpty from '../../molecules/TableDataSkeleton/TableDataEmpty';
-import { dateStringFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
 
 export default function TableManajemenPembaruanInformasi() {
   const { isReady, push } = useRouter();
@@ -84,7 +84,8 @@ export default function TableManajemenPembaruanInformasi() {
               <ButtonBasic variant='contained'>Tambahkan Data</ButtonBasic>
             </Link>
           } />
-      }      <Modal open={open} onClose={handleClose}>
+      }
+      <Modal open={open} onClose={handleClose}>
         <Fade in={open}>
           <Box className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-md xs:w-[calc(100%-40px)] md:w-[800px]'>
             <Stack direction='row' justifyContent='space-between' className='sticky py-2 px-6 bg-gray-100 rounded-t-md'>
