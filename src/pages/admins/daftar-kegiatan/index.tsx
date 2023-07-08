@@ -92,6 +92,7 @@ export default function DaftarKegiatan() {
     const handleCancelEdit = () => {
         setEditable(false);
         setOpen(false);
+        setOpenSimpan(false);
         if (permohonan) {
             setPermohonan(false);
         }

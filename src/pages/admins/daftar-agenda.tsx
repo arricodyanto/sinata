@@ -55,7 +55,12 @@ export default function DaftarAgenda() {
                 <Paper className='shadow-md px-6 py-4'>
                     <Stack direction='row' justifyContent='space-between' alignItems='center' spacing={1} marginTop={1} marginBottom={2}>
                         <Typography variant='h5'>Agenda Terpublikasi</Typography>
-                        <ButtonBasic variant='contained'>Export</ButtonBasic>
+                        <Stack direction={'row'} spacing={1}>
+                            <Link href={'/admins/riwayat-ajuan/Layanan Publikasi Agenda/tambah'}>
+                                <ButtonBasic variant='contained'>Tambah Data</ButtonBasic>
+                            </Link>
+                            <ButtonBasic variant='outlined'>Export</ButtonBasic>
+                        </Stack>
                     </Stack>
                     <Grid container spacing={2}>
                         {data.map(item => {
