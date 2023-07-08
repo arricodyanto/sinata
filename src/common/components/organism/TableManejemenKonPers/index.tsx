@@ -34,7 +34,7 @@ export default function TableManajemenKonPers() {
 
   const api_file = process.env.NEXT_PUBLIC_API_IMG;
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [currIndex, setCurrIndex] = React.useState(0);
   const [data, setData] = useState<Array<any>>([]);
 
