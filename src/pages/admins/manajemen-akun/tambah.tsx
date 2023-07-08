@@ -1,41 +1,48 @@
 import TitlePage from '@/common/components/atoms/TitlePage';
 import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
-import TambahKegiatanForm from '@/common/components/organism/TambahKegiatanForm';
-import { formDataFormatter } from '@/common/utils/formDataFormatter';
+import TambahAkunForm from '@/common/components/organism/TambahAkunForm';
 import { listMenuAdmin } from '@/pages/admins/dashboard';
-import { setOneDataKegiatan } from '@/services/data-kegiatan';
+import { setOneUser } from '@/services/accounts';
 import { Box, Grid, Paper } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-export default function TambahDataKegiatan() {
+export default function TambahDataAkun() {
     const router = useRouter();
-    const emptyForm = [
-        { judul_kegiatan: '' },
-        { des_kegiatan: '' },
-        { tempat_kegiatan: '' },
-    ];
+    const emptyForm = {
+        username: '',
+        name: '',
+        email: '',
+        password: '',
+        no_identitas: '',
+        unit: '',
+        role: 'User',
+        kontak: '',
+    };
+
+    const [isLoading, setIsLoading] = useState(false);
+
     const handleTambah = async (form: any) => {
-        const formattedForm = formDataFormatter(form);
-        const isUser = form.get('id_account') !== null ? true : false;
-        const isEmpty = Array.isArray(formattedForm) && formattedForm.length === 0 || JSON.stringify(formattedForm) === JSON.stringify(emptyForm);
+        const isEmpty = JSON.stringify(form) === JSON.stringify(emptyForm);
 
         if (isEmpty) {
-            toast.error('Tidak ada data yang tambahkan. Mohon masukkan data dengan benar.', {
-                theme: 'colored',
+            toast.warning('Tidak ada yang dimasukkan.', {
+                theme: 'colored'
             });
         }
         if (!isEmpty) {
-            if (formattedForm[0].judul_kegiatan || formattedForm[0].sifat_kegiatan || formattedForm[0].tgl_kegiatan || formattedForm[0].waktu_kegiatan || formattedForm[0].surat_permohonan || formattedForm[0].sik) {
-                if (!isUser) {
-                    toast.error('Error! User tidak ditemukan', {
-                        theme: 'colored',
-                    });
-                } else {
-                    const response = await setOneDataKegiatan(form);
+            if (form.username === '' || form.email === '' || form.password === '') {
+                toast.warning('Harap masukkan username, alamat email, dan kata sandi Anda.', {
+                    theme: 'colored'
+                });
+            } else {
+                try {
+                    setIsLoading(true);
+                    const response = await setOneUser(form);
                     if (response.status > 300) {
                         toast.error(response.message, {
                             theme: 'colored',
@@ -45,29 +52,27 @@ export default function TambahDataKegiatan() {
                         toast.success(response.message, {
                             theme: 'colored'
                         });
-                        router.push('/admins/daftar-kegiatan');
                     }
+                } finally {
+                    setIsLoading(false);
+                    router.push('/admins/manajemen-akun');
                 }
-            } else {
-                toast.error('Harap isi semua data.', {
-                    theme: 'colored',
-                });
             }
         }
     };
     return (
         <Box className='bg-grey'>
-            <TitlePage title='Tambah Data Kegiatan - Sinata - Sinata' />
+            <TitlePage title='Tambah Data Akun - Sinata - Sinata' />
             <DashboardPanel listMenu={listMenuAdmin}>
-                <HeaderBreadcrumbs pageHeader='Tambahkan Data Kegiatan' currentPage='Tambah Data'>
-                    <Link href='/admins/daftar-kegiatan' className='text-zinc-900 hover:underline hover:decoration-1 hover:underline-offset-2'>
-                        Daftar Kegiatan
+                <HeaderBreadcrumbs pageHeader='Tambahkan Data Akun' currentPage='Tambah Data'>
+                    <Link href='/admins/manajemen-akun' className='text-zinc-900 hover:underline hover:decoration-1 hover:underline-offset-2'>
+                        Daftar Akun
                     </Link>
                 </HeaderBreadcrumbs>
                 <Grid container spacing={2}>
                     <Grid item spacing={1} xs={12} md={8}>
                         <Paper className='shadow-md xs:p-4 md:p-6'>
-                            <TambahKegiatanForm onSave={handleTambah} admin={true} />
+                            <TambahAkunForm onSave={handleTambah} isLoading={isLoading} />
                         </Paper>
                     </Grid>
                     <Grid item xs={12} md={4}>

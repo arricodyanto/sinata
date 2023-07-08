@@ -15,3 +15,9 @@ export function formDataFormatter(
 
   return dataArray;
 }
+
+export function mapDataFormatter(data: any) {
+  const mapToArray = Array.from(data, ([key, value]) => ({ key, value }));
+
+  return mapToArray;
+}

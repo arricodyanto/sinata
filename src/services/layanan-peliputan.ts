@@ -28,7 +28,6 @@ export async function deleteOneLayananPeliputan(id: string) {
   return callAPI({
     url,
     method: 'DELETE',
-    data: id,
     token: true,
   });
 }
