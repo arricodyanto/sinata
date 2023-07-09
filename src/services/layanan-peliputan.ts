@@ -23,6 +23,16 @@ export async function getOneLayananPeliputan(id: string) {
   });
 }
 
+export async function setOneLayananPeliputan(data: any) {
+  const url = `${HOST}/${VERSION}/${URL}/tambah`;
+  return callAPI({
+    url,
+    method: 'POST',
+    data,
+    token: true,
+  });
+}
+
 export async function deleteOneLayananPeliputan(id: string) {
   const url = `${HOST}/${VERSION}/${URL}/${id}/delete`;
   return callAPI({
