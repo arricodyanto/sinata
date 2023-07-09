@@ -118,10 +118,9 @@ export default function KonpersForm(props: TFormTambahLayananProps) {
                     <CollapsibleAlert type='info' className='mb-4'>
                         <Typography className='text-dark' variant='body2'>Sebelum menekan tombol <b>Ajukan Layanan</b>, pastikan data yang Anda masukkan sudah benar!</Typography>
                     </CollapsibleAlert>
-                    <ButtonBasic type='submit' variant='contained'>Ajukan Layanan</ButtonBasic>
+                    <ButtonBasic onClick={handleDialogOpen} variant='contained'>Ajukan Layanan</ButtonBasic>
                 </>
-            ) : null}
-            {isAdmin ? (
+            ) : (
                 <>
                     <FileUpload name='disposisi' label='Disposisi' allowMultiple={false} allowReorder={false} onupdatefiles={(fileItems: FilePondFile[]) => {
                         const file = fileItems[0]?.file;
@@ -131,7 +130,7 @@ export default function KonpersForm(props: TFormTambahLayananProps) {
                     }} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
                     <ButtonBasic onClick={handleDialogOpen} variant='contained'>Tambahkan Ajuan</ButtonBasic>
                 </>
-            ) : null}
+            )}
             <DialogConfirmation title='Tambahkan Data' body='Apakah Anda yakin ingin menambahkan data ini? Pastikan semua data telah terisi dengan benar.' open={open} onClose={handleDialogClose}>
                 <Stack direction='row' spacing={1} className='mt-4 px-2 mb-4'>
                     <ButtonBasic variant='contained' onClick={handleDialogClose}>Batal</ButtonBasic>

@@ -84,7 +84,7 @@ export default function LayananOpini(props: TFormEditLayananProps) {
                 toast.success(response.message, {
                     theme: 'colored'
                 });
-                window.location.reload();
+                push('/admins/layanan-publikasi');
             }
         }
         setOpenSimpan(false);
@@ -123,7 +123,7 @@ export default function LayananOpini(props: TFormEditLayananProps) {
         toast.success('Data berhasil dihapus.', {
             theme: 'colored'
         });
-        push('/admins/semua-ajuan');
+        push('/admins/layanan-publikasi');
     };
 
     if (!rows) {
@@ -142,9 +142,13 @@ export default function LayananOpini(props: TFormEditLayananProps) {
                             <>
                                 <FormLabel className='mb-2 text-sm'>Surat Permohonan</FormLabel>
                                 <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
-                                    <Link href={`${api_file}/${data.surat_permohonan}`} target='_blank'>
-                                        <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.surat_permohonan}</Typography>
-                                    </Link>
+                                    {data.surat_permohonan ? (
+                                        <Link href={`${api_file}/${data.surat_permohonan}`} target='_blank'>
+                                            <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.surat_permohonan}</Typography>
+                                        </Link>
+                                    ) : (
+                                        <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                                    )}
                                     <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' disabled={!editable} onClick={() => setSuratPermohonan(true)}>Change File</Button>
                                 </Stack>
                             </>
@@ -204,7 +208,7 @@ export default function LayananOpini(props: TFormEditLayananProps) {
                             </>
                         ) : (
                             <>
-                                <FileUpload name='bahanPublikasi' label='bahanPublikasi' allowMultiple={false} allowReorder={false} onupdatefiles={(fileItems) => {
+                                <FileUpload name='bahan_publikasi' label='Bahan Publikasi' allowMultiple={false} allowReorder={false} onupdatefiles={(fileItems) => {
                                     const file = fileItems[0]?.file;
                                     if (file) {
                                         form.set('bahan_publikasi', file);

@@ -106,7 +106,6 @@ export default function TableManajemenOpini() {
                                     <>
                                         <TextfieldLabel label='Judul Pembahasan' value={item.judul_pembahasan} InputProps={{ readOnly: true }} />
                                         <TextfieldLabel label='User Pemohon' value={item.tb_account.name} InputProps={{ readOnly: true }} />
-                                        <FormLabel className='mb-2 text-sm'>Foto Penulis</FormLabel>
                                         <FormLabel className='mb-2 text-sm'>Surat Permohonan</FormLabel>
                                         <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
                                             {item.surat_permohonan ? (
@@ -118,6 +117,7 @@ export default function TableManajemenOpini() {
                                             )}
                                             <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' disabled>Change File</Button>
                                         </Stack>
+                                        <FormLabel className='mb-2 text-sm'>Foto Penulis</FormLabel>
                                         <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems='flex-start' className='mb-4'>
                                             {item.foto_penulis ? (
                                                 <Link href={`${api_file}/${item.foto_penulis}`} target='blank' className='w-[20rem] mt-2'>
