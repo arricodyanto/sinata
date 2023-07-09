@@ -136,6 +136,20 @@ export default function LayananVideotron(props: TFormEditLayananProps) {
                     <>
                         <AutocompleteTitle name='judul_kegiatan' label='Judul Kegiatan' data={dataKegiatan} onChange={handleJudulChange} defaultValue={dataKegiatan.find((item: any) => item.id == data.id_kegiatan)} disabled={!editable} />
                         <DisabledFormDataKegiatan judul_kegiatan={autocomplete} />
+                        <Stack direction='row' spacing={1} className='mb-4'>
+                            <FormControl className='w-full'>
+                                <FormLabel className='mb-1 text-sm'>
+                                    Tanggal Awal Penayangan
+                                </FormLabel>
+                                <DatePickerBasic defaultValue={dayjs(dateFormatter(data.tgl_awal), 'DD/MM/YYYY')} onChange={(value: any) => form.set('tgl_awal', value)} disabled={!editable} />
+                            </FormControl>
+                            <FormControl className='w-full'>
+                                <FormLabel className='mb-1 text-sm'>
+                                    Tanggal Akhir Penayangan
+                                </FormLabel>
+                                <DatePickerBasic defaultValue={dayjs(dateFormatter(data.tgl_akhir), 'DD/MM/YYYY')} onChange={(value: any) => form.set('tgl_akhir', value)} disabled={!editable} />
+                            </FormControl>
+                        </Stack>
                         {bahan_publikasi === false ? (
                             <>
                                 <FormLabel className='mb-2 text-sm'>Bahan Publikasi</FormLabel>
@@ -163,20 +177,6 @@ export default function LayananVideotron(props: TFormEditLayananProps) {
                                 </Stack>
                             </>
                         )}
-                        <Stack direction='row' spacing={1} className='mb-4'>
-                            <FormControl className='w-full'>
-                                <FormLabel className='mb-1 text-sm'>
-                                    Tanggal Awal Penayangan
-                                </FormLabel>
-                                <DatePickerBasic defaultValue={dayjs(dateFormatter(data.tgl_awal), 'DD/MM/YYYY')} onChange={(value: any) => form.set('tgl_awal', value)} disabled={!editable} />
-                            </FormControl>
-                            <FormControl className='w-full'>
-                                <FormLabel className='mb-1 text-sm'>
-                                    Tanggal Akhir Penayangan
-                                </FormLabel>
-                                <DatePickerBasic defaultValue={dayjs(dateFormatter(data.tgl_akhir), 'DD/MM/YYYY')} onChange={(value: any) => form.set('tgl_akhir', value)} disabled={!editable} />
-                            </FormControl>
-                        </Stack>
                         <FormControl className='w-full'>
                             <SelectLabel name='status' label='Status' defaultValue={data.status} onChange={handleStatusChange} disabled={!editable}>
                                 <MenuItem value='Pending'>Pending</MenuItem>

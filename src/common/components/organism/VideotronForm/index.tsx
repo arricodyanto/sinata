@@ -40,10 +40,6 @@ export default function VideotronForm(props: TFormTambahLayananProps) {
         form.set('id_kegiatan', value?.id);
     };
 
-    const handleStatusChange = (event: any) => {
-        form.set('status', event.target.value);
-    };
-
     const [open, setOpen] = useState(false);
     const handleDialogOpen = () => {
         setOpen(true);

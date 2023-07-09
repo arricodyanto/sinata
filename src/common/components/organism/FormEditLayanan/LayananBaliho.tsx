@@ -69,7 +69,7 @@ export default function LayananBaliho(props: TFormEditLayananProps) {
                 toast.success(response.message, {
                     theme: 'colored'
                 });
-                window.location.reload();
+                push('/admins/layanan-media');
             }
         }
         setOpenSimpan(false);
@@ -124,10 +124,10 @@ export default function LayananBaliho(props: TFormEditLayananProps) {
 
     const handleDelete = async (id: string) => {
         await deleteOneLayananBaliho(id);
-        toast.error('Data berhasil dihapus.', {
+        toast.success('Data berhasil dihapus.', {
             theme: 'colored'
         });
-        push('/admins/semua-ajuan');
+        push('/admins/layanan-media');
     };
     return (
         <>
