@@ -57,7 +57,11 @@ export default function PeliputanForm(props: TFormTambahLayananProps) {
                 <CollapsibleAlert type='warning' className='mb-4'>
                     <Typography className='text-dark' variant='body2'>Pastikan Anda telah menambahkan detil informasi kegiatan Anda ke sistem! Jika belum, silakan menuju ke halaman <Link href='/users/tambah-kegiatan' className='underline hover:opacity-75 transition'>Tambah Kegiatan</Link></Typography>
                 </CollapsibleAlert>
-            ) : null}
+            ) : (
+                <CollapsibleAlert type='warning' className='mb-4'>
+                    <Typography className='text-dark' variant='body2'>Pastikan Anda telah menambahkan detil informasi kegiatan Anda ke sistem! Jika belum, silakan menuju ke halaman <Link href='/admins/daftar-kegiatan/tambah' className='underline hover:opacity-75 transition'>Tambah Kegiatan</Link></Typography>
+                </CollapsibleAlert>
+            )}
             <AutocompleteTitle name='judul_kegiatan' label='Judul Kegiatan' data={dataKegiatan} onChange={handleJudulChange} />
             <DisabledFormDataKegiatan judul_kegiatan={autocomplete} />
             <FileUpload name='leaflet_kegiatan' label='Leaflet Kegiatan' onupdatefiles={(fileItems: FilePondFile[]) => {
@@ -81,9 +85,6 @@ export default function PeliputanForm(props: TFormTambahLayananProps) {
                             form.set('disposisi', file);
                         }
                     }} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
-                    <CollapsibleAlert type='warning' className='mb-4'>
-                        <Typography className='text-dark' variant='body2'>Pastikan Anda telah menambahkan detil informasi kegiatan Anda ke sistem! Jika belum, silakan menuju ke halaman <Link href='/admins/daftar-kegiatan' className='underline hover:opacity-75 transition'>Tambah Kegiatan</Link></Typography>
-                    </CollapsibleAlert>
                     <ButtonBasic onClick={handleDialogOpen} variant='contained'>Tambahkan Ajuan</ButtonBasic>
                 </>
             ) : null}

@@ -43,7 +43,7 @@ export default function LayananHumas() {
                                         <PeliputanForm onSave={() => { }} />
                                     </TabPanel>
                                     <TabPanel value='2'>
-                                        <KonpersForm />
+                                        <KonpersForm onSave={() => { }} />
                                     </TabPanel>
                                     <TabPanel value='3'>
                                         <PembaruanInfoForm />

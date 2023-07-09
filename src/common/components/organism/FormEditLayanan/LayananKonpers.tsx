@@ -80,7 +80,7 @@ export default function LayananKonpers(props: TFormEditLayananProps) {
                 toast.success(response.message, {
                     theme: 'colored'
                 });
-                window.location.reload();
+                push('/admins/layanan-humas');
             }
         }
         setOpenSimpan(false);
@@ -119,7 +119,7 @@ export default function LayananKonpers(props: TFormEditLayananProps) {
         toast.success('Data berhasil dihapus.', {
             theme: 'colored'
         });
-        push('/admins/semua-ajuan');
+        push('/admins/layanan-humas');
     };
 
     if (!rows) {

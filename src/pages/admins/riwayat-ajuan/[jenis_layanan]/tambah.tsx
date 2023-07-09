@@ -9,6 +9,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import { listMenuAdmin } from '../../dashboard';
+import KonpersForm from '@/common/components/organism/KonpersForm';
+import { setOneLayananKonpers } from '@/services/layanan-konpers';
 
 export default function TambahAjuanLayanan() {
     const { query, isReady, push } = useRouter();
@@ -24,14 +26,29 @@ export default function TambahAjuanLayanan() {
             toast.success(response.message, {
                 theme: 'colored'
             });
+            push('/admins/layanan-humas');
         };
-        push('/admins/layanan-humas');
+    };
+
+    const onSaveKonpers = async (form: any) => {
+        const response = await setOneLayananKonpers(form);
+        if (response.status > 300) {
+            toast.error(response.message, {
+                theme: 'colored',
+            });
+        }
+        if (response.status < 300) {
+            toast.success(response.message, {
+                theme: 'colored'
+            });
+            push('/admins/layanan-humas');
+        };
     };
     return (
         <Box className='bg-grey'>
             <TitlePage title={isReady ? `Tambah Ajuan ${jenis_layanan} - Sinata` : 'Sinata Loading...'} />
             <DashboardPanel listMenu={listMenuAdmin}>
-                <HeaderBreadcrumbs pageHeader={`Tambah Ajuan ${jenis_layanan}`} currentPage='Tambah Ajuan'>
+                <HeaderBreadcrumbs pageHeader={isReady ? `Tambah Ajuan ${jenis_layanan}` : ''} currentPage='Tambah Ajuan'>
                     <Link href='/admins/semua-ajuan' className='text-zinc-900 hover:underline hover:decoration-1 hover:underline-offset-2'>
                         Semua Ajuan
                     </Link>
@@ -42,8 +59,7 @@ export default function TambahAjuanLayanan() {
                             {jenis_layanan === 'Layanan Peliputan' ? (
                                 <PeliputanForm onSave={onSavePeliputan} admin={true} />
                             ) : jenis_layanan === 'Layanan Konferensi Pers' ? (
-                                <></>
-                                // <LayananKonpers data={data} id={id} />
+                                <KonpersForm onSave={onSaveKonpers} admin={true} />
                             ) : jenis_layanan === 'Layanan Pembaruan Informasi' ? (
                                 <></>
                                 // <LayananPeminformasi data={data} id={id} />
