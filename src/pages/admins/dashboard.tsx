@@ -208,12 +208,12 @@ export const listMenuAdmin = [
             {
                 id: 2,
                 subtitle: 'Arsip Pers',
-                link: '/admins/arsip-pers',
+                link: '/admins/arsip/pers',
             },
             {
                 id: 3,
                 subtitle: 'Arsip Desain',
-                link: '/admins/arsip-desain',
+                link: '/admins/arsip/desain',
             }
         ],
     },

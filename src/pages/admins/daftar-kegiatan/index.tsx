@@ -157,7 +157,12 @@ export default function DaftarKegiatan() {
                 </HeaderBreadcrumbs>
                 <Paper className='shadow-md px-6 py-4'>
                     {data.length === 0 ? (
-                        <TableDataEmpty headers={tableHeaders} />
+                        <TableDataEmpty headers={tableHeaders}
+                            addButton={
+                                <Link href='/admins/daftar-kegiatan/tambah'>
+                                    <ButtonBasic variant='contained'>Tambahkan Kegiatan</ButtonBasic>
+                                </Link>
+                            } />
                     ) : (
                         <>
                             <TableData headers={tableHeaders} columns={tableColumns} rows={data} status={false} actionOnClick={handleOpen}

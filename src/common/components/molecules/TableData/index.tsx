@@ -122,7 +122,13 @@ export default function TableData(props: TTableDataProps) {
                                                                     ? dateFormatter(row[column.label])
                                                                     : column.label === 'waktu_kegiatan' && row[column.label] !== null
                                                                         ? timeStrictFormatter(row[column.label])
-                                                                        : row[column.label]}
+                                                                        : column.label === 'deadline' && row[column.label] !== null
+                                                                            ? dateFormatter(row[column.label])
+                                                                            : column.label === 'tgl_awal' && row[column.label] !== null
+                                                                                ? dateFormatter(row[column.label])
+                                                                                : column.label === 'tgl_akhir' && row[column.label] !== null
+                                                                                    ? dateFormatter(row[column.label])
+                                                                                    : row[column.label]}
                                                     </Typography>
                                                 </TableCell>
                                             );

@@ -14,7 +14,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { kategoriBerita } from '@/common/components/organism/TableManajemenPeliputan';
+// import { kategoriBerita } from '@/common/components/organism/TableManajemenPeliputan';
 import SelectLabel from '@/common/components/atoms/SelectLabel';
 import AutocompleteCustom from '@/common/components/atoms/AutocompleteCustom';
 import DateFieldBasic from '@/common/components/atoms/DateFieldBasic';
@@ -161,3 +161,12 @@ export default function ArsipPers() {
         </Box>
     );
 }
+
+export const kategoriBerita = [
+    'Kegiatan',
+    'Berita Terkini',
+    'Alumni UNS',
+    'Mahasiswa UNS',
+    'Akademik'
+];
+

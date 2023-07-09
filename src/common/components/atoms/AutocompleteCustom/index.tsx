@@ -16,6 +16,7 @@ export default function AutocompleteCustom(props: AutocompleteCustomProps) {
                 {label}
             </FormLabel>
             <Autocomplete options={data} {...props}
+                isOptionEqualToValue={(option, value) => option.value === value.value}
                 renderInput={(params) => <TextField {...params} name={name} size='small' sx={{
                     '& .MuiOutlinedInput-root': {
                         '&:hover fieldset': { borderColor: '#0ea5e9', }
