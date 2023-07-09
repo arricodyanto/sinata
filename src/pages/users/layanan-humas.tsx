@@ -46,7 +46,7 @@ export default function LayananHumas() {
                                         <KonpersForm onSave={() => { }} />
                                     </TabPanel>
                                     <TabPanel value='3'>
-                                        <PembaruanInfoForm />
+                                        <PembaruanInfoForm onSave={() => { }} />
                                     </TabPanel>
                                 </Stack>
                             </TabContext>

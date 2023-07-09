@@ -1,20 +1,20 @@
-import { Box, FormControl, FormLabel, MenuItem, Stack, Typography } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
-import TextfieldLabel from '../../atoms/TextfieldLabel';
-import FileUpload from '../../atoms/FileUpload';
-import DatePickerBasic from '../../atoms/DatePickerBasic';
-import TimePickerBasic from '../../atoms/TimePickerBasic';
-import ButtonBasic from '../../atoms/ButtonBasic';
-import CollapsibleAlert from '../../atoms/CollapsibleAlert';
+import AutocompleteCustom from '@/common/components/atoms/AutocompleteCustom';
+import ButtonBasic from '@/common/components/atoms/ButtonBasic';
+import CollapsibleAlert from '@/common/components/atoms/CollapsibleAlert';
+import DatePickerBasic from '@/common/components/atoms/DatePickerBasic';
+import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
+import FileUpload from '@/common/components/atoms/FileUpload';
+import SelectLabel from '@/common/components/atoms/SelectLabel';
+import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
+import TimePickerBasic from '@/common/components/atoms/TimePickerBasic';
 import { TFormTambahLayananProps } from '@/common/types';
-import { useRouter } from 'next/router';
-import AutocompleteCustom from '../../atoms/AutocompleteCustom';
-import { getAllUsers } from '@/services/accounts';
 import { dateISOFormatter, timeISOFormatter } from '@/common/utils/dateFormatter.util';
-import SelectLabel from '../../atoms/SelectLabel';
+import { getAllUsers } from '@/services/accounts';
+import { Box, FormControl, FormLabel, MenuItem, Stack, Typography } from '@mui/material';
 import { FilePondFile } from 'filepond';
 import Link from 'next/link';
-import DialogConfirmation from '../../atoms/DialogConfirmation';
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useState } from 'react';
 
 const form = new FormData();
 
@@ -73,33 +73,33 @@ export default function KonpersForm(props: TFormTambahLayananProps) {
                     <Typography className='text-dark' variant='body2'>Pastikan Anda telah menambahkan detil informasi kegiatan Anda ke sistem! Jika belum, silakan menuju ke halaman <Link href='/admins/daftar-kegiatan/tambah' className='underline hover:opacity-75 transition'> Tambah Kegiatan</Link></Typography>
                 </CollapsibleAlert>
             )}
-            <TextfieldLabel name='judul_kegiatan' label='Judul Konferensi Pers' onChange={(event: any) => form.set('judul_kegiatan', event.target.value)} placeholder='Judul Konferensi Pers' />
+            <TextfieldLabel label='Judul Konferensi Pers' onChange={(event: any) => form.set('judul_kegiatan', event.target.value)} placeholder='Judul Konferensi Pers' />
             {isAdmin ? (
-                <AutocompleteCustom name='name' label='User Pemohon' data={users} onChange={handleUserChange} getOptionLabel={(data) => data.name} />
-            ) : null}
-            <Stack direction='row' spacing={1} className='mb-4'>
-                <FormControl className='w-full'>
-                    <FormLabel className='mb-1 text-sm'>
-                        Tanggal Kegiatan
-                    </FormLabel>
-                    <DatePickerBasic onChange={handleDateChange} />
-                </FormControl>
-                <FormControl className='w-full'>
-                    <FormLabel className='mb-1 text-sm'>
-                        Waktu Kegiatan
-                    </FormLabel>
-                    <TimePickerBasic onChange={handleTimeChange} />
-                </FormControl>
-            </Stack>
-            <TextfieldLabel name='tempat_kegiatan' label='Tempat Kegiatan' onChange={(event: any) => form.set('tempat_kegiatan', event.target.value)} placeholder='Tempat Kegiatan' />
-            {isAdmin ? (
-                <SelectLabel label='Status' defaultValue='Pending' onChange={(event: any) => form.set('status', event.target.value)}>
-                    <MenuItem value='' disabled>Pilih salah satu</MenuItem>
-                    <MenuItem value='Pending'>Pending</MenuItem>
-                    <MenuItem value='Approved & On Progress'>Approved & On Progress</MenuItem>
-                    <MenuItem value='Completed'>Complete</MenuItem>
-                    <MenuItem value='Rejected'>Rejected</MenuItem>
-                </SelectLabel>
+                <>
+                    <AutocompleteCustom name='name' label='User Pemohon' data={users} onChange={handleUserChange} getOptionLabel={(data) => data.name} />
+                    <Stack direction='row' spacing={1} className='mb-4'>
+                        <FormControl className='w-full'>
+                            <FormLabel className='mb-1 text-sm'>
+                                Tanggal Kegiatan
+                            </FormLabel>
+                            <DatePickerBasic onChange={handleDateChange} />
+                        </FormControl>
+                        <FormControl className='w-full'>
+                            <FormLabel className='mb-1 text-sm'>
+                                Waktu Kegiatan
+                            </FormLabel>
+                            <TimePickerBasic onChange={handleTimeChange} />
+                        </FormControl>
+                    </Stack>
+                    <TextfieldLabel name='tempat_kegiatan' label='Tempat Kegiatan' onChange={(event: any) => form.set('tempat_kegiatan', event.target.value)} placeholder='Tempat Kegiatan' />
+                    <SelectLabel label='Status' defaultValue='Pending' onChange={(event: any) => form.set('status', event.target.value)}>
+                        <MenuItem value='' disabled>Pilih salah satu</MenuItem>
+                        <MenuItem value='Pending'>Pending</MenuItem>
+                        <MenuItem value='Approved & On Progress'>Approved & On Progress</MenuItem>
+                        <MenuItem value='Completed'>Complete</MenuItem>
+                        <MenuItem value='Rejected'>Rejected</MenuItem>
+                    </SelectLabel>
+                </>
             ) : null}
             <FileUpload name='surat_permohonan' label='Surat Permohonan' allowMultiple={false} allowReorder={false} onupdatefiles={(fileItems: FilePondFile[]) => {
                 const file = fileItems[0]?.file;
@@ -122,7 +122,15 @@ export default function KonpersForm(props: TFormTambahLayananProps) {
                 </>
             ) : null}
             {isAdmin ? (
-                <ButtonBasic onClick={handleDialogOpen} variant='contained'>Tambahkan Ajuan</ButtonBasic>
+                <>
+                    <FileUpload name='disposisi' label='Disposisi' allowMultiple={false} allowReorder={false} onupdatefiles={(fileItems: FilePondFile[]) => {
+                        const file = fileItems[0]?.file;
+                        if (file) {
+                            form.set('disposisi', file);
+                        }
+                    }} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
+                    <ButtonBasic onClick={handleDialogOpen} variant='contained'>Tambahkan Ajuan</ButtonBasic>
+                </>
             ) : null}
             <DialogConfirmation title='Tambahkan Data' body='Apakah Anda yakin ingin menambahkan data ini? Pastikan semua data telah terisi dengan benar.' open={open} onClose={handleDialogClose}>
                 <Stack direction='row' spacing={1} className='mt-4 px-2 mb-4'>

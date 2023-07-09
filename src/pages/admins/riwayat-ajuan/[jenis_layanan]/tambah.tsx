@@ -11,6 +11,8 @@ import { toast } from 'react-toastify';
 import { listMenuAdmin } from '../../dashboard';
 import KonpersForm from '@/common/components/organism/KonpersForm';
 import { setOneLayananKonpers } from '@/services/layanan-konpers';
+import PembaruanInfoForm from '@/common/components/organism/PembaruanInfoForm';
+import { setOneLayananPeminformasi } from '@/services/layanan-peminformasi';
 
 export default function TambahAjuanLayanan() {
     const { query, isReady, push } = useRouter();
@@ -44,6 +46,21 @@ export default function TambahAjuanLayanan() {
             push('/admins/layanan-humas');
         };
     };
+
+    const onSavePeminformasi = async (form: any) => {
+        const response = await setOneLayananPeminformasi(form);
+        if (response.status > 300) {
+            toast.error(response.message, {
+                theme: 'colored',
+            });
+        }
+        if (response.status < 300) {
+            toast.success(response.message, {
+                theme: 'colored'
+            });
+            push('/admins/layanan-humas');
+        };
+    };
     return (
         <Box className='bg-grey'>
             <TitlePage title={isReady ? `Tambah Ajuan ${jenis_layanan} - Sinata` : 'Sinata Loading...'} />
@@ -57,12 +74,11 @@ export default function TambahAjuanLayanan() {
                     <Grid item spacing={1} xs={12} md={8}>
                         <Paper className='shadow-md xs:p-4 md:p-6'>
                             {jenis_layanan === 'Layanan Peliputan' ? (
-                                <PeliputanForm onSave={onSavePeliputan} admin={true} />
+                                <PeliputanForm onSave={onSavePeliputan} admin />
                             ) : jenis_layanan === 'Layanan Konferensi Pers' ? (
-                                <KonpersForm onSave={onSaveKonpers} admin={true} />
+                                <KonpersForm onSave={onSaveKonpers} admin />
                             ) : jenis_layanan === 'Layanan Pembaruan Informasi' ? (
-                                <></>
-                                // <LayananPeminformasi data={data} id={id} />
+                                <PembaruanInfoForm onSave={onSavePeminformasi} admin />
                             ) : jenis_layanan === 'Layanan Live Streaming' ? (
                                 <></>
                                 // <LayananLiveStreaming data={data} id={id} />
