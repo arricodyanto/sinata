@@ -1,21 +1,18 @@
-import { Box, MenuItem, Stack, Typography } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
-import TextfieldLabel from '../../atoms/TextfieldLabel';
-import FileUpload from '../../atoms/FileUpload';
-import CollapsibleAlert from '../../atoms/CollapsibleAlert';
-import ButtonBasic from '../../atoms/ButtonBasic';
-import { useRouter } from 'next/router';
+import AutocompleteCustom from '@/common/components/atoms/AutocompleteCustom';
+import ButtonBasic from '@/common/components/atoms/ButtonBasic';
+import CollapsibleAlert from '@/common/components/atoms/CollapsibleAlert';
+import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
+import FileUpload from '@/common/components/atoms/FileUpload';
+import SelectLabel from '@/common/components/atoms/SelectLabel';
+import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
 import { TFormTambahLayananProps } from '@/common/types';
-import { getAllDataKegiatan } from '@/services/data-kegiatan';
-import Link from 'next/link';
-import AutocompleteTitle from '../../atoms/AutocompleteTitle';
-import DisabledFormDataKegiatan from '../FormDataKegiatan/DisabledFormDataKegiatan';
 import { dateISOFormatter, timeISOFormatter } from '@/common/utils/dateFormatter.util';
 import { getAllUsers } from '@/services/accounts';
+import { Box, MenuItem, Stack, Typography } from '@mui/material';
 import { FilePondFile } from 'filepond';
-import SelectLabel from '../../atoms/SelectLabel';
-import DialogConfirmation from '../../atoms/DialogConfirmation';
-import AutocompleteCustom from '../../atoms/AutocompleteCustom';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useState } from 'react';
 
 const form = new FormData();
 

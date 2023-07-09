@@ -9,7 +9,7 @@ import { TFormEditLayananProps } from '@/common/types';
 import { dateStringFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
 import { formDataFormatter } from '@/common/utils/formDataFormatter';
 import { getAllDataKegiatan } from '@/services/data-kegiatan';
-import { updateLayananLiveStreaming } from '@/services/layanan-livestreaming';
+import { deleteOneLayananLiveStreaming, updateLayananLiveStreaming } from '@/services/layanan-livestreaming';
 import { deleteOneLayananPeliputan } from '@/services/layanan-peliputan';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -67,7 +67,7 @@ export default function LayananLiveStreaming(props: TFormEditLayananProps) {
                 toast.success(response.message, {
                     theme: 'colored'
                 });
-                window.location.reload();
+                push('/admins/layanan-publikasi');
             }
         }
         setOpenSimpan(false);
@@ -121,11 +121,11 @@ export default function LayananLiveStreaming(props: TFormEditLayananProps) {
     };
 
     const handleDelete = async (id: string) => {
-        await deleteOneLayananPeliputan(id);
+        await deleteOneLayananLiveStreaming(id);
         toast.success('Data berhasil dihapus.', {
             theme: 'colored'
         });
-        push('/admins/semua-ajuan');
+        push('/admins/layanan-publikasi');
     };
     return (
         <>
@@ -151,7 +151,7 @@ export default function LayananLiveStreaming(props: TFormEditLayananProps) {
                             </>
                         ) : (
                             <>
-                                <FileUpload name='leaflet_kegiatan' label='Leaflet Kegiatan' onupdatefiles={(fileItems: FilePondFile[]) => {
+                                <FileUpload name='thumbnail_kegiatan' label='Thumbnail Kegiatan' onupdatefiles={(fileItems: FilePondFile[]) => {
                                     const file = fileItems[0]?.file;
                                     if (file) {
                                         form.set('thumbnail_kegiatan', file);

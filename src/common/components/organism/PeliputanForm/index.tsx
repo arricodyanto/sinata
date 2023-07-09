@@ -89,7 +89,12 @@ export default function PeliputanForm(props: TFormTambahLayananProps) {
                 </>
             ) : null}
             {!isAdmin ? (
-                <ButtonBasic onClick={handleDialogOpen} variant='contained'>Ajukan Layanan</ButtonBasic>
+                <>
+                    <CollapsibleAlert type='info' className='mb-4'>
+                        <Typography className='text-dark' variant='body2'>Sebelum menekan tombol <b>Ajukan Layanan</b>, pastikan data yang Anda masukkan sudah benar!</Typography>
+                    </CollapsibleAlert>
+                    <ButtonBasic onClick={handleDialogOpen} variant='contained'>Ajukan Layanan</ButtonBasic>
+                </>
             ) : null}
             <DialogConfirmation title='Tambahkan Data' body='Apakah Anda yakin ingin menambahkan data ini? Pastikan semua data telah terisi dengan benar.' open={open} onClose={handleDialogClose}>
                 <Stack direction='row' spacing={1} className='mt-4 px-2 mb-4'>

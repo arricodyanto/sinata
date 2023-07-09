@@ -13,6 +13,8 @@ import KonpersForm from '@/common/components/organism/KonpersForm';
 import { setOneLayananKonpers } from '@/services/layanan-konpers';
 import PembaruanInfoForm from '@/common/components/organism/PembaruanInfoForm';
 import { setOneLayananPeminformasi } from '@/services/layanan-peminformasi';
+import LiveStreamingForm from '@/common/components/organism/LiveStrForm';
+import { setOneLayananLiveStreaming } from '@/services/layanan-livestreaming';
 
 export default function TambahAjuanLayanan() {
     const { query, isReady, push } = useRouter();
@@ -61,6 +63,21 @@ export default function TambahAjuanLayanan() {
             push('/admins/layanan-humas');
         };
     };
+
+    const onSaveLiveStreaming = async (form: any) => {
+        const response = await setOneLayananLiveStreaming(form);
+        if (response.status > 300) {
+            toast.error(response.message, {
+                theme: 'colored',
+            });
+        }
+        if (response.status < 300) {
+            toast.success(response.message, {
+                theme: 'colored'
+            });
+            push('/admins/layanan-publikasi');
+        };
+    };
     return (
         <Box className='bg-grey'>
             <TitlePage title={isReady ? `Tambah Ajuan ${jenis_layanan} - Sinata` : 'Sinata Loading...'} />
@@ -80,8 +97,7 @@ export default function TambahAjuanLayanan() {
                             ) : jenis_layanan === 'Layanan Pembaruan Informasi' ? (
                                 <PembaruanInfoForm onSave={onSavePeminformasi} admin />
                             ) : jenis_layanan === 'Layanan Live Streaming' ? (
-                                <></>
-                                // <LayananLiveStreaming data={data} id={id} />
+                                <LiveStreamingForm onSave={onSaveLiveStreaming} admin />
                             ) : jenis_layanan === 'Layanan Publikasi Agenda' ? (
                                 <></>
                                 // <LayananPublikasiAgenda data={data} id={id} />
