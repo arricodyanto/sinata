@@ -76,7 +76,9 @@ export default function PembaruanInfoForm(props: TFormTambahLayananProps) {
         </CollapsibleAlert>
       )}
       <TextfieldLabel label='Judul Permohonan' onChange={(event: any) => form.set('judul_permohonan', event.target.value)} placeholder='Judul Permohonan' />
-      <AutocompleteCustom name='name' label='User Pemohon' data={users} onChange={handleUserChange} getOptionLabel={(data) => data.name} />
+      {isAdmin ? (
+        <AutocompleteCustom name='name' label='User Pemohon' data={users} onChange={handleUserChange} getOptionLabel={(data) => data.name} />
+      ) : null}
       <FileUpload name='surat_permohonan' label='Surat Permohonan' allowMultiple={false} allowReorder={false} onupdatefiles={(fileItems: FilePondFile[]) => {
         const file = fileItems[0]?.file;
         if (file) {
