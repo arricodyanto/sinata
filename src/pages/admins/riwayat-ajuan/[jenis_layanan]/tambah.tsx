@@ -21,6 +21,8 @@ import MajalahForm from '@/common/components/organism/MajalahForm';
 import { setOneLayananMajalah } from '@/services/layanan-majalah';
 import OpiniForm from '@/common/components/organism/OpiniForm';
 import { setOneLayananOpini } from '@/services/layanan-opini';
+import VideotronForm from '@/common/components/organism/VideotronForm';
+import { setOneLayananVideotron } from '@/services/layanan-videotron';
 
 export default function TambahAjuanLayanan() {
     const { query, isReady, push } = useRouter();
@@ -129,6 +131,21 @@ export default function TambahAjuanLayanan() {
             push('/admins/layanan-publikasi');
         };
     };
+
+    const onSaveVideotron = async (form: any) => {
+        const response = await setOneLayananVideotron(form);
+        if (response.status > 300) {
+            toast.error(response.message, {
+                theme: 'colored',
+            });
+        }
+        if (response.status < 300) {
+            toast.success(response.message, {
+                theme: 'colored'
+            });
+            push('/admins/layanan-media');
+        };
+    };
     return (
         <Box className='bg-grey'>
             <TitlePage title={isReady ? `Tambah Ajuan ${jenis_layanan} - Sinata` : 'Sinata Loading...'} />
@@ -156,8 +173,7 @@ export default function TambahAjuanLayanan() {
                             ) : jenis_layanan === 'Layanan Opini di Media' ? (
                                 <OpiniForm onSave={onSaveOpini} admin />
                             ) : jenis_layanan === 'Layanan Penayangan Konten di Videotron' ? (
-                                <></>
-                                // <LayananVideotron data={data} id={id} />
+                                <VideotronForm onSave={onSaveVideotron} admin />
                             ) : jenis_layanan === 'Layanan Pemasangan Baliho' ? (
                                 <></>
                                 // <LayananBaliho data={data} id={id} />

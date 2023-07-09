@@ -68,7 +68,7 @@ export default function LayananVideotron(props: TFormEditLayananProps) {
                 toast.success(response.message, {
                     theme: 'colored'
                 });
-                window.location.reload();
+                push('/admins/layanan-media');
             }
         }
         setOpenSimpan(false);
@@ -126,7 +126,7 @@ export default function LayananVideotron(props: TFormEditLayananProps) {
         toast.success('Data berhasil dihapus.', {
             theme: 'colored'
         });
-        push('/admins/semua-ajuan');
+        push('/admins/layanan-media');
     };
     return (
         <>
@@ -163,7 +163,7 @@ export default function LayananVideotron(props: TFormEditLayananProps) {
                                 </Stack>
                             </>
                         )}
-                        <Stack direction='row' spacing={1} className='mb-6'>
+                        <Stack direction='row' spacing={1} className='mb-4'>
                             <FormControl className='w-full'>
                                 <FormLabel className='mb-1 text-sm'>
                                     Tanggal Awal Penayangan
