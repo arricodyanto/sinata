@@ -10,6 +10,7 @@ export async function getAllLayananVideotron(params?: string) {
   return callAPI({
     url,
     method: 'GET',
+    token: true,
   });
 }
 
