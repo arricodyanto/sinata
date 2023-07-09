@@ -66,7 +66,7 @@ export default function LayananPublikasiMajalah(props: TFormEditLayananProps) {
                 toast.success(response.message, {
                     theme: 'colored'
                 });
-                window.location.reload();
+                push('/admins/layanan-publikasi');
             }
         }
         setOpenSimpan(false);
@@ -124,7 +124,7 @@ export default function LayananPublikasiMajalah(props: TFormEditLayananProps) {
         toast.success('Data berhasil dihapus.', {
             theme: 'colored'
         });
-        push('/admins/semua-ajuan');
+        push('/admins/layanan-publikasi');
     };
     return (
         <>

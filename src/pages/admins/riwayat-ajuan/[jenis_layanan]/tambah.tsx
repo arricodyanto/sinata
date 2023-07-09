@@ -17,6 +17,8 @@ import LiveStreamingForm from '@/common/components/organism/LiveStrForm';
 import { setOneLayananLiveStreaming } from '@/services/layanan-livestreaming';
 import PublikasiAgendaForm from '@/common/components/organism/PublikasiAgendaForm';
 import { setOneLayananPublikasiAgenda } from '@/services/layanan-pubagenda';
+import MajalahForm from '@/common/components/organism/MajalahForm';
+import { setOneLayananMajalah } from '@/services/layanan-majalah';
 
 export default function TambahAjuanLayanan() {
     const { query, isReady, push } = useRouter();
@@ -95,6 +97,21 @@ export default function TambahAjuanLayanan() {
             push('/admins/layanan-publikasi');
         };
     };
+
+    const onSavePublikasiMajalah = async (form: any) => {
+        const response = await setOneLayananMajalah(form);
+        if (response.status > 300) {
+            toast.error(response.message, {
+                theme: 'colored',
+            });
+        }
+        if (response.status < 300) {
+            toast.success(response.message, {
+                theme: 'colored'
+            });
+            push('/admins/layanan-publikasi');
+        };
+    };
     return (
         <Box className='bg-grey'>
             <TitlePage title={isReady ? `Tambah Ajuan ${jenis_layanan} - Sinata` : 'Sinata Loading...'} />
@@ -118,8 +135,7 @@ export default function TambahAjuanLayanan() {
                             ) : jenis_layanan === 'Layanan Publikasi Agenda' ? (
                                 <PublikasiAgendaForm onSave={onSavePublikasiAgenda} admin />
                             ) : jenis_layanan === 'Layanan Publikasi di Majalah' ? (
-                                <></>
-                                // <LayananPublikasiMajalah data={data} id={id} />
+                                <MajalahForm onSave={onSavePublikasiMajalah} admin />
                             ) : jenis_layanan === 'Layanan Opini di Media' ? (
                                 <></>
                                 // <LayananOpini data={data} id={id} />

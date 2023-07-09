@@ -4,6 +4,7 @@ import ButtonIcon from '@/common/components/atoms/ButtonIcon';
 import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
 import FileUpload from '@/common/components/atoms/FileUpload';
 import SelectLabel from '@/common/components/atoms/SelectLabel';
+import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
 import DisabledFormDataKegiatan from '@/common/components/organism/FormDataKegiatan/DisabledFormDataKegiatan';
 import { TFormEditLayananProps } from '@/common/types';
 import { dateStringFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
@@ -21,7 +22,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import TextfieldLabel from '../../atoms/TextfieldLabel';
 
 const form = new FormData();
 

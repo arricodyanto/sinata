@@ -4,13 +4,13 @@ import ButtonIcon from '@/common/components/atoms/ButtonIcon';
 import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
 import FileUpload from '@/common/components/atoms/FileUpload';
 import SelectLabel from '@/common/components/atoms/SelectLabel';
+import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
 import DisabledFormDataKegiatan from '@/common/components/organism/FormDataKegiatan/DisabledFormDataKegiatan';
 import { TFormEditLayananProps } from '@/common/types';
 import { dateStringFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
 import { formDataFormatter } from '@/common/utils/formDataFormatter';
 import { getAllDataKegiatan } from '@/services/data-kegiatan';
 import { deleteOneLayananLiveStreaming, updateLayananLiveStreaming } from '@/services/layanan-livestreaming';
-import { deleteOneLayananPeliputan } from '@/services/layanan-peliputan';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
@@ -22,7 +22,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
 
 const form = new FormData();
 
