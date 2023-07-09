@@ -23,6 +23,16 @@ export async function getOneLayananVideotron(id: string) {
   });
 }
 
+export async function setOneLayananVideotron(data: any) {
+  const url = `${HOST}/${VERSION}/${URL}/tambah`;
+  return callAPI({
+    url,
+    method: 'POST',
+    data,
+    token: true,
+  });
+}
+
 export async function updateLayananVideotron(id: string, data: any) {
   const url = `${HOST}/${VERSION}/${URL}/${id}/edit`;
   return callAPI({

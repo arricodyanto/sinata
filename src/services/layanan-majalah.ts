@@ -23,6 +23,16 @@ export async function getOneLayananMajalah(id: string) {
   });
 }
 
+export async function setOneLayananMajalah(data: any) {
+  const url = `${HOST}/${VERSION}/${URL}/tambah`;
+  return callAPI({
+    url,
+    method: 'POST',
+    data,
+    token: true,
+  });
+}
+
 export async function updateLayananMajalah(id: string, data: any) {
   const url = `${HOST}/${VERSION}/${URL}/${id}/edit`;
   return callAPI({

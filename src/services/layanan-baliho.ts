@@ -23,6 +23,16 @@ export async function getOneLayananBaliho(id: string) {
   });
 }
 
+export async function setOneLayananBaliho(data: any) {
+  const url = `${HOST}/${VERSION}/${URL}/tambah`;
+  return callAPI({
+    url,
+    method: 'POST',
+    data,
+    token: true,
+  });
+}
+
 export async function updateLayananBaliho(id: string, data: any) {
   const url = `${HOST}/${VERSION}/${URL}/${id}/edit`;
   return callAPI({

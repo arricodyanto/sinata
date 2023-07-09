@@ -22,6 +22,16 @@ export async function getOneLayananPublikasiAgenda(id: string) {
   });
 }
 
+export async function setOneLayananPublikasiAgenda(data: any) {
+  const url = `${HOST}/${VERSION}/${URL}/tambah`;
+  return callAPI({
+    url,
+    method: 'POST',
+    data,
+    token: true,
+  });
+}
+
 export async function updateLayananPublikasiAgenda(id: string, data: any) {
   const url = `${HOST}/${VERSION}/${URL}/${id}/edit`;
   return callAPI({
