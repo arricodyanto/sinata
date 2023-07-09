@@ -15,6 +15,8 @@ import PembaruanInfoForm from '@/common/components/organism/PembaruanInfoForm';
 import { setOneLayananPeminformasi } from '@/services/layanan-peminformasi';
 import LiveStreamingForm from '@/common/components/organism/LiveStrForm';
 import { setOneLayananLiveStreaming } from '@/services/layanan-livestreaming';
+import PublikasiAgendaForm from '@/common/components/organism/PublikasiAgendaForm';
+import { setOneLayananPublikasiAgenda } from '@/services/layanan-pubagenda';
 
 export default function TambahAjuanLayanan() {
     const { query, isReady, push } = useRouter();
@@ -78,6 +80,21 @@ export default function TambahAjuanLayanan() {
             push('/admins/layanan-publikasi');
         };
     };
+
+    const onSavePublikasiAgenda = async (form: any) => {
+        const response = await setOneLayananPublikasiAgenda(form);
+        if (response.status > 300) {
+            toast.error(response.message, {
+                theme: 'colored',
+            });
+        }
+        if (response.status < 300) {
+            toast.success(response.message, {
+                theme: 'colored'
+            });
+            push('/admins/layanan-publikasi');
+        };
+    };
     return (
         <Box className='bg-grey'>
             <TitlePage title={isReady ? `Tambah Ajuan ${jenis_layanan} - Sinata` : 'Sinata Loading...'} />
@@ -99,8 +116,7 @@ export default function TambahAjuanLayanan() {
                             ) : jenis_layanan === 'Layanan Live Streaming' ? (
                                 <LiveStreamingForm onSave={onSaveLiveStreaming} admin />
                             ) : jenis_layanan === 'Layanan Publikasi Agenda' ? (
-                                <></>
-                                // <LayananPublikasiAgenda data={data} id={id} />
+                                <PublikasiAgendaForm onSave={onSavePublikasiAgenda} admin />
                             ) : jenis_layanan === 'Layanan Publikasi di Majalah' ? (
                                 <></>
                                 // <LayananPublikasiMajalah data={data} id={id} />

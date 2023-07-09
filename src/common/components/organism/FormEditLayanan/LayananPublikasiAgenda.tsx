@@ -66,7 +66,7 @@ export default function LayananPublikasiAgenda(props: TFormEditLayananProps) {
                 toast.success(response.message, {
                     theme: 'colored'
                 });
-                window.location.reload();
+                push('/admins/layanan-publikasi');
             }
         }
         setOpenSimpan(false);
@@ -124,7 +124,7 @@ export default function LayananPublikasiAgenda(props: TFormEditLayananProps) {
         toast.success('Data berhasil dihapus.', {
             theme: 'colored'
         });
-        push('/admins/semua-ajuan');
+        push('/admins/layanan-publikasi');
     };
     return (
         <>
@@ -161,6 +161,7 @@ export default function LayananPublikasiAgenda(props: TFormEditLayananProps) {
                                 </Stack>
                             </>
                         )}
+                        <TextfieldLabel label='Caption' name='caption' defaultValue={data.caption} onChange={(event: any) => form.set('caption', event.target.value)} multiline maxRows={8} disabled={!editable} />
                         <FormControl className='w-full'>
                             <SelectLabel name='status' label='Status' defaultValue={data.status} onChange={handleStatusChange} disabled={!editable}>
                                 <MenuItem value='Pending'>Pending</MenuItem>

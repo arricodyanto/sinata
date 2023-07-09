@@ -57,7 +57,7 @@ export default function LiveStreamingForm(props: TFormTambahLayananProps) {
         setOpen(false);
     };
     return (
-        <Box component='form' action='/' method='post'>
+        <Box>
             {!isAdmin ? (
                 <CollapsibleAlert type='warning' className='mb-4'>
                     <Typography className='text-dark' variant='body2'>Pastikan Anda telah menambahkan detil informasi kegiatan Anda ke sistem! Jika belum, silakan menuju ke halaman <Link href='/users/tambah-kegiatan' className='underline hover:opacity-75 transition'>Tambah Kegiatan</Link></Typography>
