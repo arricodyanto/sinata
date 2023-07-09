@@ -1,36 +1,32 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import tb_arsipdesain from '@/json/tb_arsipdesain.json';
-import tb_account from '@/json/tb_account.json';
-import { Box, Button, Fade, FormControl, FormLabel, IconButton, MenuItem, Modal, Paper, Skeleton, Stack, Typography } from '@mui/material';
-import TitlePage from '@/common/components/atoms/TitlePage';
-import DashboardPanel from '@/common/components/organism/DashboardPanel';
-import { listMenuAdmin } from '../dashboard';
-import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
-import Link from 'next/link';
-import TableDataSkeleton from '@/common/components/molecules/TableDataSkeleton/TableDataSkeleton';
-import TableData from '@/common/components/molecules/TableData';
+import AutocompleteCustom from '@/common/components/atoms/AutocompleteCustom';
+import ButtonBasic from '@/common/components/atoms/ButtonBasic';
 import ButtonIcon from '@/common/components/atoms/ButtonIcon';
+import DateTimePickerBasic from '@/common/components/atoms/DatePickerBasic/DateTimePickerBasic';
+import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
+import FileUpload from '@/common/components/atoms/FileUpload';
+import SelectLabel from '@/common/components/atoms/SelectLabel';
 import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
+import TitlePage from '@/common/components/atoms/TitlePage';
+import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
+import TableData from '@/common/components/molecules/TableData';
+import TableDataEmpty from '@/common/components/molecules/TableDataSkeleton/TableDataEmpty';
+import DashboardPanel from '@/common/components/organism/DashboardPanel';
+import { dateISOFormatter, dateTimeFormatter } from '@/common/utils/dateFormatter.util';
+import { formDataFormatter } from '@/common/utils/formDataFormatter';
+import { listMenuAdmin } from '@/pages/admins/dashboard';
+import { getAllUsers } from '@/services/accounts';
+import { deleteOneArsipDesain, getAllArsipDesain, updateOneArsipDesain } from '@/services/arsip-desain';
+import CancelIcon from '@mui/icons-material/Cancel';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Cancel';
-import AutocompleteCustom from '@/common/components/atoms/AutocompleteCustom';
-import SelectLabel from '@/common/components/atoms/SelectLabel';
-import DatePickerBasic from '@/common/components/atoms/DatePickerBasic';
-import dayjs from 'dayjs';
-import FileUpload from '@/common/components/atoms/FileUpload';
-import TableDataEmpty from '@/common/components/molecules/TableDataSkeleton/TableDataEmpty';
-import ButtonBasic from '@/common/components/atoms/ButtonBasic';
-import { deleteOneArsipDesain, getAllArsipDesain, updateOneArsipDesain } from '@/services/arsip-desain';
-import { useRouter } from 'next/router';
-import { getAllUsers } from '@/services/accounts';
-import DateTimePickerBasic from '@/common/components/atoms/DatePickerBasic/DateTimePickerBasic';
-import { dateISOFormatter, dateTimeFormatter } from '@/common/utils/dateFormatter.util';
-import { FilePondFile } from 'filepond';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
-import { formDataFormatter } from '@/common/utils/formDataFormatter';
+import SaveIcon from '@mui/icons-material/Save';
+import { Box, Button, Fade, FormControl, FormLabel, IconButton, MenuItem, Modal, Paper, Stack, Typography } from '@mui/material';
+import dayjs from 'dayjs';
+import { FilePondFile } from 'filepond';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 const form = new FormData();
@@ -294,7 +290,7 @@ export default function ArsipDesain() {
     );
 }
 
-const kategoriDesain = [
+export const kategoriDesain = [
     'Leaflet',
     'Digital',
     'Spanduk'

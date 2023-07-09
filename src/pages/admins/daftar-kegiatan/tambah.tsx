@@ -1,7 +1,7 @@
 import TitlePage from '@/common/components/atoms/TitlePage';
 import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
-import TambahKegiatanForm from '@/common/components/organism/TambahKegiatanForm';
+import TambahKegiatanForm from '@/common/components/organism/FormTambah/TambahKegiatanForm';
 import { formDataFormatter } from '@/common/utils/formDataFormatter';
 import { listMenuAdmin } from '@/pages/admins/dashboard';
 import { setOneDataKegiatan } from '@/services/data-kegiatan';
@@ -57,7 +57,7 @@ export default function TambahDataKegiatan() {
     };
     return (
         <Box className='bg-grey'>
-            <TitlePage title='Tambah Data Kegiatan - Sinata - Sinata' />
+            <TitlePage title='Tambah Data Kegiatan - Sinata' />
             <DashboardPanel listMenu={listMenuAdmin}>
                 <HeaderBreadcrumbs pageHeader='Tambahkan Data Kegiatan' currentPage='Tambah Data'>
                     <Link href='/admins/daftar-kegiatan' className='text-zinc-900 hover:underline hover:decoration-1 hover:underline-offset-2'>

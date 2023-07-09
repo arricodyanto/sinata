@@ -5,7 +5,7 @@ import React from 'react';
 import CollapsibleAlert from '../../common/components/atoms/CollapsibleAlert';
 import TitlePage from '../../common/components/atoms/TitlePage';
 import HeaderBreadcrumbs from '../../common/components/molecules/HeaderBreadcrumbs';
-import TambahKegiatanForm from '../../common/components/organism/TambahKegiatanForm';
+import TambahKegiatanForm from '../../common/components/organism/FormTambah/TambahKegiatanForm';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import { listMenuUser } from './dashboard';
 
