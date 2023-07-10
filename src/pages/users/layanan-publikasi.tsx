@@ -8,8 +8,10 @@ import MajalahForm from '@/common/components/organism/MajalahForm';
 import OpiniForm from '@/common/components/organism/OpiniForm';
 import PublikasiAgendaForm from '@/common/components/organism/PublikasiAgendaForm';
 import { getAccountID } from '@/common/utils/decryptToken';
+import { listMenuUser } from '@/pages/users/dashboard';
 import { setOneLayananLiveStreaming } from '@/services/layanan-livestreaming';
 import { setOneLayananMajalah } from '@/services/layanan-majalah';
+import { setOneLayananOpini } from '@/services/layanan-opini';
 import { setOneLayananPublikasiAgenda } from '@/services/layanan-pubagenda';
 import { TabContext, TabPanel } from '@mui/lab';
 import { Box, Grid, Paper, Stack } from '@mui/material';
@@ -18,8 +20,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { toast } from 'react-toastify';
-import { listMenuUser } from './dashboard';
-import { setOneLayananOpini } from '@/services/layanan-opini';
 
 export default function LayananPublikasi() {
     const { push } = useRouter();
@@ -55,8 +55,8 @@ export default function LayananPublikasi() {
     const onSavePublikasiAgenda = async (form: any) => {
         const id_account = getAccountID();
         form.set('id_account', id_account);
-        const isRequiredFilled = form.get('id_kegiatan') && form.get('leaflet_kegiatan') ? true : false;
-        if (isRequiredFilled) {
+        const isRequireFilled = form.get('id_kegiatan') && form.get('leaflet_kegiatan') ? true : false;
+        if (isRequireFilled) {
             const response = await setOneLayananPublikasiAgenda(form);
             if (response.status > 300) {
                 toast.error(response.message, {
@@ -79,8 +79,8 @@ export default function LayananPublikasi() {
     const onSavePublikasiMajalah = async (form: any) => {
         const id_account = getAccountID();
         form.set('id_account', id_account);
-        const isRequiredFilled = form.get('id_kegiatan') && form.get('bahan_publikasi') ? true : false;
-        if (isRequiredFilled) {
+        const isRequireFilled = form.get('id_kegiatan') && form.get('bahan_publikasi') ? true : false;
+        if (isRequireFilled) {
             const response = await setOneLayananMajalah(form);
             if (response.status > 300) {
                 toast.error(response.message, {
@@ -103,8 +103,8 @@ export default function LayananPublikasi() {
     const onSaveOpini = async (form: any) => {
         const id_account = getAccountID();
         form.set('id_account', id_account);
-        const isRequiredFilled = form.get('judul_pembahasan') && form.get('surat_permohonan') && form.get('foto_penulis') && form.get('bahan_publikasi') ? true : false;
-        if (isRequiredFilled) {
+        const isRequireFilled = form.get('judul_pembahasan') && form.get('surat_permohonan') && form.get('foto_penulis') && form.get('bahan_publikasi') ? true : false;
+        if (isRequireFilled) {
             const response = await setOneLayananOpini(form);
             if (response.status > 300) {
                 toast.error(response.message, {

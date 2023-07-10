@@ -7,7 +7,6 @@ import KonpersForm from '@/common/components/organism/KonpersForm';
 import PeliputanForm from '@/common/components/organism/PeliputanForm';
 import PembaruanInfoForm from '@/common/components/organism/PembaruanInfoForm';
 import { getAccountID } from '@/common/utils/decryptToken';
-import { formDataFormatter } from '@/common/utils/formDataFormatter';
 import { listMenuUser } from '@/pages/users/dashboard';
 import { setOneLayananKonpers } from '@/services/layanan-konpers';
 import { setOneLayananPeliputan } from '@/services/layanan-peliputan';
@@ -54,8 +53,8 @@ export default function LayananHumas() {
     const onSaveKonpers = async (form: any) => {
         const id_account = getAccountID();
         form.set('id_account', id_account);
-        const isRequiredFilled = form.get('judul_kegiatan') && form.get('surat_permohonan') ? true : false;
-        if (isRequiredFilled) {
+        const isRequireFilled = form.get('judul_kegiatan') && form.get('surat_permohonan') ? true : false;
+        if (isRequireFilled) {
             const response = await setOneLayananKonpers(form);
             if (response.status > 300) {
                 toast.error(response.message, {
@@ -78,8 +77,8 @@ export default function LayananHumas() {
     const onSavePeminformasi = async (form: any) => {
         const id_account = getAccountID();
         form.set('id_account', id_account);
-        const isRequiredFilled = form.get('judul_permohonan') && form.get('surat_permohonan') && form.get('bahan_publikasi') ? true : false;
-        if (isRequiredFilled) {
+        const isRequireFilled = form.get('judul_permohonan') && form.get('surat_permohonan') && form.get('bahan_publikasi') ? true : false;
+        if (isRequireFilled) {
             const response = await setOneLayananPeminformasi(form);
             if (response.status > 300) {
                 toast.error(response.message, {
