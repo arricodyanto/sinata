@@ -7,9 +7,11 @@ import KonpersForm from '@/common/components/organism/KonpersForm';
 import PeliputanForm from '@/common/components/organism/PeliputanForm';
 import PembaruanInfoForm from '@/common/components/organism/PembaruanInfoForm';
 import { getAccountID } from '@/common/utils/decryptToken';
+import { formDataFormatter } from '@/common/utils/formDataFormatter';
 import { listMenuUser } from '@/pages/users/dashboard';
 import { setOneLayananKonpers } from '@/services/layanan-konpers';
-import { setOneLayananPeliputan, updateLayananPeliputan } from '@/services/layanan-peliputan';
+import { setOneLayananPeliputan } from '@/services/layanan-peliputan';
+import { setOneLayananPeminformasi } from '@/services/layanan-peminformasi';
 import { TabContext, TabPanel } from '@mui/lab';
 import { Box, Grid, Paper, Stack } from '@mui/material';
 import Image from 'next/image';
@@ -72,6 +74,31 @@ export default function LayananHumas() {
             });
         }
     };
+
+    const onSavePeminformasi = async (form: any) => {
+        const id_account = getAccountID();
+        form.set('id_account', id_account);
+        console.log(formDataFormatter(form));
+        const isRequiredFilled = form.get('judul_permohonan') && form.get('surat_permohonan') && form.get('bahan_publikasi') ? true : false;
+        if (isRequiredFilled) {
+            const response = await setOneLayananPeminformasi(form);
+            if (response.status > 300) {
+                toast.error(response.message, {
+                    theme: 'colored',
+                });
+            }
+            if (response.status < 300) {
+                toast.success(response.message, {
+                    theme: 'colored'
+                });
+                router.push('/users/dashboard');
+            };
+        } else {
+            toast.warning('Mohon masukkan Judul, Surat Permohonan, dan Konten Bahan Publikasi Anda', {
+                theme: 'colored',
+            });
+        }
+    };
     return (
         <Box className='bg-grey'>
             <TitlePage title='Layanan Hubungan Masyarakat - Sinata' />
@@ -100,7 +127,7 @@ export default function LayananHumas() {
                                         <KonpersForm onSave={onSaveKonpers} />
                                     </TabPanel>
                                     <TabPanel value='3'>
-                                        <PembaruanInfoForm onSave={() => { }} />
+                                        <PembaruanInfoForm onSave={onSavePeminformasi} />
                                     </TabPanel>
                                 </Stack>
                             </TabContext>

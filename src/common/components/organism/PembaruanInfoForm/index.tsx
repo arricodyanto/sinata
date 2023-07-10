@@ -28,14 +28,6 @@ export default function PembaruanInfoForm(props: TFormTambahLayananProps) {
     form.set('id_account', value.id);
   };
 
-  const handleDateChange = (value: any) => {
-    form.set('tgl_kegiatan', dateISOFormatter(value));
-  };
-
-  const handleTimeChange = (value: any) => {
-    form.set('waktu_kegiatan', timeISOFormatter(value));
-  };
-
   const getUsers = useCallback(async () => {
     const response = await getAllUsers();
     setUsers(response.data);
@@ -111,7 +103,7 @@ export default function PembaruanInfoForm(props: TFormTambahLayananProps) {
           <CollapsibleAlert type='info' className='mb-4'>
             <Typography className='text-dark' variant='body2'>Sebelum menekan tombol <b>Ajukan Layanan</b>, pastikan data yang Anda masukkan sudah benar!</Typography>
           </CollapsibleAlert>
-          <ButtonBasic variant='contained'>Ajukan Layanan</ButtonBasic>
+          <ButtonBasic onClick={handleDialogOpen} variant='contained'>Ajukan Layanan</ButtonBasic>
         </>
       )}
       <DialogConfirmation title='Tambahkan Data' body='Apakah Anda yakin ingin menambahkan data ini? Pastikan semua data telah terisi dengan benar.' open={open} onClose={handleDialogClose}>
