@@ -2,6 +2,7 @@ import BasicDonutChart from '@/common/components/atoms/BasicDonutChart';
 import TitlePage from '@/common/components/atoms/TitlePage';
 import FlowCard from '@/common/components/molecules/FlowCard';
 import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
+import TableRiwayat from '@/common/components/molecules/TableRiwayat';
 import DaisyCarousel from '@/common/components/organism/DaisyCarousel';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import { authUser } from '@/common/middlewares/auth';
@@ -47,6 +48,14 @@ export default function Dashboard() {
     { x: 'May', y: 27 },
     { x: 'Jun', y: 33 },
   ];
+  const data3 = [
+    { x: 'Jan', y: 2 },
+    { x: 'Feb', y: 3 },
+    { x: 'Mar', y: 1 },
+    { x: 'Apr', y: 7 },
+    { x: 'May', y: 1 },
+    { x: 'Jun', y: 5 },
+  ];
   const donutData = [
     { x: 'Layanan Peliputan', y: 71 },
     { x: 'Layanan Konferensi Pers', y: 0 },
@@ -64,7 +73,7 @@ export default function Dashboard() {
         <TitlePage title='Dashboard User - Sinata' />
         <DashboardPanel listMenu={listMenuUser}>
           <HeaderBreadcrumbs pageHeader='Dashboard' currentPage='Dashboard' />
-          <Grid container marginBottom={{ xs: 2, md: 4 }} rowSpacing={2} columnSpacing={4}>
+          <Grid container marginBottom={{ xs: 2, md: 4 }} rowSpacing={1} columnSpacing={2}>
             <Grid item xs={12} md={3}>
               <FlowCard text={dark} lineColor={primary} data={data} headline='Layanan diajukan' icon={<ArrowCircleDownOutlinedIcon fontSize='large' className='text-primary' />} />
             </Grid>
@@ -75,7 +84,7 @@ export default function Dashboard() {
               <FlowCard text={dark} lineColor={complete} data={data2} headline='Layanan selesai' icon={<CheckCircleOutlinedIcon fontSize='large' className='text-complete' />} />
             </Grid>
             <Grid item xs={12} md={3}>
-              <FlowCard text={dark} lineColor={error} data={data2} headline='Layanan ditolak' icon={<HighlightOffOutlinedIcon fontSize='large' className='text-error' />} />
+              <FlowCard text={dark} lineColor={error} data={data3} headline='Layanan ditolak' icon={<HighlightOffOutlinedIcon fontSize='large' className='text-error' />} />
             </Grid>
           </Grid>
           <Grid container spacing={2}>
@@ -90,7 +99,7 @@ export default function Dashboard() {
             <Grid item xs={12} md={8}>
               <Paper className='shadow-md px-6 py-4'>
                 <Typography variant='subtitle1' color='text.primary' className='font-bold mb-4 leading-5'>Riwayat Layanan</Typography>
-                {/* <TableRiwayat /> */}
+                <TableRiwayat />
               </Paper>
             </Grid>
           </Grid>

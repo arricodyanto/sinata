@@ -6,6 +6,7 @@ import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import KonpersForm from '@/common/components/organism/KonpersForm';
 import PeliputanForm from '@/common/components/organism/PeliputanForm';
 import PembaruanInfoForm from '@/common/components/organism/PembaruanInfoForm';
+import { authUser } from '@/common/middlewares/auth';
 import { getAccountID } from '@/common/utils/decryptToken';
 import { listMenuUser } from '@/pages/users/dashboard';
 import { setOneLayananKonpers } from '@/services/layanan-konpers';
@@ -140,4 +141,9 @@ export default function LayananHumas() {
             </DashboardPanel>
         </Box>
     );
+}
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authUser(tkn);
 }

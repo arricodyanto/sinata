@@ -18,7 +18,7 @@ export default function SemuaAjuan() {
                     </Link>
                 </HeaderBreadcrumbs>
                 <Paper className='shadow-md xs:p-4 md:p-6'>
-                    <TableRiwayat />
+                    <TableRiwayat admin />
                 </Paper>
             </DashboardPanel>
         </Box>

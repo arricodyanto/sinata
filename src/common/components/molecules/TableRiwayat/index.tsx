@@ -1,23 +1,28 @@
 import ButtonIcon from '@/common/components/atoms/ButtonIcon';
+import ButtonSplit from '@/common/components/atoms/ButtonSplit';
 import DatePickerBasic from '@/common/components/atoms/DatePickerBasic';
 import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
 import TimePickerBasic from '@/common/components/atoms/TimePickerBasic';
+import TableData from '@/common/components/molecules/TableData';
+import TableDataEmpty from '@/common/components/molecules/TableDataSkeleton/TableDataEmpty';
+import TableDataSkeleton from '@/common/components/molecules/TableDataSkeleton/TableDataSkeleton';
+import { TTableKegiatanProps } from '@/common/types';
 import { dateFormatter, dateStringFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
-import { getAllRiwayatAjuan } from '@/services/riwayat-ajuan';
+import { getAccountID } from '@/common/utils/decryptToken';
+import { getAllRiwayatAjuan, getAllRiwayatAjuanUser } from '@/services/riwayat-ajuan';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Button, Chip, Fade, FormControl, FormLabel, IconButton, Modal, Skeleton, Stack, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
-import TableData from '@/common/components/molecules/TableData';
-import TableDataSkeleton from '@/common/components/molecules/TableDataSkeleton/TableDataSkeleton';
-import ButtonSplit from '../../atoms/ButtonSplit';
 import { useRouter } from 'next/router';
-import TableDataEmpty from '../TableDataSkeleton/TableDataEmpty';
+import { useCallback, useEffect, useState } from 'react';
 
-export default function TableRiwayat() {
+export default function TableRiwayat(props: TTableKegiatanProps) {
+    const { admin } = props;
+    const isAdmin = admin ? true : false;
+
     const router = useRouter();
     const [data, setData] = useState<Array<any>>([]);
     const [open, setOpen] = useState(false);
@@ -55,26 +60,45 @@ export default function TableRiwayat() {
         { id: 5, label: 'tempat_kegiatan' },
     ];
 
-    const ajuanOptions = ['Tambahkan Layanan Humas', 'Tambahkan Layanan Publikasi', 'Tambahkan Layanan Media'];
-    const redirect = ['/admins/layanan-humas', '/admins/layanan-publikasi', '/admins/layanan-media'];
+    const ajuanOptions = isAdmin ? ['Tambahkan Layanan Humas', 'Tambahkan Layanan Publikasi', 'Tambahkan Layanan Media'] : ['Ajukan Layanan Humas', 'Ajukan Layanan Publikasi', 'Ajukan Layanan Media'];
+    const redirect = isAdmin ? ['/admins/layanan-humas', '/admins/layanan-publikasi', '/admins/layanan-media'] : ['/users/layanan-humas', '/users/layanan-publikasi', '/users/layanan-media'];
+
+    // const ajuanOptions = ['Ajukan Layanan Humas', 'Ajukan Layanan Publikasi', 'Ajukan Layanan Media'];
+    // const redirect = ['/users/layanan-humas', '/users/layanan-publikasi', '/users/layanan-media'];
 
     const getRiwayatAjuan = useCallback(async () => {
-        const params = `page=${page}&rowsPerPage=${rowsPerPage}`;
-        const response = await getAllRiwayatAjuan(params);
-        setData(response.data);
-        setTotalRow(response.totalRow);
-        setPage(response.page);
+        if (isAdmin) {
+            const params = `page=${page}&rowsPerPage=${rowsPerPage}`;
+            const response = await getAllRiwayatAjuan(params);
+            setData(response.data);
+            setTotalRow(response.totalRow);
+            setPage(response.page);
+        }
+    }, [setData, page, rowsPerPage]);
+
+    const getRiwayanAjuanUser = useCallback(async () => {
+        if (!isAdmin) {
+            const params = `page=${page}&rowsPerPage=${rowsPerPage}`;
+            const response = await getAllRiwayatAjuanUser(params);
+            console.log(response);
+            if (response) {
+                setData(response.data);
+                setTotalRow(response.totalRow);
+                setPage(response.page);
+            }
+        }
     }, [setData, page, rowsPerPage]);
 
     useEffect(() => {
         if (router.isReady) {
-            getRiwayatAjuan();
+            if (isAdmin) {
+                getRiwayatAjuan();
+            }
+            if (!isAdmin) {
+                getRiwayanAjuanUser();
+            }
         }
-    }, [router.isReady]);
-
-    useEffect(() => {
-        getRiwayatAjuan();
-    }, [page, rowsPerPage]);
+    }, [router.isReady, page, rowsPerPage]);
     return (
         <>
             {router.isReady ? (

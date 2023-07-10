@@ -5,7 +5,10 @@ import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
 import BalihoForm from '@/common/components/organism/BalihoForm';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import VideotronForm from '@/common/components/organism/VideotronForm';
+import { authUser } from '@/common/middlewares/auth';
 import { getAccountID } from '@/common/utils/decryptToken';
+import { listMenuUser } from '@/pages/users/dashboard';
+import { setOneLayananBaliho } from '@/services/layanan-baliho';
 import { setOneLayananVideotron } from '@/services/layanan-videotron';
 import { TabContext, TabPanel } from '@mui/lab';
 import { Box, Grid, Paper, Stack } from '@mui/material';
@@ -14,8 +17,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { toast } from 'react-toastify';
-import { listMenuUser } from './dashboard';
-import { setOneLayananBaliho } from '@/services/layanan-baliho';
 
 export default function LayananMedia() {
     const { push } = useRouter();
@@ -110,4 +111,9 @@ export default function LayananMedia() {
             </DashboardPanel>
         </Box>
     );
+}
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authUser(tkn);
 }

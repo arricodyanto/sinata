@@ -81,7 +81,7 @@ export default function TableKegiatan(props: TTableKegiatanProps) {
     const id_account = getAccountID();
 
     const getDataKegiatanUser = useCallback(async () => {
-        if (id_account !== null) {
+        if (id_account) {
             const params = `limit=${rowsPerPage}&page=${page}`;
             const response = await getAllDataKegiatanUser(id_account, params);
             setData(response.data);

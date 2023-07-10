@@ -7,6 +7,7 @@ import LiveStreamingForm from '@/common/components/organism/LiveStrForm';
 import MajalahForm from '@/common/components/organism/MajalahForm';
 import OpiniForm from '@/common/components/organism/OpiniForm';
 import PublikasiAgendaForm from '@/common/components/organism/PublikasiAgendaForm';
+import { authUser } from '@/common/middlewares/auth';
 import { getAccountID } from '@/common/utils/decryptToken';
 import { listMenuUser } from '@/pages/users/dashboard';
 import { setOneLayananLiveStreaming } from '@/services/layanan-livestreaming';
@@ -170,4 +171,8 @@ export default function LayananPublikasi() {
             </DashboardPanel>
         </Box>
     );
+}
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authUser(tkn);
 }
