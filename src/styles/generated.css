@@ -8102,18 +8102,6 @@ html {
   margin-bottom: 2rem !important;
 }
 
-.mb-1 {
-  margin-bottom: 0.25rem !important;
-}
-
-.-mt-2 {
-  margin-top: -0.5rem !important;
-}
-
-.-mr-1 {
-  margin-right: -0.25rem !important;
-}
-
 .mt-3 {
   margin-top: 0.75rem !important;
 }
@@ -8126,6 +8114,18 @@ html {
   margin-top: 0.25rem !important;
 }
 
+.mb-1 {
+  margin-bottom: 0.25rem !important;
+}
+
+.-mt-2 {
+  margin-top: -0.5rem !important;
+}
+
+.-mr-1 {
+  margin-right: -0.25rem !important;
+}
+
 .mb-0 {
   margin-bottom: 0px !important;
 }
@@ -8134,16 +8134,16 @@ html {
   margin-left: 0.25rem !important;
 }
 
+.mr-1 {
+  margin-right: 0.25rem !important;
+}
+
 .-mt-3 {
   margin-top: -0.75rem !important;
 }
 
 .ml-2 {
   margin-left: 0.5rem !important;
-}
-
-.mr-1 {
-  margin-right: 0.25rem !important;
 }
 
 .mb-\[1px\] {
@@ -8355,6 +8355,10 @@ html {
   max-height: 70px !important;
 }
 
+.max-h-\[70vh\] {
+  max-height: 70vh !important;
+}
+
 .min-h-\[250px\] {
   min-height: 250px !important;
 }
@@ -8371,12 +8375,24 @@ html {
   width: 100% !important;
 }
 
+.w-\[20rem\] {
+  width: 20rem !important;
+}
+
 .w-\[250px\] {
   width: 250px !important;
 }
 
 .w-\[100px\] {
   width: 100px !important;
+}
+
+.w-4\/5 {
+  width: 80% !important;
+}
+
+.w-64 {
+  width: 16rem !important;
 }
 
 .w-\[10px\] {
@@ -8567,10 +8583,6 @@ html {
   overflow: auto !important;
 }
 
-.overflow-x-auto {
-  overflow-x: auto !important;
-}
-
 .overflow-y-auto {
   overflow-y: auto !important;
 }
@@ -8605,12 +8617,12 @@ html {
   border-radius: 0.375rem !important;
 }
 
-.rounded {
-  border-radius: 0.25rem !important;
-}
-
 .rounded-none {
   border-radius: 0px !important;
+}
+
+.rounded {
+  border-radius: 0.25rem !important;
 }
 
 .rounded-full {
@@ -8865,6 +8877,16 @@ html {
   padding-bottom: 2rem !important;
 }
 
+.py-4 {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+
+.px-2 {
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
+}
+
 .py-1 {
   padding-top: 0.25rem !important;
   padding-bottom: 0.25rem !important;
@@ -8875,11 +8897,6 @@ html {
   padding-right: 0.75rem !important;
 }
 
-.py-4 {
-  padding-top: 1rem !important;
-  padding-bottom: 1rem !important;
-}
-
 .px-8 {
   padding-left: 2rem !important;
   padding-right: 2rem !important;
@@ -8888,11 +8905,6 @@ html {
 .py-3 {
   padding-top: 0.75rem !important;
   padding-bottom: 0.75rem !important;
-}
-
-.px-2 {
-  padding-left: 0.5rem !important;
-  padding-right: 0.5rem !important;
 }
 
 .px-0 {
@@ -8921,12 +8933,12 @@ html {
   padding-top: 0px !important;
 }
 
-.pb-4 {
-  padding-bottom: 1rem !important;
-}
-
 .pl-1 {
   padding-left: 0.25rem !important;
+}
+
+.pb-4 {
+  padding-bottom: 1rem !important;
 }
 
 .pb-0 {
@@ -8971,6 +8983,10 @@ html {
 
 .text-center {
   text-align: center !important;
+}
+
+.text-right {
+  text-align: right !important;
 }
 
 .align-middle {
@@ -9156,6 +9172,11 @@ html {
 .text-complete {
   --tw-text-opacity: 1 !important;
   color: rgb(16 185 129 / var(--tw-text-opacity)) !important;
+}
+
+.text-error {
+  --tw-text-opacity: 1 !important;
+  color: rgb(251 113 133 / var(--tw-text-opacity)) !important;
 }
 
 .text-dark {
@@ -9702,6 +9723,11 @@ a {
     padding-right: 1.5rem !important;
   }
 
+  .xs\:px-2 {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
   .xs\:px-4 {
     padding-left: 1rem !important;
     padding-right: 1rem !important;
@@ -10145,12 +10171,12 @@ a {
     width: 500px !important;
   }
 
-  .md\:w-\[calc\(50\%-0\.25rem\)\] {
-    width: calc(50% - 0.25rem) !important;
-  }
-
   .md\:w-\[700px\] {
     width: 700px !important;
+  }
+
+  .md\:max-w-\[600px\] {
+    max-width: 600px !important;
   }
 
   .md\:max-w-\[300px\] {
@@ -10173,6 +10199,11 @@ a {
   .md\:px-8 {
     padding-left: 2rem !important;
     padding-right: 2rem !important;
+  }
+
+  .md\:px-7 {
+    padding-left: 1.75rem !important;
+    padding-right: 1.75rem !important;
   }
 
   .md\:px-3 {
@@ -10201,13 +10232,6 @@ a {
     display: -webkit-box !important;
     -webkit-box-orient: vertical !important;
     -webkit-line-clamp: 3 !important;
-  }
-
-  .md\:line-clamp-2 {
-    overflow: hidden !important;
-    display: -webkit-box !important;
-    -webkit-box-orient: vertical !important;
-    -webkit-line-clamp: 2 !important;
   }
 
   .md\:btn-sm.btn.loading:before {
@@ -10434,6 +10458,10 @@ a {
 
   .lg\:max-w-\[1000px\] {
     max-width: 1000px !important;
+  }
+
+  .lg\:max-w-\[800px\] {
+    max-width: 800px !important;
   }
 
   .lg\:max-w-\[350px\] {
