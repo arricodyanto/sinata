@@ -17,6 +17,7 @@ import { getAccountID } from '@/common/utils/decryptToken';
 import { toast } from 'react-toastify';
 import { setOneLayananLiveStreaming } from '@/services/layanan-livestreaming';
 import { useRouter } from 'next/router';
+import { setOneLayananPublikasiAgenda } from '@/services/layanan-pubagenda';
 
 export default function LayananPublikasi() {
     const { push } = useRouter();
@@ -50,7 +51,27 @@ export default function LayananPublikasi() {
     };
 
     const onSavePublikasiAgenda = async (form: any) => {
-
+        const id_account = getAccountID();
+        form.set('id_account', id_account);
+        const isRequiredFilled = form.get('id_kegiatan') && form.get('leaflet_kegiatan') ? true : false;
+        if (isRequiredFilled) {
+            const response = await setOneLayananPublikasiAgenda(form);
+            if (response.status > 300) {
+                toast.error(response.message, {
+                    theme: 'colored',
+                });
+            }
+            if (response.status < 300) {
+                toast.success(response.message, {
+                    theme: 'colored'
+                });
+                push('/users/dashboard');
+            };
+        } else {
+            toast.warning('Mohon masukkan Judul dan Leaflet Kegiatan Anda.', {
+                theme: 'colored',
+            });
+        }
     };
 
     const onSavePublikasiMajalah = async (form: any) => {

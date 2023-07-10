@@ -12,6 +12,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Button, Chip, Fade, FormControl, FormLabel, IconButton, Modal, Stack, Typography } from '@mui/material';
 import dayjs from 'dayjs';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -135,6 +136,17 @@ export default function TableManajemenPublikasiAgenda() {
                                                 <Typography variant='body2' className='italic'>Belum ada data.</Typography>
                                             )}
                                             <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' disabled>Change File</Button>
+                                        </Stack>
+                                        <FormLabel className='mb-2 text-sm'>Leaflet Kegiatan</FormLabel>
+                                        <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems='flex-start' className='mb-4'>
+                                            {item.leaflet_kegiatan ? (
+                                                <Link href={`${api_file}/${item.leaflet_kegiatan}`} target='blank' className='w-[20rem] mt-2'>
+                                                    <Image src={`${api_file}/${item.leaflet_kegiatan}`} alt={`${item.tb_kegiatan.judul_kegiatan}`} quality={80} layout='responsive' width={20} height={20} className='rounded-lg' />
+                                                </Link>
+                                            ) : (
+                                                <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                                            )}
+                                            <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3 mt-2' disabled>Change File</Button>
                                         </Stack>
                                         <TextfieldLabel name='caption' label='Caption Kegiatan' value={item.caption} InputProps={{ readOnly: true }} multiline maxRows={8} />
                                         <FormLabel className='mb-2 text-sm'>Disposisi</FormLabel>
