@@ -1,15 +1,17 @@
 export type TAccountProfileProps = {
-    data: {
-        id:number,
-        username: string,
-        email: string,
-        name: string,
-        password: string,
-        no_identitas: string,
-        unit: string,
-        token: string,
-        role: any,
-        kontak: string,
-        img_profil: string,
-    }[]
-}
+  payload: {
+    account: {
+      id: string;
+      username: string;
+      name: string;
+      email: string;
+      no_identitas: string;
+      unit: string;
+      role: string;
+      kontak: number;
+      img_profil: string;
+    };
+    iat: number;
+    exp: number;
+  };
+};
