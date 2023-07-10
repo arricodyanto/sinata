@@ -40,6 +40,10 @@ export default function TambahArsip() {
             }
         }
     };
+
+    const onSavePers = async (form: any) => {
+
+    };
     return (
         <Box className='bg-grey'>
             <TitlePage title={isReady ? `Tambah Data ${jenis_arsip} - Sinata` : ''} />
@@ -54,7 +58,6 @@ export default function TambahArsip() {
                         <Paper className='shadow-md xs:p-4 md:p-6'>
                             {jenis_arsip === 'desain' ? (
                                 <TambahArsipDesain onSave={onSaveDesain} />
-
                             ) : null}
                             {/* <TambahKegiatanForm onSave={handleTambah} admin={true} /> */}
                         </Paper>

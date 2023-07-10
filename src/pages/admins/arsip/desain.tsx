@@ -11,7 +11,7 @@ import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
 import TableData from '@/common/components/molecules/TableData';
 import TableDataEmpty from '@/common/components/molecules/TableDataSkeleton/TableDataEmpty';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
-import { dateISOFormatter, dateTimeFormatter } from '@/common/utils/dateFormatter.util';
+import { dateISOFormatter, dateStringFormatter, dateTimeFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
 import { formDataFormatter } from '@/common/utils/formDataFormatter';
 import { listMenuAdmin } from '@/pages/admins/dashboard';
 import { getAllUsers } from '@/services/accounts';
@@ -39,12 +39,12 @@ export default function ArsipDesain() {
     ];
 
     const columns = [
-        { id: 2, label: 'judul_desain' },
-        { id: 3, label: 'name', source: 'tb_account' },
-        { id: 4, label: 'kategori' },
-        { id: 5, label: 'keterangan' },
-        { id: 6, label: 'deadline' },
-        { id: 8, label: 'lampiran_file' },
+        { id: 1, label: 'judul_desain' },
+        { id: 2, label: 'name', source: 'tb_account' },
+        { id: 3, label: 'kategori' },
+        { id: 4, label: 'keterangan' },
+        { id: 5, label: 'deadline' },
+        { id: 6, label: 'lampiran_file' },
     ];
 
     const api_file = process.env.NEXT_PUBLIC_API_IMG;
@@ -102,8 +102,9 @@ export default function ArsipDesain() {
                 toast.success(response.message, {
                     theme: 'colored'
                 });
+                window.location.reload();
+                handleCancelEdit();
             }
-            handleCancelEdit();
         }
     };
 
@@ -118,6 +119,7 @@ export default function ArsipDesain() {
             toast.success('Data berhasil dihapus.', {
                 theme: 'colored'
             });
+            window.location.reload();
         }
         handleCancelEdit();
     };
@@ -128,7 +130,7 @@ export default function ArsipDesain() {
         setData(response.data);
         setTotalRow(response.totalRow);
         setRowsPerPage(response.rowsPerPage);
-    }, [getAllArsipDesain, page, rowsPerPage, onSave, onDelete]);
+    }, [getAllArsipDesain, page, rowsPerPage]);
 
     const getUsers = useCallback(async () => {
         const response = await getAllUsers();
@@ -140,7 +142,7 @@ export default function ArsipDesain() {
             getArsipDesain();
             getUsers();
         }
-    }, [isReady, page, rowsPerPage, onSave, onDelete]);
+    }, [isReady, page, rowsPerPage]);
 
     const [lampiran, setLampiran] = useState(false);
 
@@ -266,11 +268,12 @@ export default function ArsipDesain() {
                                                         <ButtonBasic variant='contained' color='success' onClick={onSave}>Simpan</ButtonBasic>
                                                     </Stack>
                                                 </DialogConfirmation>
+                                                <Typography variant='caption' className='italic mt-2'>Terakhir diubah pada {dateStringFormatter(data.updatedAt)} - {timeFormatter(data.updatedAt)} WIB</Typography>
                                             </>
                                         );
                                     })}
                                 </Box>
-                                <Stack direction='row' justifyContent='flex-end' spacing={1} marginBottom={1} marginTop={2} marginRight={2} className='sticky'>
+                                <Stack direction='row' justifyContent='flex-end' spacing={1} marginBottom={1} marginRight={2} className='sticky'>
                                     <ButtonIcon variant='outlined' color='error' onClick={handleDialogOpen(setOpenHapus)} icon={<DeleteIcon className='-mr-1' />}>Hapus</ButtonIcon>
                                     {editable ? (
                                         <>

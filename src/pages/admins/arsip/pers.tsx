@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import tb_peliputan from '@/json/tb_laypeliputan.json';
 import TableDataSkeleton from '@/common/components/molecules/TableDataSkeleton/TableDataSkeleton';
-import { Box, Chip, Fade, FormControl, FormLabel, IconButton, MenuItem, Modal, Paper, Skeleton, Stack, TableCell, Typography } from '@mui/material';
+import { Box, Button, Chip, Fade, FormControl, FormLabel, IconButton, MenuItem, Modal, Paper, Skeleton, Stack, TableCell, Typography } from '@mui/material';
 import TableData from '@/common/components/molecules/TableData';
 import TitlePage from '@/common/components/atoms/TitlePage';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
@@ -20,14 +20,29 @@ import AutocompleteCustom from '@/common/components/atoms/AutocompleteCustom';
 import DateFieldBasic from '@/common/components/atoms/DateFieldBasic';
 import TimePickerBasic from '@/common/components/atoms/TimePickerBasic';
 import dayjs from 'dayjs';
+import TableDataEmpty from '@/common/components/molecules/TableDataSkeleton/TableDataEmpty';
+import ButtonBasic from '@/common/components/atoms/ButtonBasic';
+import { deleteOneArsipPers, getAllArsipPers, updateOneArsipPers } from '@/services/arsip-pers';
+import { useRouter } from 'next/router';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import { dateFormatter, dateISOFormatter, dateStringFormatter, timeFormatter, timeISOFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
+import { getAllUsers } from '@/services/accounts';
+import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
+import DisabledFormDataKegiatan from '@/common/components/organism/FormDataKegiatan/DisabledFormDataKegiatan';
+import AutocompleteTitle from '@/common/components/atoms/AutocompleteTitle';
+import { getAllDataKegiatan } from '@/services/data-kegiatan';
+import { getAllLayananPeliputan } from '@/services/layanan-peliputan';
+import FileUpload from '@/common/components/atoms/FileUpload';
+import Image from 'next/image';
+import { toast } from 'react-toastify';
+import DatePickerBasic from '@/common/components/atoms/DatePickerBasic';
 
 export default function ArsipPers() {
-    // Table Data props
+    const { isReady } = useRouter();
     const headers = [
-        'ID', 'No Rilis', 'Judul Berita', 'Kategori Berita', 'Jurnalis', 'Tanggal Rilis', 'Waktu Rilis', 'Admin', 'Judul Terjemahan', 'Admin Terjemahan', 'Aksi', 'Status'
+        'No Rilis', 'Judul Berita', 'Kategori Berita', 'Jurnalis', 'Tanggal Rilis', 'Waktu Rilis', 'Admin', 'Judul Terjemahan', 'Admin Terjemahan', 'Aksi'
     ];
     const columns = [
-        { id: 1, label: 'id' },
         { id: 2, label: 'no_rilis', source: 'arsip' },
         { id: 3, label: 'judul_berita' },
         { id: 4, label: 'kategori' },
@@ -39,16 +54,25 @@ export default function ArsipPers() {
         { id: 10, label: 'admin_terj', source: 'arsip' }
     ];
 
-    const filteredData = tb_peliputan.filter((row: any) => {
-        return row.arsip.length != 0;
-    });
+    const api_image = process.env.NEXT_PUBLIC_API_IMG;
 
-    const [data, setData] = React.useState<Array<any>>(filteredData);
-    const rows = data.slice().reverse().map((row: any) => row);
+    const [page, setPage] = useState<number>(0);
+    const [totalRow, setTotalRow] = useState<number>(2);
+    const [rowsPerPage, setRowsPerPage] = useState<number>(5);
 
-    // Modal state
-    const [open, setOpen] = React.useState(false);
-    const [currIndex, setCurrIndex] = React.useState(0);
+    const handleChangePage = (newPage: number) => {
+        setPage(newPage + 1);
+    };
+
+    const handleChangeLimit = (limit: number) => {
+        setRowsPerPage(limit);
+    };
+
+    const [data, setData] = useState<Array<any>>([]);
+    const [autocomplete, setAutocomplete] = useState<string>('');
+
+    const [open, setOpen] = useState(false);
+    const [currIndex, setCurrIndex] = useState(0);
     const handleOpen = (id: number) => {
         setOpen(true);
         setCurrIndex(id);
@@ -57,6 +81,197 @@ export default function ArsipPers() {
         event.stopPropagation();
     };
     const handleClose = () => setOpen(false);
+
+    const [users, setUsers] = useState<Array<any>>([]);
+
+    const [openHapus, setOpenHapus] = useState(false);
+    const [openSimpan, setOpenSimpan] = useState(false);
+    const handleDialogOpen = (setState: React.Dispatch<React.SetStateAction<boolean>>) => () => {
+        setState(true);
+    };
+    const handleDialogClose = (setState: React.Dispatch<React.SetStateAction<boolean>>) => () => {
+        setState(false);
+    };
+
+    const [editable, setEditable] = useState(false);
+    const handleEdit = () => {
+        setEditable(true);
+    };
+    const handleCancelEdit = () => {
+        setEditable(false);
+        setOpen(false);
+        setOpenSimpan(false);
+    };
+
+    const id = currIndex.toString();
+    const [originalForm, setOriginalForm] = useState<object>({});
+    const [id_peliputan, setId_peliputan] = useState('');
+    const [no_rilis, setNo_rilis] = useState('');
+    const [judul_berita, setJudul_berita] = useState('');
+    const [kategori, setKategori] = useState('');
+    const [jurnalis, setJurnalis] = useState('');
+    const [prarilis, setPrarilis] = useState('');
+    const [rilis, setRilis] = useState('');
+    const [tgl_upload, setTgl_upload] = useState('');
+    const [waktu_upload, setWaktu_upload] = useState('');
+    const [admin, setAdmin] = useState('');
+    const [link_berita, setLink_berita] = useState('');
+    const [judul_terjemahan, setJudul_terjemahan] = useState('');
+    const [penerjemah, setPenerjemah] = useState('');
+    const [naskah_terj, setNaskah_terj] = useState('');
+    const [tgl_upload_terj, setTgl_upload_terj] = useState('');
+    const [waktu_upload_terj, setWaktu_upload_terj] = useState('');
+    const [admin_terj, setAdmin_terj] = useState('');
+    const [link_terj, setLink_terj] = useState('');
+    const [status_publikasi, setStatus_publikasi] = useState('');
+
+    const [detailPeliputan, setDetailPeliputan] = useState<Array<any>>([]);
+
+    const handleJudulChange = (event: any, value: any) => {
+        setAutocomplete(value?.tb_kegiatan.judul_kegiatan);
+        setId_peliputan(value?.id);
+        setDetailPeliputan(value ? [value] : []);
+    };
+
+    const handleStatusPublikasiChange = (event: any) => {
+        setStatus_publikasi(event.target.value);
+    };
+    const handleJurnalisChange = (event: any, value: any) => {
+        setJurnalis(value?.name);
+    };
+    const handleAdminChange = (event: any, value: any) => {
+        setAdmin(value?.name);
+    };
+    const handlePenerjemahChange = (event: any, value: any) => {
+        setPenerjemah(value?.name);
+    };
+    const handleAdminTerjChange = (event: any, value: any) => {
+        setAdmin_terj(value?.name);
+    };
+
+    const onSave = async () => {
+        const formattedForm = {
+            id_peliputan, no_rilis, judul_berita, kategori, jurnalis, prarilis, rilis,
+            tgl_upload, waktu_upload, admin, link_berita, judul_terjemahan, penerjemah, naskah_terj, tgl_upload_terj,
+            waktu_upload_terj, admin_terj, link_terj, status_publikasi
+        };
+        const isSame = JSON.stringify(formattedForm) === JSON.stringify(originalForm) ? true : false;
+
+        if (isSame) {
+            toast.warning('Tidak ada perubahan pada data.', {
+                theme: 'colored'
+            });
+            handleCancelEdit();
+        }
+        if (!isSame) {
+            const response = await updateOneArsipPers(id, formattedForm);
+            if (response.error === true) {
+                toast.error(response.message, {
+                    theme: 'colored',
+                });
+                handleCancelEdit();
+            }
+            if (response.error === false) {
+                toast.success(response.message, {
+                    theme: 'colored'
+                });
+                window.location.reload();
+                handleCancelEdit();
+            }
+        };
+
+    };
+    const onDelete = async (id: string) => {
+        const response = await deleteOneArsipPers(id);
+        if (response.error === false) {
+            toast.success('Data berhasil dihapus.', {
+                theme: 'colored'
+            });
+            window.location.reload();
+        }
+        if (response.error === true) {
+            toast.error(response.message, {
+                theme: 'colored'
+            });
+        }
+    };
+
+    const getArsipPers = useCallback(async () => {
+        const params = `limit=${rowsPerPage}&page=${page}`;
+        const response = await getAllArsipPers(params);
+        setData(response.data);
+        setTotalRow(response.totalRow);
+        setRowsPerPage(response.rowsPerPage);
+    }, [getAllArsipPers, page, rowsPerPage]);
+
+    const [peliputans, setPeliputans] = useState<Array<any>>([]);
+
+    const getPeliputan = useCallback(async () => {
+        const params = 'limit=999';
+        const response = await getAllLayananPeliputan(params);
+        setPeliputans(response.data);
+    }, [getAllLayananPeliputan]);
+
+    const getUsers = useCallback(async () => {
+        const response = await getAllUsers();
+        setUsers(response.data);
+    }, [getAllArsipPers]);
+    useEffect(() => {
+        if (isReady) {
+            getArsipPers();
+            getUsers();
+            getPeliputan();
+        }
+    }, [isReady, page, rowsPerPage]);
+
+    useEffect(() => {
+        if (data.length > 0) {
+            const initialData = data.find((item: any) => item.id === currIndex);
+            if (initialData) {
+                setOriginalForm({
+                    id_peliputan: initialData.id_peliputan,
+                    no_rilis: initialData.no_rilis,
+                    judul_berita: initialData.judul_berita,
+                    kategori: initialData.kategori,
+                    jurnalis: initialData.jurnalis,
+                    prarilis: initialData.prarilis,
+                    rilis: initialData.rilis,
+                    tgl_upload: initialData.tgl_upload,
+                    waktu_upload: initialData.waktu_upload,
+                    admin: initialData.admin,
+                    link_berita: initialData.link_berita,
+                    judul_terjemahan: initialData.judul_terjemahan,
+                    penerjemah: initialData.penerjemah,
+                    naskah_terj: initialData.naskah_terj,
+                    tgl_upload_terj: initialData.tgl_upload_terj,
+                    waktu_upload_terj: initialData.waktu_upload_terj,
+                    admin_terj: initialData.admin_terj,
+                    link_terj: initialData.link_terj,
+                    status_publikasi: initialData.status_publikasi,
+                });
+                setId_peliputan(initialData.id_peliputan);
+                setNo_rilis(initialData.no_rilis);
+                setJudul_berita(initialData.judul_berita);
+                setKategori(initialData.kategori);
+                setJurnalis(initialData.jurnalis);
+                setPrarilis(initialData.prarilis);
+                setRilis(initialData.rilis);
+                setTgl_upload(initialData.tgl_upload);
+                setWaktu_upload(initialData.waktu_upload);
+                setAdmin(initialData.admin);
+                setLink_berita(initialData.link_berita);
+                setJudul_terjemahan(initialData.judul_terjemahan);
+                setPenerjemah(initialData.penerjemah);
+                setNaskah_terj(initialData.naskah_terj);
+                setTgl_upload_terj(initialData.tgl_upload_terj);
+                setWaktu_upload_terj(initialData.waktu_upload_terj);
+                setAdmin_terj(initialData.admin_terj);
+                setLink_terj(initialData.link_terj);
+                setStatus_publikasi(initialData.status_publikasi);
+            }
+        }
+    }, [data, currIndex]);
+
     return (
         <Box className='bg-grey'>
             <TitlePage title='Arsip Pers - Sinata' />
@@ -67,14 +282,23 @@ export default function ArsipPers() {
                     </Link>
                 </HeaderBreadcrumbs>
                 <Paper className='shadow-md xs:p-4 md:p-6'>
-                    {rows.length === 0 ?
-                        <>
-                            <Skeleton variant='rounded' width={210} height={25} className='mb-6' />
-                            <TableDataSkeleton headers={headers} />
-                        </>
-                        :
-                        <TableData headers={headers} columns={columns} rows={rows} status={false} actionOnClick={handleOpen} addButton={true} />
-                    }
+                    {data.length === 0 ? (
+                        <TableDataEmpty headers={headers}
+                            addButton={
+                                <Link href='/admins/arsip/desain/tambah'>
+                                    <ButtonBasic variant='contained'>Tambah Data</ButtonBasic>
+                                </Link>
+                            } />
+                    ) : (
+                        <TableData headers={headers} columns={columns} rows={data} status={false} actionOnClick={handleOpen}
+                            page={page} limit={rowsPerPage} totalRow={totalRow} changedPage={handleChangePage} changedLimit={handleChangeLimit}
+                            addButton={
+                                <Link href='/admins/arsip/desain/tambah'>
+                                    <ButtonBasic variant='contained'>Tambah Data</ButtonBasic>
+                                </Link>
+                            }
+                        />
+                    )}
                     <Modal open={open} onClose={handleClose} BackdropProps={{ onClick: handleBackdropClick }}>
                         <Fade in={open}>
                             <Box className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-md xs:w-[calc(100%-40px)] md:w-[800px] lg:w-[1000px]'>
@@ -87,72 +311,118 @@ export default function ArsipPers() {
                                     </IconButton>
                                 </Stack>
                                 <Box sx={{ mt: 2 }} className='max-h-[80vh] overflow-y-auto pb-4 px-6'>
-                                    {rows.filter((item: any) => item.id === currIndex).map((data: any) => {
+                                    {data.filter((item: any) => item.id === currIndex).map((data: any) => {
                                         return (
                                             <>
-                                                <TextfieldLabel name='id' label='ID Pengajuan' defaultValue={data.id} disabled />
-                                                <TextfieldLabel name='no_rilis' label='No Rilis' defaultValue={data.arsip[0].no_rilis} />
-                                                <TextfieldLabel name='judul_berita' label='Judul Berita (ID)' defaultValue={data.judul_berita} />
+                                                <AutocompleteCustom name='judul_kegiatan' label='Judul Kegiatan' data={peliputans} getOptionLabel={(data) => data.tb_kegiatan.judul_kegiatan} onChange={handleJudulChange} defaultValue={peliputans.find((item: any) => item.tb_kegiatan.judul_kegiatan == data.tb_laypeliputan.tb_kegiatan.judul_kegiatan)} disabled={!editable} />
+                                                <DisabledFormDataKegiatan judul_kegiatan={autocomplete} />
+                                                {detailPeliputan.length > 0 ? detailPeliputan.map((item: any) => {
+                                                    return (
+                                                        <>
+                                                            <FormLabel className='mb-2 text-sm'>Leaflet Kegiatan</FormLabel>
+                                                            <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems='flex-start' className='mb-4'>
+                                                                {item.leaflet_kegiatan ? (
+                                                                    <Link href={`${api_image}/${item.leaflet_kegiatan}`} target='blank' className='w-[20rem] mt-2'>
+                                                                        <Image src={`${api_image}/${item.leaflet_kegiatan}`} alt={`${item.tb_kegiatan.judul_kegiatan}`} quality={80} layout='responsive' width={20} height={20} className='rounded-lg' />
+                                                                    </Link>
+                                                                ) : (
+                                                                    <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                                                                )}
+                                                                <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3 mt-2' disabled>Change File</Button>
+                                                            </Stack>
+                                                            <SelectLabel name='status' label='Status Layanan Peliputan' defaultValue={item.status} disabled>
+                                                                <MenuItem value='Pending'>Pending</MenuItem>
+                                                                <MenuItem value='Approved & On Progress'>Approved & On Progress</MenuItem>
+                                                                <MenuItem value='Completed'>Complete</MenuItem>
+                                                                <MenuItem value='Rejected'>Rejected</MenuItem>
+                                                            </SelectLabel>
+                                                        </>
+                                                    );
+                                                }) : null}
+                                                <TextfieldLabel name='no_rilis' label='No Rilis' value={no_rilis} onChange={(event: any) => setNo_rilis(event.target.value)} disabled={!editable} />
+                                                <TextfieldLabel name='judul_berita' label='Judul Berita' value={judul_berita} onChange={(event: any) => setJudul_berita(event.target.value)} disabled={!editable} />
                                                 <Stack direction='row' spacing={1}>
-                                                    <SelectLabel name='kategori' label='Kategori Berita' defaultValue={data.kategori} className='capitalize'>
+                                                    <SelectLabel name='kategori' label='Kategori Berita' value={kategori} onChange={(event: any) => setKategori(event.target.value)} className='capitalize' disabled={!editable}>
                                                         <MenuItem value='' disabled>Pilih salah satu</MenuItem>
                                                         {kategoriBerita.map((item, index) => <MenuItem value={item} key={index} className='capitalize'>{item}</MenuItem>)}
                                                     </SelectLabel>
-                                                    <AutocompleteCustom name='jurnalis' label='Jurnalis' data={rows} getOptionLabel={(data) => data.jurnalis} defaultValue={rows.find((item: any) => item.jurnalis == data.jurnalis)} />
+                                                    <AutocompleteCustom name='jurnalis' label='Jurnalis' data={users} getOptionLabel={(data) => data.name} value={users.find((item: any) => item.name == data.jurnalis)} onChange={handleJurnalisChange} disabled={!editable} />
                                                 </Stack>
+                                                <TextfieldLabel name='prarilis' label='Prarilis' value={prarilis} onChange={(event: any) => setPrarilis(event.target.value)} multiline maxRows={16} disabled={!editable} />
+                                                <TextfieldLabel name='rilis' label='Rilis' value={rilis} onChange={(event: any) => setRilis(event.target.value)} multiline maxRows={16} disabled={!editable} />
                                                 <Stack direction='row' spacing={1} className='mb-4'>
                                                     <FormControl className='w-full'>
                                                         <FormLabel className='mb-1 text-sm'>
                                                             Tanggal Rilis
                                                         </FormLabel>
-                                                        <DateFieldBasic name='tgl_upload' value={dayjs(data.arsip[0].tgl_upload, 'DD/MM/YYYY')} />
+                                                        <DatePickerBasic value={dayjs(dateFormatter(tgl_upload), 'DD/MM/YYYY')} onChange={(value: any) => setTgl_upload(dateISOFormatter(value))} disabled={!editable} />
                                                     </FormControl>
                                                     <FormControl className='w-full'>
                                                         <FormLabel className='mb-1 text-sm'>
                                                             Waktu Rilis
                                                         </FormLabel>
-                                                        <TimePickerBasic value={dayjs(data.arsip[0].tgl_upload + ' ' + data.arsip[0].waktu_upload, 'DD/MM/YYYY hh:mm')} />
+                                                        <TimePickerBasic value={dayjs(dateFormatter(tgl_upload) + ' ' + timeStrictFormatter(waktu_upload), 'DD/MM/YYYY hh:mm')} onChange={(value: any) => setWaktu_upload(timeISOFormatter(value))} disabled={!editable} />
                                                     </FormControl>
                                                 </Stack>
                                                 <Stack direction='row' spacing={1}>
-                                                    <AutocompleteCustom name='admin' label='Admin' data={rows} getOptionLabel={(data) => data.arsip[0].admin} defaultValue={rows.find((item: any) => item.arsip[0].admin == data.arsip[0].admin)} />
-                                                    <TextfieldLabel name='link_berita' label='Tautan Berita' defaultValue={data.arsip[0].link_berita} />
+                                                    <AutocompleteCustom label='Admin' data={users} onChange={handleAdminChange} getOptionLabel={(data) => data.name} value={users.find((item: any) => item.name == data.admin)} disabled={!editable} />
+                                                    <TextfieldLabel name='link_berita' label='Tautan Berita' value={link_berita} onChange={(event: any) => setLink_berita(event.target.value)} disabled={!editable} />
                                                 </Stack>
-                                                <TextfieldLabel name='judul_terjemahan' label='Judul Terjemahan (EN)' defaultValue={data.arsip[0].judul_terjemahan} />
-                                                <AutocompleteCustom name='penerjemah' label='Penerjemah' data={rows} getOptionLabel={(data) => data.arsip[0].penerjemah} defaultValue={rows.find((item: any) => item.arsip[0].penerjemah == data.arsip[0].penerjemah)} />
+                                                <TextfieldLabel name='judul_terjemahan' label='Judul Terjemahan (EN)' value={judul_terjemahan} onChange={(event: any) => setJudul_terjemahan(event.target.value)} disabled={!editable} />
+                                                <AutocompleteCustom label='Penerjemah' data={users} onChange={handlePenerjemahChange} getOptionLabel={(data) => data.name} value={users.find((item: any) => item.name == data.penerjemah)} disabled={!editable} />
+                                                <TextfieldLabel name='naskah_terj' label='Naskah Terjemahan' value={naskah_terj} onChange={(event: any) => setNaskah_terj(event.target.value)} multiline maxRows={16} disabled={!editable} />
                                                 <Stack direction='row' spacing={1} className='mb-4'>
                                                     <FormControl className='w-full'>
                                                         <FormLabel className='mb-1 text-sm'>
                                                             Tanggal Rilis Terjemahan
                                                         </FormLabel>
-                                                        <DateFieldBasic name='tgl_upload_terj' value={dayjs(data.arsip[0].tgl_upload_terj, 'DD/MM/YYYY')} />
+                                                        <DatePickerBasic value={dayjs(dateFormatter(tgl_upload_terj), 'DD/MM/YYYY')} onChange={(value: any) => setTgl_upload_terj(dateISOFormatter(value))} disabled={!editable} />
                                                     </FormControl>
                                                     <FormControl className='w-full'>
                                                         <FormLabel className='mb-1 text-sm'>
                                                             Waktu Rilis Terjemahan
                                                         </FormLabel>
-                                                        <TimePickerBasic value={dayjs(data.arsip[0].tgl_upload_terj + ' ' + data.arsip[0].waktu_upload_terj, 'DD/MM/YYYY hh:mm')} />
+                                                        <TimePickerBasic value={dayjs(dateFormatter(tgl_upload_terj) + ' ' + timeStrictFormatter(waktu_upload_terj), 'DD/MM/YYYY hh:mm')} onChange={(value: any) => setWaktu_upload_terj(timeFormatter(value))} disabled={!editable} />
                                                     </FormControl>
                                                 </Stack>
                                                 <Stack direction='row' spacing={1}>
-                                                    <AutocompleteCustom name='admin_terj' label='Admin Terjemahan' data={rows} getOptionLabel={(data) => data.arsip[0].admin_terj} defaultValue={rows.find((item: any) => item.arsip[0].admin_terj == data.arsip[0].admin_terj)} />
-                                                    <TextfieldLabel name='link_terj' label='Tautan Terjemahan' defaultValue={data.arsip[0].link_terj} />
+                                                    <AutocompleteCustom label='Admin Terjemahan' data={users} onChange={handleAdminTerjChange} getOptionLabel={(data) => data.name} value={users.find((item: any) => item.name == data.admin_terj)} disabled={!editable} />
+                                                    <TextfieldLabel name='link_terj' label='Tautan Terjemahan' value={link_terj} onChange={(event: any) => setLink_terj(event.target.value)} disabled={!editable} />
                                                 </Stack>
-                                                <SelectLabel name='status' label='Status' defaultValue={data.arsip[0].status_publikasi}>
-                                                    <MenuItem value='pending'>Pending</MenuItem>
+                                                <SelectLabel name='status' label='Status Publikasi' value={status_publikasi} onChange={handleStatusPublikasiChange} disabled={!editable}>
+                                                    <MenuItem value='Pending'>Pending</MenuItem>
                                                     <MenuItem value='ID'>ID</MenuItem>
                                                     <MenuItem value='EN'>EN</MenuItem>
-                                                    <MenuItem value='selesai'>Selesai</MenuItem>
+                                                    <MenuItem value='Selesai'>Selesai</MenuItem>
                                                 </SelectLabel>
+                                                <Typography variant='caption' className='italic mt-2'>Terakhir diubah pada {dateStringFormatter(data.updatedAt)} - {timeFormatter(data.updatedAt)} WIB</Typography>
+                                                <DialogConfirmation title='Hapus' body='Apakah Anda yakin ingin menghapus data ini?' open={openHapus} onClose={handleDialogClose(setOpenHapus)}>
+                                                    <Stack direction='row' spacing={1} className='mt-4 px-2 mb-4'>
+                                                        <ButtonBasic variant='contained' onClick={handleDialogClose(setOpenHapus)}>Batal</ButtonBasic>
+                                                        <ButtonBasic variant='outlined' color='error' onClick={() => onDelete(id)}>Hapus</ButtonBasic>
+                                                    </Stack>
+                                                </DialogConfirmation>
+                                                <DialogConfirmation title='Ubah Data' body='Apakah Anda yakin ingin menyimpan perubahan pada data ini?' open={openSimpan} onClose={handleDialogClose(setOpenSimpan)}>
+                                                    <Stack direction='row' spacing={1} className='mt-4 px-2 mb-4'>
+                                                        <ButtonBasic variant='contained' onClick={handleDialogClose(setOpenSimpan)}>Batal</ButtonBasic>
+                                                        <ButtonBasic variant='contained' color='success' onClick={onSave}>Simpan</ButtonBasic>
+                                                    </Stack>
+                                                </DialogConfirmation>
                                             </>
                                         );
                                     })}
-                                    <Stack direction='row' justifyContent='flex-end' spacing={1} marginBottom={1} marginTop={2}>
-                                        <ButtonIcon variant='outlined' color='error' icon={<DeleteIcon className='-mr-1' />}>Hapus</ButtonIcon>
-                                        <ButtonIcon variant='contained' icon={<CancelIcon className='-mr-1' />} onClick={handleClose}>Tutup</ButtonIcon>
-                                        <ButtonIcon variant='contained' color='success' icon={<SaveIcon className='-mr-1' />}>Simpan</ButtonIcon>
-                                    </Stack>
                                 </Box>
+                                <Stack direction='row' justifyContent='flex-end' spacing={1} marginBottom={1} marginTop={2} marginRight={2} className='sticky'>
+                                    <ButtonIcon variant='outlined' color='error' onClick={handleDialogOpen(setOpenHapus)} icon={<DeleteIcon className='-mr-1' />}>Hapus</ButtonIcon>
+                                    {editable ? (
+                                        <>
+                                            <ButtonIcon variant='contained' color='success' onClick={handleDialogOpen(setOpenSimpan)} icon={<SaveIcon className='-mr-1' />}>Simpan</ButtonIcon>
+                                            <ButtonIcon variant='contained' icon={<CancelIcon className='-mr-1' />} onClick={handleCancelEdit}>Batal</ButtonIcon>
+                                        </>
+                                    ) : (
+                                        <ButtonIcon variant='contained' color='primary' onClick={handleEdit} icon={<EditRoundedIcon className='-mr-1' />}>Ubah</ButtonIcon>
+                                    )}
+                                </Stack>
                             </Box>
                         </Fade>
                     </Modal>
