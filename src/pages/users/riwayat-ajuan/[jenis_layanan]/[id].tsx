@@ -10,8 +10,7 @@ import LayananPeminformasi from '@/common/components/organism/FormEditLayanan/La
 import LayananPublikasiAgenda from '@/common/components/organism/FormEditLayanan/LayananPublikasiAgenda';
 import LayananPublikasiMajalah from '@/common/components/organism/FormEditLayanan/LayananPublikasiMajalah';
 import LayananVideotron from '@/common/components/organism/FormEditLayanan/LayananVideotron';
-import { authAdmin } from '@/common/middlewares/auth';
-import { listMenuAdmin } from '@/pages/admins/dashboard';
+import { authUser } from '@/common/middlewares/auth';
 import { getOneLayananBaliho } from '@/services/layanan-baliho';
 import { getOneKonpers } from '@/services/layanan-konpers';
 import { getOneLayananLiveStreaming } from '@/services/layanan-livestreaming';
@@ -26,8 +25,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
+import { listMenuUser } from '../../dashboard';
 
-export default function RiwayatAjuanPage() {
+export default function RiwayatAjuanUserPage() {
     const { query, isReady } = useRouter();
     const { jenis_layanan, id } = query;
 
@@ -80,34 +80,30 @@ export default function RiwayatAjuanPage() {
         <>
             <Box className='bg-grey'>
                 <TitlePage title={isReady ? `Ajuan ${jenis_layanan} - Sinata` : 'Sinata Loading...'} />
-                <DashboardPanel listMenu={listMenuAdmin}>
-                    <HeaderBreadcrumbs pageHeader='Riwayat Ajuan Layanan' currentPage='Riwayat Ajuan'>
-                        <Link href='/admins/semua-ajuan' className='text-zinc-900 hover:underline hover:decoration-1 hover:underline-offset-2'>
-                            Semua Ajuan
-                        </Link>
-                    </HeaderBreadcrumbs>
+                <DashboardPanel listMenu={listMenuUser}>
+                    <HeaderBreadcrumbs pageHeader='Riwayat Ajuan Layanan' currentPage='Riwayat Ajuan' />
                     <Grid container spacing={2}>
                         <Grid item spacing={1} xs={12} md={8}>
                             <Paper className='shadow-md xs:p-4 md:p-6'>
                                 {jenis_layanan === 'Layanan Peliputan' ? (
-                                    <LayananPeliputan data={data} id={id} admin />
+                                    <LayananPeliputan data={data} id={id} />
                                 ) : jenis_layanan === 'Layanan Konferensi Pers' ? (
-                                    <LayananKonpers data={data} id={id} admin />
+                                    <LayananKonpers data={data} id={id} />
                                 ) : jenis_layanan === 'Layanan Pembaruan Informasi' ? (
-                                    <LayananPeminformasi data={data} id={id} admin />
+                                    <LayananPeminformasi data={data} id={id} />
                                 ) : jenis_layanan === 'Layanan Live Streaming' ? (
-                                    <LayananLiveStreaming data={data} id={id} admin />
+                                    <LayananLiveStreaming data={data} id={id} />
                                 ) : jenis_layanan === 'Layanan Publikasi Agenda' ? (
-                                    <LayananPublikasiAgenda data={data} id={id} admin />
+                                    <LayananPublikasiAgenda data={data} id={id} />
                                 ) : jenis_layanan === 'Layanan Publikasi di Majalah' ? (
-                                    <LayananPublikasiMajalah data={data} id={id} admin />
+                                    <LayananPublikasiMajalah data={data} id={id} />
                                 ) : jenis_layanan === 'Layanan Opini di Media' ? (
-                                    <LayananOpini data={data} id={id} admin />
+                                    <LayananOpini data={data} id={id} />
                                 ) : jenis_layanan === 'Layanan Penayangan Konten di Videotron' ? (
-                                    <LayananVideotron data={data} id={id} admin />
+                                    <LayananVideotron data={data} id={id} />
                                 ) : jenis_layanan === 'Layanan Pemasangan Baliho' ? (
-                                    <LayananBaliho data={data} id={id} admin />
-                                ) : null} admin
+                                    <LayananBaliho data={data} id={id} />
+                                ) : null}
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={4}>
@@ -124,5 +120,5 @@ export default function RiwayatAjuanPage() {
 
 export async function getServerSideProps({ req }: any) {
     const { tkn } = req.cookies;
-    return authAdmin(tkn);
+    return authUser(tkn);
 }

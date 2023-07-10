@@ -13,11 +13,12 @@ import ButtonBasic from '@/common/components/atoms/ButtonBasic';
 import Link from 'next/link';
 import { TFormTambahLayananProps } from '@/common/types';
 import { useRouter } from 'next/router';
-import { getAllDataKegiatan } from '@/services/data-kegiatan';
+import { getAllDataKegiatan, getAllDataKegiatanUser } from '@/services/data-kegiatan';
 import DisabledFormDataKegiatan from '../FormDataKegiatan/DisabledFormDataKegiatan';
 import DatePickerBasic from '../../atoms/DatePickerBasic';
 import { FilePondFile } from 'filepond';
 import DialogConfirmation from '../../atoms/DialogConfirmation';
+import { getAccountID } from '@/common/utils/decryptToken';
 
 const form = new FormData();
 
@@ -30,13 +31,31 @@ export default function BalihoForm(props: TFormTambahLayananProps) {
     const [dataKegiatan, setDataKegiatan] = useState<Array<any>>([]); // Handle autocomplete
 
     const getDataKegiatan = useCallback(async () => {
-        const response = await getAllDataKegiatan();
-        setDataKegiatan(response.data);
-    }, []);
+        if (isAdmin) {
+            const response = await getAllDataKegiatan();
+            setDataKegiatan(response.data);
+        }
+    }, [getAllDataKegiatan]);
+
+    const id_account = getAccountID();
+
+    const getDataKegiatanUser = useCallback(async () => {
+        if (!isAdmin) {
+            if (id_account) {
+                const response = await getAllDataKegiatanUser(id_account);
+                setDataKegiatan(response.data);
+            }
+        }
+    }, [getAllDataKegiatanUser]);
 
     useEffect(() => {
         if (isReady) {
-            getDataKegiatan();
+            if (isAdmin) {
+                getDataKegiatan();
+            }
+            if (!isAdmin) {
+                getDataKegiatanUser();
+            }
         }
     }, [isReady]);
 

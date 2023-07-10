@@ -63,9 +63,6 @@ export default function TableRiwayat(props: TTableKegiatanProps) {
     const ajuanOptions = isAdmin ? ['Tambahkan Layanan Humas', 'Tambahkan Layanan Publikasi', 'Tambahkan Layanan Media'] : ['Ajukan Layanan Humas', 'Ajukan Layanan Publikasi', 'Ajukan Layanan Media'];
     const redirect = isAdmin ? ['/admins/layanan-humas', '/admins/layanan-publikasi', '/admins/layanan-media'] : ['/users/layanan-humas', '/users/layanan-publikasi', '/users/layanan-media'];
 
-    // const ajuanOptions = ['Ajukan Layanan Humas', 'Ajukan Layanan Publikasi', 'Ajukan Layanan Media'];
-    // const redirect = ['/users/layanan-humas', '/users/layanan-publikasi', '/users/layanan-media'];
-
     const getRiwayatAjuan = useCallback(async () => {
         if (isAdmin) {
             const params = `page=${page}&rowsPerPage=${rowsPerPage}`;
@@ -188,7 +185,7 @@ export default function TableRiwayat(props: TTableKegiatanProps) {
                                         </Stack>
                                         <Stack direction='row' justifyContent='flex-end' spacing={1} marginBottom={1} marginTop={3}>
                                             <ButtonIcon variant='contained' icon={<CancelIcon className='-mr-1' />} onClick={handleClose}>Tutup</ButtonIcon>
-                                            <ButtonIcon variant='outlined' icon={<ArrowForwardIcon className='-mr-1' />} onClick={() => router.push(`/admins/riwayat-ajuan/${item.jenis_layanan}/${item.id}`)}>Lihat Ajuan</ButtonIcon>
+                                            <ButtonIcon variant='outlined' icon={<ArrowForwardIcon className='-mr-1' />} onClick={() => router.push(`/${isAdmin ? 'admins' : 'users'}/riwayat-ajuan/${item.jenis_layanan}/${item.id}`)}>Lihat Ajuan</ButtonIcon>
                                         </Stack>
                                     </>
                                 );

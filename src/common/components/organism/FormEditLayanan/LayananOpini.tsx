@@ -27,8 +27,9 @@ import DateTimePickerBasic from '@/common/components/atoms/DatePickerBasic/DateT
 const form = new FormData();
 
 export default function LayananOpini(props: TFormEditLayananProps) {
-    const { data, id } = props;
+    const { data, id, admin } = props;
     let rows = data;
+    const isAdmin = admin ? true : false;
 
     const { isReady, push } = useRouter();
     const api_file = process.env.NEXT_PUBLIC_API_IMG;
@@ -44,7 +45,7 @@ export default function LayananOpini(props: TFormEditLayananProps) {
     const [users, setUsers] = useState<Array<any>>([]);
 
     const handleUserChange = (event: any, value: any) => {
-        form.set('id_account', value.id);
+        form.set('id_account', value?.id);
     };
 
     const handleAdminChange = (event: any, value: any) => {
@@ -84,7 +85,7 @@ export default function LayananOpini(props: TFormEditLayananProps) {
                 toast.success(response.message, {
                     theme: 'colored'
                 });
-                push('/admins/layanan-publikasi');
+                isAdmin ? push('/admins/layanan-publikasi') : push('/users/profile');
             }
         }
         setOpenSimpan(false);
@@ -123,7 +124,7 @@ export default function LayananOpini(props: TFormEditLayananProps) {
         toast.success('Data berhasil dihapus.', {
             theme: 'colored'
         });
-        push('/admins/layanan-publikasi');
+        isAdmin ? push('/admins/layanan-publikasi') : push('/users/profile');
     };
 
     if (!rows) {
@@ -137,7 +138,9 @@ export default function LayananOpini(props: TFormEditLayananProps) {
                 return (
                     <>
                         <TextfieldLabel name='judul_pembahasan' label='Judul Pembahasan' defaultValue={data.judul_pembahasan} onChange={(event: any) => form.set('judul_pembahasan', event.target.value)} disabled={!editable} />
-                        <AutocompleteCustom name='name' label='User Pemohon' data={users} onChange={handleUserChange} getOptionLabel={(data) => data.name} defaultValue={users.find((item: any) => item.name == data.tb_account.name)} disabled={!editable} />
+                        {isAdmin ? (
+                            <AutocompleteCustom name='name' label='User Pemohon' data={users} onChange={handleUserChange} getOptionLabel={(data) => data.name} defaultValue={users.find((item: any) => item.name == data.tb_account.name)} disabled={!editable} />
+                        ) : null}
                         {suratPermohonan === false ? (
                             <>
                                 <FormLabel className='mb-2 text-sm'>Surat Permohonan</FormLabel>
@@ -219,62 +222,66 @@ export default function LayananOpini(props: TFormEditLayananProps) {
                                 </Stack>
                             </>
                         )}
-                        <FormControl className='w-full'>
-                            <SelectLabel name='status' label='Status' defaultValue={data.status} onChange={handleStatusChange} disabled={!editable}>
-                                <MenuItem value='Pending'>Pending</MenuItem>
-                                <MenuItem value='Approved & On Progress'>Approved & On Progress</MenuItem>
-                                <MenuItem value='Completed'>Complete</MenuItem>
-                                <MenuItem value='Rejected'>Rejected</MenuItem>
-                            </SelectLabel>
-                        </FormControl>
-                        {disposisiInput == false ? (
+                        {isAdmin ? (
                             <>
-                                <FormLabel className='mb-2 text-sm'>Disposisi</FormLabel>
-                                <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
-                                    {data.disposisi ? (
-                                        <Link href={`${api_file}/${data.disposisi}`} target='_blank'>
-                                            <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.disposisi}</Typography>
-                                        </Link>
-                                    ) : (
-                                        <Typography variant='body2' className='italic'>Belum ada data.</Typography>
-                                    )}
-                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisiInput(true)} disabled={!editable}>Change File</Button>
+                                <FormControl className='w-full'>
+                                    <SelectLabel name='status' label='Status' defaultValue={data.status} onChange={handleStatusChange} disabled={!editable}>
+                                        <MenuItem value='Pending'>Pending</MenuItem>
+                                        <MenuItem value='Approved & On Progress'>Approved & On Progress</MenuItem>
+                                        <MenuItem value='Completed'>Complete</MenuItem>
+                                        <MenuItem value='Rejected'>Rejected</MenuItem>
+                                    </SelectLabel>
+                                </FormControl>
+                                {disposisiInput == false ? (
+                                    <>
+                                        <FormLabel className='mb-2 text-sm'>Disposisi</FormLabel>
+                                        <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className='mb-4'>
+                                            {data.disposisi ? (
+                                                <Link href={`${api_file}/${data.disposisi}`} target='_blank'>
+                                                    <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.disposisi}</Typography>
+                                                </Link>
+                                            ) : (
+                                                <Typography variant='body2' className='italic'>Belum ada data.</Typography>
+                                            )}
+                                            <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisiInput(true)} disabled={!editable}>Change File</Button>
+                                        </Stack>
+                                    </>
+                                ) : (
+                                    <>
+                                        <FileUpload name='disposisi' label='Disposisi' allowMultiple={false} allowReorder={false} onupdatefiles={(fileItems: FilePondFile[]) => {
+                                            const file = fileItems[0]?.file;
+                                            if (file) {
+                                                form.set('disposisi', file);
+                                            }
+                                        }} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
+                                        <Stack direction='row-reverse' className='-mt-2 mb-4'>
+                                            <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisiInput(false)} disabled={!editable}>Cancel</Button>
+                                        </Stack>
+                                    </>
+                                )}
+                                <Stack direction='row' spacing={1}>
+                                    <FormControl className='w-full'>
+                                        <FormLabel className='mb-1 text-sm'>
+                                            Tanggal, Waktu Upload
+                                        </FormLabel>
+                                        <DateTimePickerBasic defaultValue={dayjs(dateTimeFormatter(data.tgl_waktu_upload), 'DD/MM/YYYY HH:mm')} onChange={(value: any) => form.set('tgl_waktu_upload', value)} disabled={!editable} />
+                                    </FormControl>
+                                    <AutocompleteCustom label='Admin' data={users} onChange={handleAdminChange} getOptionLabel={(data) => data.name} defaultValue={users.find((item: any) => item.name == data.admin)} disabled={!editable} />
                                 </Stack>
-                            </>
-                        ) : (
-                            <>
-                                <FileUpload name='disposisi' label='Disposisi' allowMultiple={false} allowReorder={false} onupdatefiles={(fileItems: FilePondFile[]) => {
-                                    const file = fileItems[0]?.file;
-                                    if (file) {
-                                        form.set('disposisi', file);
-                                    }
-                                }} acceptedFileTypes={['application/pdf']} labelFileTypeNotAllowed='Hanya file PDF yang diijinkan' />
-                                <Stack direction='row-reverse' className='-mt-2 mb-4'>
-                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setDisposisiInput(false)} disabled={!editable}>Cancel</Button>
+                                <TextfieldLabel label='Tautan Berita' defaultValue={data.link_berita} disabled={!editable} onChange={(event: any) => form.set('link_berita', event.target.value)} multiline maxRows={2} />
+                                <AutocompleteCustom label='Penerjemah' data={users} onChange={handlePenerjemahChange} getOptionLabel={(data) => data.name} defaultValue={users.find((item: any) => item.name == data.penerjemah)} disabled={!editable} />
+                                <Stack direction='row' spacing={1}>
+                                    <FormControl className='w-full'>
+                                        <FormLabel className='mb-1 text-sm'>
+                                            Tanggal, Waktu Upload Terjemahan
+                                        </FormLabel>
+                                        <DateTimePickerBasic defaultValue={dayjs(dateTimeFormatter(data.tgl_waktu_upload_terj), 'DD/MM/YYYY HH:mm')} onChange={(value: any) => form.set('tgl_waktu_upload_terj', value)} disabled={!editable} />
+                                    </FormControl>
+                                    <AutocompleteCustom label='Admin Terjemahan' data={users} onChange={handleAdminTerjChange} getOptionLabel={(data) => data.name} defaultValue={users.find((item: any) => item.name == data.admin_terj)} disabled={!editable} />
                                 </Stack>
+                                <TextfieldLabel label='Tautan Terjemahan' defaultValue={data.link_terj} disabled={!editable} onChange={(event: any) => form.set('link_terj', event.target.value)} multiline maxRows={2} />
                             </>
-                        )}
-                        <Stack direction='row' spacing={1}>
-                            <FormControl className='w-full'>
-                                <FormLabel className='mb-1 text-sm'>
-                                    Tanggal, Waktu Upload
-                                </FormLabel>
-                                <DateTimePickerBasic defaultValue={dayjs(dateTimeFormatter(data.tgl_waktu_upload), 'DD/MM/YYYY HH:mm')} onChange={(value: any) => form.set('tgl_waktu_upload', value)} disabled={!editable} />
-                            </FormControl>
-                            <AutocompleteCustom label='Admin' data={users} onChange={handleAdminChange} getOptionLabel={(data) => data.name} defaultValue={users.find((item: any) => item.name == data.admin)} disabled={!editable} />
-                        </Stack>
-                        <TextfieldLabel label='Tautan Berita' defaultValue={data.link_berita} disabled={!editable} onChange={(event: any) => form.set('link_berita', event.target.value)} multiline maxRows={2} />
-                        <AutocompleteCustom label='Penerjemah' data={users} onChange={handlePenerjemahChange} getOptionLabel={(data) => data.name} defaultValue={users.find((item: any) => item.name == data.penerjemah)} disabled={!editable} />
-                        <Stack direction='row' spacing={1}>
-                            <FormControl className='w-full'>
-                                <FormLabel className='mb-1 text-sm'>
-                                    Tanggal, Waktu Upload Terjemahan
-                                </FormLabel>
-                                <DateTimePickerBasic defaultValue={dayjs(dateTimeFormatter(data.tgl_waktu_upload_terj), 'DD/MM/YYYY HH:mm')} onChange={(value: any) => form.set('tgl_waktu_upload_terj', value)} disabled={!editable} />
-                            </FormControl>
-                            <AutocompleteCustom label='Admin Terjemahan' data={users} onChange={handleAdminTerjChange} getOptionLabel={(data) => data.name} defaultValue={users.find((item: any) => item.name == data.admin_terj)} disabled={!editable} />
-                        </Stack>
-                        <TextfieldLabel label='Tautan Terjemahan' defaultValue={data.link_terj} disabled={!editable} onChange={(event: any) => form.set('link_terj', event.target.value)} multiline maxRows={2} />
+                        ) : null}
                         <Stack direction='row' justifyContent='flex-end' spacing={1} marginTop={6}>
                             {editable ? (
                                 <Stack direction='row' spacing={1}>

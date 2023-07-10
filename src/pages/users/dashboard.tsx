@@ -133,43 +133,37 @@ export const listMenuUser = [
   {
     id: 2,
     subheader: 'Layanan',
-    title: 'Riwayat',
+    title: 'Riwayat Kegiatan',
     icon: <DateRangeOutlinedIcon sx={{ color: '#9ca3af' }} fontSize='small' />,
-    link: '',
+    link: '/users/riwayat-kegiatan',
     divider: null,
-    subItem: [
-      {
-        id: 1,
-        subtitle: 'Riwayat Kegiatan',
-        link: '/users/riwayat-kegiatan',
-      },
-      {
-        id: 2,
-        subtitle: 'Tambah Kegiatan',
-        link: '/users/tambah-kegiatan',
-      },
-    ],
+    subItem: [],
   },
   {
     id: 3,
     subheader: '',
     title: 'Ajukan Layanan',
     icon: <AssignmentOutlinedIcon sx={{ color: '#9ca3af' }} fontSize='small' />,
-    link: '',
+    link: '#',
     divider: <Divider light className='border-gray-600 mx-5 mb-4' />,
     subItem: [
       {
         id: 1,
+        subtitle: 'Tambah Kegiatan',
+        link: '/users/tambah-kegiatan',
+      },
+      {
+        id: 2,
         subtitle: 'Layanan Hubungan Masyarakat',
         link: '/users/layanan-humas',
       },
       {
-        id: 2,
+        id: 3,
         subtitle: 'Layanan Publikasi',
         link: '/users/layanan-publikasi',
       },
       {
-        id: 3,
+        id: 4,
         subtitle: 'Layanan Media',
         link: '/users/layanan-media',
       }

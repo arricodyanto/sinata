@@ -6,7 +6,8 @@ import FileUpload from '@/common/components/atoms/FileUpload';
 import SelectLabel from '@/common/components/atoms/SelectLabel';
 import DisabledFormDataKegiatan from '@/common/components/organism/FormDataKegiatan/DisabledFormDataKegiatan';
 import { TFormTambahLayananProps } from '@/common/types';
-import { getAllDataKegiatan } from '@/services/data-kegiatan';
+import { getAccountID } from '@/common/utils/decryptToken';
+import { getAllDataKegiatan, getAllDataKegiatanUser } from '@/services/data-kegiatan';
 import { Box, MenuItem, Stack, Typography } from '@mui/material';
 import { FilePondFile } from 'filepond';
 import Link from 'next/link';
@@ -24,13 +25,31 @@ export default function PeliputanForm(props: TFormTambahLayananProps) {
     const [dataKegiatan, setDataKegiatan] = useState<Array<any>>([]); // Handle autocomplete
 
     const getDataKegiatan = useCallback(async () => {
-        const response = await getAllDataKegiatan();
-        setDataKegiatan(response.data);
-    }, []);
+        if (isAdmin) {
+            const response = await getAllDataKegiatan();
+            setDataKegiatan(response.data);
+        }
+    }, [getAllDataKegiatan]);
+
+    const id_account = getAccountID();
+
+    const getDataKegiatanUser = useCallback(async () => {
+        if (!isAdmin) {
+            if (id_account) {
+                const response = await getAllDataKegiatanUser(id_account);
+                setDataKegiatan(response.data);
+            }
+        }
+    }, [getAllDataKegiatanUser]);
 
     useEffect(() => {
         if (isReady) {
-            getDataKegiatan();
+            if (isAdmin) {
+                getDataKegiatan();
+            }
+            if (!isAdmin) {
+                getDataKegiatanUser();
+            }
         }
     }, [isReady]);
 
