@@ -12,7 +12,6 @@ export function formDataFormatter(
       dataArray.push(item);
     });
   }
-
   return dataArray;
 }
 

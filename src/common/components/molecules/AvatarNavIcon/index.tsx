@@ -1,34 +1,22 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import Link from 'next/link';
+import IconPopover from '@/common/components/molecules/IconPopover';
+import { getPayloadData } from '@/common/utils/decryptToken';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import IconPopover from '../IconPopover';
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import { Avatar, Box, Chip, Divider, Stack, Typography } from '@mui/material';
 import Cookies from 'js-cookie';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { getPayload } from '@/common/utils/decryptTkn';
-import { TokenTypes } from '@/services/data-types';
+
 export default function AvatarNavIcon() {
-    const { isReady, push } = useRouter();
+    const { push } = useRouter();
     const onLogout = () => {
         Cookies.remove('tkn');
         push('/');
     };
     const api_image = process.env.NEXT_PUBLIC_API_IMG;
-    const [user, setUser] = useState<TokenTypes | null>(null);
-
-    const getUser = useCallback(async () => {
-        const payload = await getPayload();
-        setUser(payload);
-    }, [getPayload]);
-
-    useEffect(() => {
-        if (isReady) {
-            getUser();
-        }
-    }, [isReady]);
+    const user = getPayloadData();
     return (
         <>
             <IconPopover height='auto' alt='user-icon' icon={

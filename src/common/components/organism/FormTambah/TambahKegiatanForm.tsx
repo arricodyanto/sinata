@@ -19,6 +19,8 @@ const form = new FormData();
 export default function TambahKegiatanForm(props: TTambahKegiatanFormProps) {
     const { onSave, admin } = props;
     const { isReady } = useRouter();
+    const isAdmin = admin ? true : false;
+
     const [open, setOpen] = useState(false);
     const handleDialogOpen = () => {
         setOpen(true);
@@ -37,16 +39,19 @@ export default function TambahKegiatanForm(props: TTambahKegiatanFormProps) {
     };
 
     const [users, setUsers] = useState<Array<any>>([]);
-    const getUsers = useCallback(async () => {
-        const response = await getAllUsers();
-        setUsers(response.data);
-    }, []);
+    if (isAdmin) {
+        const getUsers = useCallback(async () => {
+            const response = await getAllUsers();
+            setUsers(response.data);
+        }, []);
 
-    useEffect(() => {
-        if (isReady) {
-            getUsers();
-        }
-    }, [isReady]);
+        useEffect(() => {
+            if (isReady) {
+                getUsers();
+            }
+        }, [isReady]);
+    }
+
     return (
         <>
             <TextfieldLabel name='judul_kegiatan' label='Judul Kegiatan' onChange={(event: any) => form.set('judul_kegiatan', event.target.value)} placeholder='Judul kegiatan dari agenda yang akan ditambahkan' />

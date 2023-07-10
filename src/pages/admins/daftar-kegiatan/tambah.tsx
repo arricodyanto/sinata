@@ -68,7 +68,7 @@ export default function TambahDataKegiatan() {
                 <Grid container spacing={2}>
                     <Grid item spacing={1} xs={12} md={8}>
                         <Paper className='shadow-md xs:p-4 md:p-6'>
-                            <TambahKegiatanForm onSave={handleTambah} admin={true} />
+                            <TambahKegiatanForm onSave={handleTambah} admin />
                         </Paper>
                     </Grid>
                     <Grid item xs={12} md={4}>

@@ -42,7 +42,7 @@ export async function authAdmin(tkn: string) {
 
   const jwtToken = Buffer.from(tkn, 'base64').toString('ascii');
   const payload: TokenTypes = jwtDecode(jwtToken);
-  if (payload.account.role === 'User') {
+  if (payload.account.role !== 'Super Admin') {
     return {
       redirect: {
         destination: '/401',
@@ -51,6 +51,33 @@ export async function authAdmin(tkn: string) {
     };
   }
 
+  return {
+    props: {
+      user: payload,
+    },
+  };
+}
+
+export async function authUser(tkn: string) {
+  if (!tkn) {
+    return {
+      redirect: {
+        destination: '/sign-in',
+        permanent: false,
+      },
+    };
+  }
+
+  const jwtToken = Buffer.from(tkn, 'base64').toString('ascii');
+  const payload: TokenTypes = jwtDecode(jwtToken);
+  if (payload.account.role !== 'User') {
+    return {
+      redirect: {
+        destination: '/401',
+        permanent: false,
+      },
+    };
+  }
   return {
     props: {
       user: payload,

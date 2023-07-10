@@ -6,24 +6,20 @@ import TableRiwayat from '@/common/components/molecules/TableRiwayat';
 import DaisyCarousel from '@/common/components/organism/DaisyCarousel';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import { authAdmin } from '@/common/middlewares/auth';
-import { TokenTypes } from '@/services/data-types';
 import ArrowCircleDownOutlinedIcon from '@mui/icons-material/ArrowCircleDownOutlined';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import PendingOutlinedIcon from '@mui/icons-material/PendingOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
-import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import { Box, Divider, Grid, Paper, Stack, Typography } from '@mui/material';
 
-export default function Dashboard(props: any) {
-    const { user } = props;
-    let adminPayload = user;
-
+export default function Dashboard() {
     const dark = '#1f2937';
     const primary = '#0ea5e9';
     const pending = '#f59e0b';

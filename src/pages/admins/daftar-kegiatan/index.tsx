@@ -32,7 +32,7 @@ import { toast } from 'react-toastify';
 const form = new FormData();
 
 export default function DaftarKegiatan() {
-    const { isReady } = useRouter();
+    const { isReady, reload } = useRouter();
     const [data, setData] = React.useState<Array<any>>([]);
     const [open, setOpen] = React.useState(false);
     const [currIndex, setCurrIndex] = React.useState(0);
@@ -125,7 +125,8 @@ export default function DaftarKegiatan() {
                 toast.success(response.message, {
                     theme: 'colored'
                 });
-                window.location.reload();
+                handleCancelEdit();
+                getDataKegiatan();
             }
         }
         setOpen(false);
@@ -136,7 +137,8 @@ export default function DaftarKegiatan() {
         toast.success('Data berhasil dihapus.', {
             theme: 'colored'
         });
-        window.location.reload();
+        handleCancelEdit();
+        getDataKegiatan();
     };
 
     const [openHapus, setOpenHapus] = useState(false);
