@@ -11,6 +11,7 @@ import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
 import TableData from '@/common/components/molecules/TableData';
 import TableDataEmpty from '@/common/components/molecules/TableDataSkeleton/TableDataEmpty';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
+import { authAdmin } from '@/common/middlewares/auth';
 import { dateFormatter, dateISOFormatter, dateStringFormatter, timeISOFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
 import { formDataFormatter } from '@/common/utils/formDataFormatter';
 import { listMenuAdmin } from '@/pages/admins/dashboard';
@@ -299,4 +300,9 @@ export default function DaftarKegiatan() {
             </DashboardPanel>
         </Box>
     );
+}
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authAdmin(tkn);
 }

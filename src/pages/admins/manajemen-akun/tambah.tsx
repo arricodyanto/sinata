@@ -2,6 +2,7 @@ import TitlePage from '@/common/components/atoms/TitlePage';
 import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import TambahAkunForm from '@/common/components/organism/TambahAkunForm';
+import { authAdmin } from '@/common/middlewares/auth';
 import { listMenuAdmin } from '@/pages/admins/dashboard';
 import { setOneUser } from '@/services/accounts';
 import { Box, Grid, Paper } from '@mui/material';
@@ -84,4 +85,9 @@ export default function TambahDataAkun() {
             </DashboardPanel>
         </Box>
     );
+}
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authAdmin(tkn);
 }

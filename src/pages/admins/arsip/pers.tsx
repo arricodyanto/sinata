@@ -1,41 +1,35 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import tb_peliputan from '@/json/tb_laypeliputan.json';
-import TableDataSkeleton from '@/common/components/molecules/TableDataSkeleton/TableDataSkeleton';
-import { Box, Button, Chip, Fade, FormControl, FormLabel, IconButton, MenuItem, Modal, Paper, Skeleton, Stack, TableCell, Typography } from '@mui/material';
-import TableData from '@/common/components/molecules/TableData';
-import TitlePage from '@/common/components/atoms/TitlePage';
-import DashboardPanel from '@/common/components/organism/DashboardPanel';
-import { listMenuAdmin } from '../dashboard';
-import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
-import Link from 'next/link';
-import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
+import AutocompleteCustom from '@/common/components/atoms/AutocompleteCustom';
+import ButtonBasic from '@/common/components/atoms/ButtonBasic';
 import ButtonIcon from '@/common/components/atoms/ButtonIcon';
+import DatePickerBasic from '@/common/components/atoms/DatePickerBasic';
+import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
+import SelectLabel from '@/common/components/atoms/SelectLabel';
+import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
+import TimePickerBasic from '@/common/components/atoms/TimePickerBasic';
+import TitlePage from '@/common/components/atoms/TitlePage';
+import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
+import TableData from '@/common/components/molecules/TableData';
+import TableDataEmpty from '@/common/components/molecules/TableDataSkeleton/TableDataEmpty';
+import DashboardPanel from '@/common/components/organism/DashboardPanel';
+import DisabledFormDataKegiatan from '@/common/components/organism/FormDataKegiatan/DisabledFormDataKegiatan';
+import { authAdmin } from '@/common/middlewares/auth';
+import { dateFormatter, dateISOFormatter, dateStringFormatter, timeFormatter, timeISOFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
+import { listMenuAdmin } from '@/pages/admins/dashboard';
+import { getAllUsers } from '@/services/accounts';
+import { deleteOneArsipPers, getAllArsipPers, updateOneArsipPers } from '@/services/arsip-pers';
+import { getAllLayananPeliputan } from '@/services/layanan-peliputan';
+import CancelIcon from '@mui/icons-material/Cancel';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Cancel';
-// import { kategoriBerita } from '@/common/components/organism/TableManajemenPeliputan';
-import SelectLabel from '@/common/components/atoms/SelectLabel';
-import AutocompleteCustom from '@/common/components/atoms/AutocompleteCustom';
-import DateFieldBasic from '@/common/components/atoms/DateFieldBasic';
-import TimePickerBasic from '@/common/components/atoms/TimePickerBasic';
-import dayjs from 'dayjs';
-import TableDataEmpty from '@/common/components/molecules/TableDataSkeleton/TableDataEmpty';
-import ButtonBasic from '@/common/components/atoms/ButtonBasic';
-import { deleteOneArsipPers, getAllArsipPers, updateOneArsipPers } from '@/services/arsip-pers';
-import { useRouter } from 'next/router';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import { dateFormatter, dateISOFormatter, dateStringFormatter, timeFormatter, timeISOFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
-import { getAllUsers } from '@/services/accounts';
-import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
-import DisabledFormDataKegiatan from '@/common/components/organism/FormDataKegiatan/DisabledFormDataKegiatan';
-import AutocompleteTitle from '@/common/components/atoms/AutocompleteTitle';
-import { getAllDataKegiatan } from '@/services/data-kegiatan';
-import { getAllLayananPeliputan } from '@/services/layanan-peliputan';
-import FileUpload from '@/common/components/atoms/FileUpload';
+import SaveIcon from '@mui/icons-material/Save';
+import { Box, Button, Fade, FormControl, FormLabel, IconButton, MenuItem, Modal, Paper, Stack, Typography } from '@mui/material';
+import dayjs from 'dayjs';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import DatePickerBasic from '@/common/components/atoms/DatePickerBasic';
 
 export default function ArsipPers() {
     const { isReady } = useRouter();
@@ -215,7 +209,8 @@ export default function ArsipPers() {
     const getUsers = useCallback(async () => {
         const response = await getAllUsers();
         setUsers(response.data);
-    }, [getAllArsipPers]);
+    }, [getAllUsers]);
+
     useEffect(() => {
         if (isReady) {
             getArsipPers();
@@ -285,7 +280,7 @@ export default function ArsipPers() {
                     {data.length === 0 ? (
                         <TableDataEmpty headers={headers}
                             addButton={
-                                <Link href='/admins/arsip/desain/tambah'>
+                                <Link href='/admins/arsip/pers/tambah'>
                                     <ButtonBasic variant='contained'>Tambah Data</ButtonBasic>
                                 </Link>
                             } />
@@ -293,7 +288,7 @@ export default function ArsipPers() {
                         <TableData headers={headers} columns={columns} rows={data} status={false} actionOnClick={handleOpen}
                             page={page} limit={rowsPerPage} totalRow={totalRow} changedPage={handleChangePage} changedLimit={handleChangeLimit}
                             addButton={
-                                <Link href='/admins/arsip/desain/tambah'>
+                                <Link href='/admins/arsip/pers/tambah'>
                                     <ButtonBasic variant='contained'>Tambah Data</ButtonBasic>
                                 </Link>
                             }
@@ -430,6 +425,11 @@ export default function ArsipPers() {
             </DashboardPanel>
         </Box>
     );
+}
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authAdmin(tkn);
 }
 
 export const kategoriBerita = [

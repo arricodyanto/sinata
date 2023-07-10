@@ -2,6 +2,7 @@ import TitlePage from '@/common/components/atoms/TitlePage';
 import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import TambahKegiatanForm from '@/common/components/organism/FormTambah/TambahKegiatanForm';
+import { authAdmin } from '@/common/middlewares/auth';
 import { formDataFormatter } from '@/common/utils/formDataFormatter';
 import { listMenuAdmin } from '@/pages/admins/dashboard';
 import { setOneDataKegiatan } from '@/services/data-kegiatan';
@@ -79,4 +80,9 @@ export default function TambahDataKegiatan() {
             </DashboardPanel>
         </Box>
     );
+}
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authAdmin(tkn);
 }

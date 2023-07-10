@@ -1,27 +1,22 @@
-import TitlePage from '@/common/components/atoms/TitlePage';
-import DashboardPanel from '@/common/components/organism/DashboardPanel';
-import { Box, Paper, Stack } from '@mui/material';
-import React from 'react';
-import { listMenuAdmin } from '@/pages/admins/dashboard';
-import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
-import Link from 'next/link';
-import TabsContainer from '@/common/components/atoms/TabsContainer';
 import TabItem from '@/common/components/atoms/TabItem';
-import { TabContext, TabPanel } from '@mui/lab';
+import TabsContainer from '@/common/components/atoms/TabsContainer';
+import TitlePage from '@/common/components/atoms/TitlePage';
+import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
+import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import TableManajemenPeliputan from '@/common/components/organism/TableManajemenPeliputan';
-import TableManajemenKonPers from '@/common/components/organism/TableManejemenKonPers';
 import TableManajemenPembaruanInformasi from '@/common/components/organism/TableManajemenPembaruanInformasi';
+import TableManajemenKonPers from '@/common/components/organism/TableManejemenKonPers';
+import { authAdmin } from '@/common/middlewares/auth';
+import { listMenuAdmin } from '@/pages/admins/dashboard';
+import { TabContext, TabPanel } from '@mui/lab';
+import { Box, Paper, Stack } from '@mui/material';
+import Link from 'next/link';
+import React from 'react';
 
 export default function LayananHumas() {
     const [value, setValue] = React.useState('1');
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
-    };
-
-    // Event Search
-    const [search, setSearch] = React.useState<string>('');
-    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(event.target.value);
     };
     return (
         <Box className='bg-grey'>
@@ -57,4 +52,9 @@ export default function LayananHumas() {
             </DashboardPanel>
         </Box>
     );
+}
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authAdmin(tkn);
 }

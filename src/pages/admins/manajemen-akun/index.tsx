@@ -8,8 +8,8 @@ import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
 import TableData from '@/common/components/molecules/TableData';
 import TableDataEmpty from '@/common/components/molecules/TableDataSkeleton/TableDataEmpty';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
+import { authAdmin } from '@/common/middlewares/auth';
 import { dateStringFormatter } from '@/common/utils/dateFormatter.util';
-import { formDataFormatter, mapDataFormatter } from '@/common/utils/formDataFormatter';
 import { deleteOneUser, getAllUsers, updateOneUser } from '@/services/accounts';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CloseIcon from '@mui/icons-material/Close';
@@ -215,7 +215,7 @@ export default function ManajemenAkun() {
                                                     <TextfieldLabel name='username' label='Username' value={username} onChange={(event: any) => setUsername(event.target.value)} disabled={!editable} />
                                                     <TextfieldLabel name='name' label='Nama Lengkap' value={name} onChange={(event: any) => setName(event.target.value)} disabled={!editable} />
                                                 </Stack>
-                                                <TextfieldLabel name='email' label='Alamat Email' value={email} onChange={(event: any) => setEmail(event.target.value)} disabled={!editable} />
+                                                <TextfieldLabel type='email' name='email' label='Alamat Email' value={email} onChange={(event: any) => setEmail(event.target.value)} disabled={!editable} />
                                                 <TextfieldLabel name='no_identitas' label='No Identitas' value={no_identitas} onChange={(event: any) => setNo_identitas(event.target.value)} disabled={!editable} />
                                                 <TextfieldLabel name='unit' label='Unit/Fakultas' value={unit} onChange={(event: any) => setUnit(event.target.value)} disabled={!editable} />
                                                 <SelectLabel name='role' label='Role Akun' value={role} onChange={(event: any) => setRole(event.target.value)} disabled={!editable}>
@@ -231,7 +231,7 @@ export default function ManajemenAkun() {
                                                     <MenuItem value='Admin Role 8'>Admin Role 8</MenuItem>
                                                     <MenuItem value='Admin Role 9'>Admin Role 9</MenuItem> */}
                                                 </SelectLabel>
-                                                <TextfieldLabel type='tel' name='kontak' label='Kontak' value={kontak} onChange={(event: any) => setKontak(event.target.value)} disabled={!editable} />
+                                                <TextfieldLabel type='number' name='kontak' label='Kontak' value={kontak} onChange={(event: any) => setKontak(event.target.value)} disabled={!editable} />
                                                 <Typography variant='caption' className='italic mb-4'>Terdaftar sejak {dateStringFormatter(item.createdAt)}</Typography>
                                                 <DialogConfirmation title='Hapus' body='Apakah Anda yakin ingin menghapus data ini?' open={openHapus} onClose={handleDialogClose(setOpenHapus)}>
                                                     <Stack direction='row' spacing={1} className='mt-4 px-2'>
@@ -267,4 +267,9 @@ export default function ManajemenAkun() {
             </DashboardPanel>
         </Box>
     );
+}
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authAdmin(tkn);
 }

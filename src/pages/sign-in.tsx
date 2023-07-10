@@ -20,9 +20,9 @@ export default function SignIn() {
                             <Grid item lg={6} md={6} p={4}>
                                 <HeaderBox header='Selamat Datang!' subheader='Silakan melakukan proses login untuk masuk ke dashboard Anda.' />
                                 <SignInForm />
-                                <Stack>
+                                {/* <Stack>
                                     <Typography variant='body2' className='py-8 mx-auto'>atau</Typography>
-                                </Stack>
+                                </Stack> */}
                                 {/* <Box>
                                 <GoogleButton />
                             </Box> */}

@@ -2,9 +2,12 @@ import TitlePage from '@/common/components/atoms/TitlePage';
 import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import TambahArsipDesain from '@/common/components/organism/FormTambah/TambahArsipDesain';
+import TambahArsipPers from '@/common/components/organism/FormTambah/TambahArsipPers';
+import { authAdmin } from '@/common/middlewares/auth';
 import { formDataFormatter } from '@/common/utils/formDataFormatter';
 import { listMenuAdmin } from '@/pages/admins/dashboard';
 import { setOneArsipDesain } from '@/services/arsip-desain';
+import { setOneArsipPers } from '@/services/arsip-pers';
 import { Box, Grid, Paper } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -41,8 +44,49 @@ export default function TambahArsip() {
         }
     };
 
-    const onSavePers = async (form: any) => {
+    const originalPersForm = {
+        id_peliputan: '',
+        no_rilis: '',
+        judul_berita: '',
+        kategori: 'Berita Terkini',
+        jurnalis: '',
+        prarilis: '',
+        rilis: '',
+        tgl_upload: '',
+        waktu_upload: '',
+        admin: '',
+        link_berita: '',
+        judul_terjemahan: '',
+        penerjemah: '',
+        naskah_terj: '',
+        tgl_upload_terj: '',
+        waktu_upload_terj: '',
+        admin_terj: '',
+        link_terj: '',
+        status_publikasi: 'Pending'
 
+    };
+    const onSavePers = async (form: any) => {
+        const isSame = JSON.stringify(form) === JSON.stringify(originalPersForm);
+        if (isSame) {
+            toast.warning('Tidak ada perubahan pada data.', {
+                theme: 'colored'
+            });
+        }
+        if (!isSame) {
+            const response = await setOneArsipPers(form);
+            if (response.error === true) {
+                toast.error(response.message, {
+                    theme: 'colored',
+                });
+            }
+            if (response.error === false) {
+                toast.success(response.message, {
+                    theme: 'colored'
+                });
+                push('/admins/arsip/pers');
+            }
+        }
     };
     return (
         <Box className='bg-grey'>
@@ -58,8 +102,9 @@ export default function TambahArsip() {
                         <Paper className='shadow-md xs:p-4 md:p-6'>
                             {jenis_arsip === 'desain' ? (
                                 <TambahArsipDesain onSave={onSaveDesain} />
+                            ) : jenis_arsip === 'pers' ? (
+                                <TambahArsipPers onSave={onSavePers} />
                             ) : null}
-                            {/* <TambahKegiatanForm onSave={handleTambah} admin={true} /> */}
                         </Paper>
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -71,4 +116,9 @@ export default function TambahArsip() {
             </DashboardPanel>
         </Box>
     );
+}
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authAdmin(tkn);
 }

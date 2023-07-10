@@ -10,6 +10,7 @@ import LayananPeminformasi from '@/common/components/organism/FormEditLayanan/La
 import LayananPublikasiAgenda from '@/common/components/organism/FormEditLayanan/LayananPublikasiAgenda';
 import LayananPublikasiMajalah from '@/common/components/organism/FormEditLayanan/LayananPublikasiMajalah';
 import LayananVideotron from '@/common/components/organism/FormEditLayanan/LayananVideotron';
+import { authAdmin } from '@/common/middlewares/auth';
 import { listMenuAdmin } from '@/pages/admins/dashboard';
 import { getOneLayananBaliho } from '@/services/layanan-baliho';
 import { getOneKonpers } from '@/services/layanan-konpers';
@@ -119,4 +120,9 @@ export default function RiwayatAjuanPage() {
             </Box>
         </>
     );
+}
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authAdmin(tkn);
 }

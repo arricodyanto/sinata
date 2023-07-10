@@ -1,30 +1,31 @@
 import TitlePage from '@/common/components/atoms/TitlePage';
 import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
+import BalihoForm from '@/common/components/organism/BalihoForm';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
+import KonpersForm from '@/common/components/organism/KonpersForm';
+import LiveStreamingForm from '@/common/components/organism/LiveStrForm';
+import MajalahForm from '@/common/components/organism/MajalahForm';
+import OpiniForm from '@/common/components/organism/OpiniForm';
 import PeliputanForm from '@/common/components/organism/PeliputanForm';
+import PembaruanInfoForm from '@/common/components/organism/PembaruanInfoForm';
+import PublikasiAgendaForm from '@/common/components/organism/PublikasiAgendaForm';
+import VideotronForm from '@/common/components/organism/VideotronForm';
+import { authAdmin } from '@/common/middlewares/auth';
+import { setOneLayananBaliho } from '@/services/layanan-baliho';
+import { setOneLayananKonpers } from '@/services/layanan-konpers';
+import { setOneLayananLiveStreaming } from '@/services/layanan-livestreaming';
+import { setOneLayananMajalah } from '@/services/layanan-majalah';
+import { setOneLayananOpini } from '@/services/layanan-opini';
 import { setOneLayananPeliputan } from '@/services/layanan-peliputan';
+import { setOneLayananPeminformasi } from '@/services/layanan-peminformasi';
+import { setOneLayananPublikasiAgenda } from '@/services/layanan-pubagenda';
+import { setOneLayananVideotron } from '@/services/layanan-videotron';
 import { Box, Grid, Paper } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import { listMenuAdmin } from '../../dashboard';
-import KonpersForm from '@/common/components/organism/KonpersForm';
-import { setOneLayananKonpers } from '@/services/layanan-konpers';
-import PembaruanInfoForm from '@/common/components/organism/PembaruanInfoForm';
-import { setOneLayananPeminformasi } from '@/services/layanan-peminformasi';
-import LiveStreamingForm from '@/common/components/organism/LiveStrForm';
-import { setOneLayananLiveStreaming } from '@/services/layanan-livestreaming';
-import PublikasiAgendaForm from '@/common/components/organism/PublikasiAgendaForm';
-import { setOneLayananPublikasiAgenda } from '@/services/layanan-pubagenda';
-import MajalahForm from '@/common/components/organism/MajalahForm';
-import { setOneLayananMajalah } from '@/services/layanan-majalah';
-import OpiniForm from '@/common/components/organism/OpiniForm';
-import { setOneLayananOpini } from '@/services/layanan-opini';
-import VideotronForm from '@/common/components/organism/VideotronForm';
-import { setOneLayananVideotron } from '@/services/layanan-videotron';
-import BalihoForm from '@/common/components/organism/BalihoForm';
-import { setOneLayananBaliho } from '@/services/layanan-baliho';
 
 export default function TambahAjuanLayanan() {
     const { query, isReady, push } = useRouter();
@@ -206,3 +207,8 @@ export default function TambahAjuanLayanan() {
         </Box>
     );
 };
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authAdmin(tkn);
+}

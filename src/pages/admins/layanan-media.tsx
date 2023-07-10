@@ -1,18 +1,18 @@
-import React from 'react';
-import TitlePage from '@/common/components/atoms/TitlePage';
-import DashboardPanel from '@/common/components/organism/DashboardPanel';
-import { Box, Paper, Stack } from '@mui/material';
-import { listMenuAdmin } from '@/pages/admins/dashboard';
-import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
-import Link from 'next/link';
-import { TabContext, TabPanel } from '@mui/lab';
-import TabsContainer from '@/common/components/atoms/TabsContainer';
 import TabItem from '@/common/components/atoms/TabItem';
+import TabsContainer from '@/common/components/atoms/TabsContainer';
+import TitlePage from '@/common/components/atoms/TitlePage';
+import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
+import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import TableManajemenBaliho from '@/common/components/organism/TableManajemenBaliho';
 import TableManajemenVideotron from '@/common/components/organism/TableManajemenVideotron';
+import { authAdmin } from '@/common/middlewares/auth';
+import { listMenuAdmin } from '@/pages/admins/dashboard';
+import { TabContext, TabPanel } from '@mui/lab';
+import { Box, Paper, Stack } from '@mui/material';
+import Link from 'next/link';
+import React from 'react';
 
 export default function LayananMedia() {
-    // Tabs handler
     const [value, setValue] = React.useState('1');
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
@@ -47,4 +47,9 @@ export default function LayananMedia() {
             </DashboardPanel>
         </Box>
     );
+}
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authAdmin(tkn);
 }

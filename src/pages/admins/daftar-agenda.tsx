@@ -1,22 +1,17 @@
-import TitlePage from '@/common/components/atoms/TitlePage';
-import DashboardPanel from '@/common/components/organism/DashboardPanel';
-import { Box, Grid, IconButton, Pagination, Paper, Stack, TablePagination, Typography } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
-import { listMenuAdmin } from '@/pages/admins/dashboard';
-import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
-import Link from 'next/link';
 import ButtonBasic from '@/common/components/atoms/ButtonBasic';
+import TitlePage from '@/common/components/atoms/TitlePage';
 import EventCardV2 from '@/common/components/molecules/EventCardV2';
-import eventData from '@/json/events.json';
-import TextfieldTableSearch from '@/common/components/atoms/TextfieldTableSearch';
-import CloseIcon from '@mui/icons-material/Close';
+import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
+import DashboardPanel from '@/common/components/organism/DashboardPanel';
+import { authAdmin } from '@/common/middlewares/auth';
+import { listMenuAdmin } from '@/pages/admins/dashboard';
 import { getKalenderEvents } from '@/services/layanan-pubagenda';
+import { Box, Grid, Pagination, Paper, Stack, Typography } from '@mui/material';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function DaftarAgenda() {
-    // const [min, setMin] = React.useState(0)
-    // const [max, setMax] = React.useState(11)
-    // const count = Math.ceil(data.length / 12)
     const { isReady } = useRouter();
     const [data, setData] = useState<Array<any>>([]);
     const [page, setPage] = useState<number>(1);
@@ -81,4 +76,9 @@ export default function DaftarAgenda() {
             </DashboardPanel>
         </Box>
     );
+}
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authAdmin(tkn);
 }
