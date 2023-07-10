@@ -99,7 +99,7 @@ export default function LiveStreamingForm(props: TFormTambahLayananProps) {
                     <CollapsibleAlert type='info' className='mb-4'>
                         <Typography className='text-dark' variant='body2'>Sebelum menekan tombol <b>Ajukan Layanan</b>, pastikan data yang Anda masukkan sudah benar!</Typography>
                     </CollapsibleAlert>
-                    <ButtonBasic type='submit' variant='contained'>Ajukan Layanan</ButtonBasic>
+                    <ButtonBasic onClick={handleDialogOpen} type='submit' variant='contained'>Ajukan Layanan</ButtonBasic>
                 </>
             )}
             <DialogConfirmation title='Tambahkan Data' body='Apakah Anda yakin ingin menambahkan data ini? Pastikan semua data telah terisi dengan benar.' open={open} onClose={handleDialogClose}>

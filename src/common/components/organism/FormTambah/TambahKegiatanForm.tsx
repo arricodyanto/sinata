@@ -51,7 +51,6 @@ export default function TambahKegiatanForm(props: TTambahKegiatanFormProps) {
             }
         }, [isReady]);
     }
-
     return (
         <>
             <TextfieldLabel name='judul_kegiatan' label='Judul Kegiatan' onChange={(event: any) => form.set('judul_kegiatan', event.target.value)} placeholder='Judul kegiatan dari agenda yang akan ditambahkan' />

@@ -78,7 +78,6 @@ export default function LayananHumas() {
     const onSavePeminformasi = async (form: any) => {
         const id_account = getAccountID();
         form.set('id_account', id_account);
-        console.log(formDataFormatter(form));
         const isRequiredFilled = form.get('judul_permohonan') && form.get('surat_permohonan') && form.get('bahan_publikasi') ? true : false;
         if (isRequiredFilled) {
             const response = await setOneLayananPeminformasi(form);
