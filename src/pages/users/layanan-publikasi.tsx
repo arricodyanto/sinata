@@ -1,23 +1,25 @@
-import { Box, Grid, Paper, Stack } from '@mui/material';
-import React from 'react';
-import TitlePage from '../../common/components/atoms/TitlePage';
-import HeaderBreadcrumbs from '../../common/components/molecules/HeaderBreadcrumbs';
-import Link from 'next/link';
-import { TabContext, TabPanel } from '@mui/lab';
-import TabsContainer from '../../common/components/atoms/TabsContainer';
-import TabItem from '../../common/components/atoms/TabItem';
-import Image from 'next/image';
-import LiveStreamingForm from '../../common/components/organism/LiveStrForm';
-import PublikasiAgendaForm from '../../common/components/organism/PublikasiAgendaForm';
-import MajalahForm from '../../common/components/organism/MajalahForm';
-import OpiniForm from '../../common/components/organism/OpiniForm';
+import TabItem from '@/common/components/atoms/TabItem';
+import TabsContainer from '@/common/components/atoms/TabsContainer';
+import TitlePage from '@/common/components/atoms/TitlePage';
+import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
-import { listMenuUser } from './dashboard';
+import LiveStreamingForm from '@/common/components/organism/LiveStrForm';
+import MajalahForm from '@/common/components/organism/MajalahForm';
+import OpiniForm from '@/common/components/organism/OpiniForm';
+import PublikasiAgendaForm from '@/common/components/organism/PublikasiAgendaForm';
 import { getAccountID } from '@/common/utils/decryptToken';
-import { toast } from 'react-toastify';
 import { setOneLayananLiveStreaming } from '@/services/layanan-livestreaming';
-import { useRouter } from 'next/router';
+import { setOneLayananMajalah } from '@/services/layanan-majalah';
 import { setOneLayananPublikasiAgenda } from '@/services/layanan-pubagenda';
+import { TabContext, TabPanel } from '@mui/lab';
+import { Box, Grid, Paper, Stack } from '@mui/material';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { toast } from 'react-toastify';
+import { listMenuUser } from './dashboard';
+import { setOneLayananOpini } from '@/services/layanan-opini';
 
 export default function LayananPublikasi() {
     const { push } = useRouter();
@@ -75,11 +77,51 @@ export default function LayananPublikasi() {
     };
 
     const onSavePublikasiMajalah = async (form: any) => {
-
+        const id_account = getAccountID();
+        form.set('id_account', id_account);
+        const isRequiredFilled = form.get('id_kegiatan') && form.get('bahan_publikasi') ? true : false;
+        if (isRequiredFilled) {
+            const response = await setOneLayananMajalah(form);
+            if (response.status > 300) {
+                toast.error(response.message, {
+                    theme: 'colored',
+                });
+            }
+            if (response.status < 300) {
+                toast.success(response.message, {
+                    theme: 'colored'
+                });
+                push('/users/dashboard');
+            };
+        } else {
+            toast.warning('Mohon masukkan Judul dan Naskah Bahan Publikasi Anda.', {
+                theme: 'colored',
+            });
+        }
     };
 
     const onSaveOpini = async (form: any) => {
-
+        const id_account = getAccountID();
+        form.set('id_account', id_account);
+        const isRequiredFilled = form.get('judul_pembahasan') && form.get('surat_permohonan') && form.get('foto_penulis') && form.get('bahan_publikasi') ? true : false;
+        if (isRequiredFilled) {
+            const response = await setOneLayananOpini(form);
+            if (response.status > 300) {
+                toast.error(response.message, {
+                    theme: 'colored',
+                });
+            }
+            if (response.status < 300) {
+                toast.success(response.message, {
+                    theme: 'colored'
+                });
+                push('/users/dashboard');
+            };
+        } else {
+            toast.warning('Mohon masukkan Judul, Surat Permohonan, Foto, dan Naskah Bahan Publikasi Anda.', {
+                theme: 'colored',
+            });
+        }
     };
     return (
         <Box className='bg-grey'>
