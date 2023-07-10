@@ -3,8 +3,10 @@ export type AccountTokenTypes = {
   username: string;
   name: string;
   email: string;
+  no_identitas: string;
   unit: string;
   role: string;
+  kontak: string;
   img_profil: string;
 };
 

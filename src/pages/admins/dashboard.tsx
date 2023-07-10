@@ -17,28 +17,18 @@ import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import PendingOutlinedIcon from '@mui/icons-material/PendingOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import { Box, Divider, Grid, Paper, Stack, Typography } from '@mui/material';
-
-export let adminPayload: TokenTypes = {
-    account: {
-        id: '',
-        username: '',
-        name: '',
-        email: '',
-        unit: '',
-        role: '',
-        img_profil: ''
-    }, iat: 0, exp: 0
-};
 
 export default function Dashboard(props: any) {
     const { user } = props;
-    adminPayload = user;
+    let adminPayload = user;
 
     const dark = '#1f2937';
     const primary = '#0ea5e9';
     const pending = '#f59e0b';
     const complete = '#22c55e';
+    const error = '#ef4444';
     const data = [
         { x: 'Jan', y: 40 },
         { x: 'Feb', y: 30 },
@@ -80,14 +70,17 @@ export default function Dashboard(props: any) {
             <DashboardPanel listMenu={listMenuAdmin}>
                 <HeaderBreadcrumbs pageHeader='Dashboard Admin' currentPage='Dashboard' />
                 <Grid container marginBottom={{ xs: 2, md: 4 }} rowSpacing={2} columnSpacing={4}>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={3}>
                         <FlowCard text={dark} lineColor={primary} data={data} headline='Layanan masuk' icon={<ArrowCircleDownOutlinedIcon fontSize='large' className='text-primary' />} />
                     </Grid>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={3}>
                         <FlowCard text={dark} lineColor={pending} data={data1} headline='Layanan dalam proses' icon={<PendingOutlinedIcon fontSize='large' className='text-pending' />} />
                     </Grid>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={3}>
                         <FlowCard text={dark} lineColor={complete} data={data2} headline='Layanan selesai' icon={<CheckCircleOutlinedIcon fontSize='large' className='text-complete' />} />
+                    </Grid>
+                    <Grid item xs={12} md={3}>
+                        <FlowCard text={dark} lineColor={error} data={data2} headline='Layanan ditolak' icon={<HighlightOffOutlinedIcon fontSize='large' className='text-error' />} />
                     </Grid>
                 </Grid>
                 <Grid container spacing={2}>

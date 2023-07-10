@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
@@ -8,23 +8,34 @@ import IconPopover from '../IconPopover';
 import { Avatar, Box, Chip, Divider, Stack, Typography } from '@mui/material';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
-import { adminPayload } from '@/pages/admins/dashboard';
-
+import { getPayload } from '@/common/utils/decryptTkn';
+import { TokenTypes } from '@/services/data-types';
 export default function AvatarNavIcon() {
-    const router = useRouter();
+    const { isReady, push } = useRouter();
     const onLogout = () => {
         Cookies.remove('tkn');
-        router.push('/');
+        push('/');
     };
-    const user = adminPayload.account;
     const api_image = process.env.NEXT_PUBLIC_API_IMG;
+    const [user, setUser] = useState<TokenTypes | null>(null);
+
+    const getUser = useCallback(async () => {
+        const payload = await getPayload();
+        setUser(payload);
+    }, [getPayload]);
+
+    useEffect(() => {
+        if (isReady) {
+            getUser();
+        }
+    }, [isReady]);
     return (
         <>
             <IconPopover height='auto' alt='user-icon' icon={
                 <>
-                    <Avatar alt='John Doe' src={`${api_image}/${user.img_profil}`} />
+                    <Avatar alt='John Doe' src={user ? `${api_image}/${user.account.img_profil}` : '/'} />
                     <Stack direction='row' alignItems='center' sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <Typography variant='body2' className='ml-2 text-gray-600'>{user.name}</Typography>
+                        <Typography variant='body2' className='ml-2 text-gray-600'>{user ? user.account.name : ''}</Typography>
                         <ExpandMoreIcon className='text-gray-500 text-base' />
                     </Stack>
                 </>
@@ -32,7 +43,7 @@ export default function AvatarNavIcon() {
                 <Box className='xs:w-[85vw] md:w-52'>
                     <Stack direction='row' alignItems='center' justifyContent='space-between'>
                         <Typography variant='body2' className='text-gray-600 font-medium'>Selamat Datang!</Typography>
-                        <Chip label={`${user.role}`} variant='filled' color='primary' sx={{ height: 14 }} className='text-[10px]' />
+                        <Chip label={user ? `${user!.account.role}` : ''} variant='filled' color='primary' sx={{ height: 14 }} className='text-[10px]' />
                     </Stack>
                     <Box className='mt-4'>
                         <Link href='/admins/profile'>
