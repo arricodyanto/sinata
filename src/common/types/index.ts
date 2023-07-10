@@ -51,3 +51,7 @@ export type TFormTambahLayananProps = {
 export type TFormTambahArsipProps = {
   onSave: (form: any) => void;
 };
+
+export type TTableKegiatanProps = {
+  admin?: boolean;
+};

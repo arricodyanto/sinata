@@ -21,7 +21,7 @@ export default function RiwayatKegiatan() {
                         </Link>
                     </HeaderBreadcrumbs>
                     <Paper className='shadow-md px-6 py-4'>
-                        <TableKegiatan rows={rows} />
+                        <TableKegiatan />
                     </Paper>
                 </DashboardPanel>
             </Box>

@@ -1,19 +1,19 @@
+import CollapsibleAlert from '@/common/components/atoms/CollapsibleAlert';
+import TitlePage from '@/common/components/atoms/TitlePage';
+import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
+import DashboardPanel from '@/common/components/organism/DashboardPanel';
+import TambahKegiatanForm from '@/common/components/organism/FormTambah/TambahKegiatanForm';
+import { authUser } from '@/common/middlewares/auth';
+import { getPayloadData } from '@/common/utils/decryptToken';
+import { formDataFormatter } from '@/common/utils/formDataFormatter';
+import { listMenuUser } from '@/pages/users/dashboard';
+import { setOneDataKegiatan } from '@/services/data-kegiatan';
 import { Box, Grid, Paper, Typography } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useCallback, useEffect, useState } from 'react';
-import CollapsibleAlert from '../../common/components/atoms/CollapsibleAlert';
-import TitlePage from '../../common/components/atoms/TitlePage';
-import HeaderBreadcrumbs from '../../common/components/molecules/HeaderBreadcrumbs';
-import TambahKegiatanForm from '../../common/components/organism/FormTambah/TambahKegiatanForm';
-import DashboardPanel from '@/common/components/organism/DashboardPanel';
-import { listMenuUser } from './dashboard';
-import { getPayloadData } from '@/common/utils/decryptToken';
-import { formDataFormatter } from '@/common/utils/formDataFormatter';
-import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
-import { setOneDataKegiatan } from '@/services/data-kegiatan';
-import { authUser } from '@/common/middlewares/auth';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function TambahKegiatan() {
     const router = useRouter();
@@ -54,7 +54,7 @@ export default function TambahKegiatan() {
                     toast.success(response.message, {
                         theme: 'colored'
                     });
-                    // router.push('/users/riwayat-kegiatan');
+                    router.push('/users/riwayat-kegiatan');
                 }
             } else {
                 toast.error('Harap isi semua data.', {

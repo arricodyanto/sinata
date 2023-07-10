@@ -1,22 +1,76 @@
+import TabItem from '@/common/components/atoms/TabItem';
+import TabsContainer from '@/common/components/atoms/TabsContainer';
+import TitlePage from '@/common/components/atoms/TitlePage';
+import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
+import DashboardPanel from '@/common/components/organism/DashboardPanel';
+import KonpersForm from '@/common/components/organism/KonpersForm';
+import PeliputanForm from '@/common/components/organism/PeliputanForm';
+import PembaruanInfoForm from '@/common/components/organism/PembaruanInfoForm';
+import { getAccountID } from '@/common/utils/decryptToken';
+import { listMenuUser } from '@/pages/users/dashboard';
+import { setOneLayananKonpers } from '@/services/layanan-konpers';
+import { setOneLayananPeliputan, updateLayananPeliputan } from '@/services/layanan-peliputan';
 import { TabContext, TabPanel } from '@mui/lab';
 import { Box, Grid, Paper, Stack } from '@mui/material';
-import Link from 'next/link';
-import React from 'react';
-import TabItem from '../../common/components/atoms/TabItem';
-import TabsContainer from '../../common/components/atoms/TabsContainer';
-import TitlePage from '../../common/components/atoms/TitlePage';
-import HeaderBreadcrumbs from '../../common/components/molecules/HeaderBreadcrumbs';
-import PeliputanForm from '../../common/components/organism/PeliputanForm';
 import Image from 'next/image';
-import KonpersForm from '../../common/components/organism/KonpersForm';
-import PembaruanInfoForm from '../../common/components/organism/PembaruanInfoForm';
-import DashboardPanel from '@/common/components/organism/DashboardPanel';
-import { listMenuUser } from './dashboard';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { toast } from 'react-toastify';
 
 export default function LayananHumas() {
+    const router = useRouter();
     const [value, setValue] = React.useState('1');
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
+    };
+
+    const onSavePeliputan = async (form: any) => {
+        const id_account = getAccountID();
+        form.set('id_account', id_account);
+        const isJudul = form.get('id_kegiatan') ? true : false;
+        if (isJudul) {
+            const response = await setOneLayananPeliputan(form);
+            if (response.status > 300) {
+                toast.error(response.message, {
+                    theme: 'colored',
+                });
+            }
+            if (response.status < 300) {
+                toast.success(response.message, {
+                    theme: 'colored'
+                });
+                router.push('/users/dashboard');
+            };
+        } else {
+            toast.warning('Mohon masukkan Judul Kegiatan Anda.', {
+                theme: 'colored',
+            });
+        }
+    };
+
+    const onSaveKonpers = async (form: any) => {
+        const id_account = getAccountID();
+        form.set('id_account', id_account);
+        const isRequiredFilled = form.get('judul_kegiatan') && form.get('surat_permohonan') ? true : false;
+        if (isRequiredFilled) {
+            const response = await setOneLayananKonpers(form);
+            if (response.status > 300) {
+                toast.error(response.message, {
+                    theme: 'colored',
+                });
+            }
+            if (response.status < 300) {
+                toast.success(response.message, {
+                    theme: 'colored'
+                });
+                router.push('/users/dashboard');
+            };
+        } else {
+            toast.warning('Mohon masukkan Judul dan Surat Permohonan Anda', {
+                theme: 'colored',
+            });
+        }
     };
     return (
         <Box className='bg-grey'>
@@ -40,10 +94,10 @@ export default function LayananHumas() {
                                 </Box>
                                 <Stack className='-mx-6'>
                                     <TabPanel value='1'>
-                                        <PeliputanForm onSave={() => { }} />
+                                        <PeliputanForm onSave={onSavePeliputan} />
                                     </TabPanel>
                                     <TabPanel value='2'>
-                                        <KonpersForm onSave={() => { }} />
+                                        <KonpersForm onSave={onSaveKonpers} />
                                     </TabPanel>
                                     <TabPanel value='3'>
                                         <PembaruanInfoForm onSave={() => { }} />
