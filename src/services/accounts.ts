@@ -42,3 +42,13 @@ export async function deleteOneUser(id: string) {
     token: true,
   });
 }
+
+export async function changePasswordUser(id: string, data: any) {
+  const url = `${HOST}/${VERSION}/${URL}/${id}/change-password`;
+  return callAPI({
+    url,
+    method: 'PUT',
+    data,
+    token: true,
+  });
+}

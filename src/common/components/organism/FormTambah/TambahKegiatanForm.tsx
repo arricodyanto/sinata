@@ -1,24 +1,26 @@
+import AutocompleteCustom from '@/common/components/atoms/AutocompleteCustom';
+import ButtonBasic from '@/common/components/atoms/ButtonBasic';
+import DatePickerBasic from '@/common/components/atoms/DatePickerBasic';
+import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
+import FileUpload from '@/common/components/atoms/FileUpload';
+import SelectLabel from '@/common/components/atoms/SelectLabel';
+import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
+import TimePickerBasic from '@/common/components/atoms/TimePickerBasic';
 import { TTambahKegiatanFormProps } from '@/common/types';
 import { dateISOFormatter, timeISOFormatter } from '@/common/utils/dateFormatter.util';
+import { getAllUsers } from '@/services/accounts';
 import { FormControl, FormLabel, MenuItem, Stack } from '@mui/material';
 import { FilePondFile } from 'filepond';
-import { useCallback, useEffect, useState } from 'react';
-import ButtonBasic from '../../atoms/ButtonBasic';
-import DatePickerBasic from '../../atoms/DatePickerBasic';
-import DialogConfirmation from '../../atoms/DialogConfirmation';
-import FileUpload from '../../atoms/FileUpload';
-import SelectLabel from '../../atoms/SelectLabel';
-import TextfieldLabel from '../../atoms/TextfieldLabel';
-import TimePickerBasic from '../../atoms/TimePickerBasic';
-import { getAllUsers } from '@/services/accounts';
 import { useRouter } from 'next/router';
-import AutocompleteCustom from '../../atoms/AutocompleteCustom';
+import { useCallback, useEffect, useState } from 'react';
 
 const form = new FormData();
 
 export default function TambahKegiatanForm(props: TTambahKegiatanFormProps) {
     const { onSave, admin } = props;
     const { isReady } = useRouter();
+    const isAdmin = admin ? true : false;
+
     const [open, setOpen] = useState(false);
     const handleDialogOpen = () => {
         setOpen(true);
@@ -37,16 +39,18 @@ export default function TambahKegiatanForm(props: TTambahKegiatanFormProps) {
     };
 
     const [users, setUsers] = useState<Array<any>>([]);
-    const getUsers = useCallback(async () => {
-        const response = await getAllUsers();
-        setUsers(response.data);
-    }, []);
+    if (isAdmin) {
+        const getUsers = useCallback(async () => {
+            const response = await getAllUsers();
+            setUsers(response.data);
+        }, []);
 
-    useEffect(() => {
-        if (isReady) {
-            getUsers();
-        }
-    }, [isReady]);
+        useEffect(() => {
+            if (isReady) {
+                getUsers();
+            }
+        }, [isReady]);
+    }
     return (
         <>
             <TextfieldLabel name='judul_kegiatan' label='Judul Kegiatan' onChange={(event: any) => form.set('judul_kegiatan', event.target.value)} placeholder='Judul kegiatan dari agenda yang akan ditambahkan' />

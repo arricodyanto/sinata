@@ -1,7 +1,8 @@
 import TitlePage from '@/common/components/atoms/TitlePage';
 import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
-import TambahKegiatanForm from '@/common/components/organism/TambahKegiatanForm';
+import TambahKegiatanForm from '@/common/components/organism/FormTambah/TambahKegiatanForm';
+import { authAdmin } from '@/common/middlewares/auth';
 import { formDataFormatter } from '@/common/utils/formDataFormatter';
 import { listMenuAdmin } from '@/pages/admins/dashboard';
 import { setOneDataKegiatan } from '@/services/data-kegiatan';
@@ -57,7 +58,7 @@ export default function TambahDataKegiatan() {
     };
     return (
         <Box className='bg-grey'>
-            <TitlePage title='Tambah Data Kegiatan - Sinata - Sinata' />
+            <TitlePage title='Tambah Data Kegiatan - Sinata' />
             <DashboardPanel listMenu={listMenuAdmin}>
                 <HeaderBreadcrumbs pageHeader='Tambahkan Data Kegiatan' currentPage='Tambah Data'>
                     <Link href='/admins/daftar-kegiatan' className='text-zinc-900 hover:underline hover:decoration-1 hover:underline-offset-2'>
@@ -67,7 +68,7 @@ export default function TambahDataKegiatan() {
                 <Grid container spacing={2}>
                     <Grid item spacing={1} xs={12} md={8}>
                         <Paper className='shadow-md xs:p-4 md:p-6'>
-                            <TambahKegiatanForm onSave={handleTambah} admin={true} />
+                            <TambahKegiatanForm onSave={handleTambah} admin />
                         </Paper>
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -79,4 +80,9 @@ export default function TambahDataKegiatan() {
             </DashboardPanel>
         </Box>
     );
+}
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authAdmin(tkn);
 }

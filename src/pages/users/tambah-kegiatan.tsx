@@ -1,15 +1,68 @@
+import CollapsibleAlert from '@/common/components/atoms/CollapsibleAlert';
+import TitlePage from '@/common/components/atoms/TitlePage';
+import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
+import DashboardPanel from '@/common/components/organism/DashboardPanel';
+import TambahKegiatanForm from '@/common/components/organism/FormTambah/TambahKegiatanForm';
+import { authUser } from '@/common/middlewares/auth';
+import { getPayloadData } from '@/common/utils/decryptToken';
+import { formDataFormatter } from '@/common/utils/formDataFormatter';
+import { listMenuUser } from '@/pages/users/dashboard';
+import { setOneDataKegiatan } from '@/services/data-kegiatan';
 import { Box, Grid, Paper, Typography } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
-import CollapsibleAlert from '../../common/components/atoms/CollapsibleAlert';
-import TitlePage from '../../common/components/atoms/TitlePage';
-import HeaderBreadcrumbs from '../../common/components/molecules/HeaderBreadcrumbs';
-import TambahKegiatanForm from '../../common/components/organism/TambahKegiatanForm';
-import DashboardPanel from '@/common/components/organism/DashboardPanel';
-import { listMenuUser } from './dashboard';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function TambahKegiatan() {
+    const router = useRouter();
+    const [id_account, setId_account] = useState('');
+
+    const payload = getPayloadData();
+    useEffect(() => {
+        if (payload) {
+            setId_account(payload.account.id);
+        }
+    }, [payload]);
+
+    const emptyForm = [
+        { judul_kegiatan: '' },
+        { des_kegiatan: '' },
+        { tempat_kegiatan: '' },
+    ];
+
+    const handleTambah = async (form: any) => {
+        const formattedForm = formDataFormatter(form);
+        form.set('id_account', id_account);
+        const isEmpty = Array.isArray(formattedForm) && formattedForm.length === 0 && JSON.stringify(formattedForm) === JSON.stringify(emptyForm);
+        if (isEmpty) {
+            toast.error('Tidak ada data yang tambahkan. Mohon masukkan data dengan benar.', {
+                theme: 'colored',
+            });
+        }
+        if (!isEmpty) {
+            const isRequiredFilled = form.get('judul_kegiatan') && form.get('surat_permohonan') && form.get('sik') && form.get('tgl_kegiatan') && form.get('waktu_kegiatan') ? true : false;
+            if (isRequiredFilled) {
+                const response = await setOneDataKegiatan(form);
+                if (response.status > 300) {
+                    toast.error(response.message, {
+                        theme: 'colored',
+                    });
+                }
+                if (response.status < 300) {
+                    toast.success(response.message, {
+                        theme: 'colored'
+                    });
+                    router.push('/users/riwayat-kegiatan');
+                }
+            } else {
+                toast.error('Harap isi semua data.', {
+                    theme: 'colored',
+                });
+            }
+        }
+    };
     return (
         <>
             <Box className='bg-grey'>
@@ -28,9 +81,7 @@ export default function TambahKegiatan() {
                                         Sebelum mengajukan layanan, harap pastikan judul dan detail acara Anda sudah terdaftar pada sistem !
                                     </Typography>
                                 </CollapsibleAlert>
-                                <Box>
-                                    <TambahKegiatanForm onSave={() => { }} />
-                                </Box>
+                                <TambahKegiatanForm onSave={handleTambah} />
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={4}>
@@ -44,3 +95,8 @@ export default function TambahKegiatan() {
         </>
     );
 }
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authUser(tkn);
+}  

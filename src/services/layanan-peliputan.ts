@@ -23,6 +23,16 @@ export async function getOneLayananPeliputan(id: string) {
   });
 }
 
+export async function setOneLayananPeliputan(data: any) {
+  const url = `${HOST}/${VERSION}/${URL}/tambah`;
+  return callAPI({
+    url,
+    method: 'POST',
+    data,
+    token: true,
+  });
+}
+
 export async function deleteOneLayananPeliputan(id: string) {
   const url = `${HOST}/${VERSION}/${URL}/${id}/delete`;
   return callAPI({
@@ -38,6 +48,16 @@ export async function updateLayananPeliputan(id: string, data: any) {
     url,
     method: 'PUT',
     data,
+    token: true,
+  });
+}
+
+export async function getAllLayananPeliputanUser(id: string, params?: string) {
+  const URLparams = params || '';
+  const url = `${HOST}/${VERSION}/${URL}/user/${id}/lihat?${URLparams}`;
+  return callAPI({
+    url,
+    method: 'GET',
     token: true,
   });
 }

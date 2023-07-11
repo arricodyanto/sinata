@@ -23,6 +23,16 @@ export async function getOneKonpers(id: string) {
   });
 }
 
+export async function setOneLayananKonpers(data: any) {
+  const url = `${HOST}/${VERSION}/${URL}/tambah`;
+  return callAPI({
+    url,
+    method: 'POST',
+    data,
+    token: true,
+  });
+}
+
 export async function updateLayananKonpers(id: string, data: any) {
   const url = `${HOST}/${VERSION}/${URL}/${id}/edit`;
   return callAPI({
@@ -38,6 +48,16 @@ export async function deleteOneLayananKonpers(id: string) {
   return callAPI({
     url,
     method: 'DELETE',
+    token: true,
+  });
+}
+
+export async function getAllLayananKonpersUser(id: string, params?: string) {
+  const URLparams = params || '';
+  const url = `${HOST}/${VERSION}/${URL}/user/${id}/lihat?${URLparams}`;
+  return callAPI({
+    url,
+    method: 'GET',
     token: true,
   });
 }

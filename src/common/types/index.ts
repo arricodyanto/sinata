@@ -15,6 +15,7 @@ export type TTableRiwayatProps = {
 export type TFormEditLayananProps = {
   data: Array<any>;
   id: any;
+  admin?: boolean;
 };
 
 export type TDisabledFormDataKegiatanProps = {
@@ -41,4 +42,17 @@ export type TTambahKegiatanFormProps = {
 export type TTambahAkunFormProps = {
   onSave: (form: object) => void;
   isLoading?: boolean;
+};
+
+export type TFormTambahLayananProps = {
+  onSave: (form: any) => void;
+  admin?: boolean;
+};
+
+export type TFormTambahArsipProps = {
+  onSave: (form: any) => void;
+};
+
+export type TTableKegiatanProps = {
+  admin?: boolean;
 };

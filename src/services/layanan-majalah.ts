@@ -23,6 +23,16 @@ export async function getOneLayananMajalah(id: string) {
   });
 }
 
+export async function setOneLayananMajalah(data: any) {
+  const url = `${HOST}/${VERSION}/${URL}/tambah`;
+  return callAPI({
+    url,
+    method: 'POST',
+    data,
+    token: true,
+  });
+}
+
 export async function updateLayananMajalah(id: string, data: any) {
   const url = `${HOST}/${VERSION}/${URL}/${id}/edit`;
   return callAPI({
@@ -38,6 +48,16 @@ export async function deleteOneLayananMajalah(id: string) {
   return callAPI({
     url,
     method: 'DELETE',
+    token: true,
+  });
+}
+
+export async function getAllLayananMajalahUser(id: string, params?: string) {
+  const URLparams = params || '';
+  const url = `${HOST}/${VERSION}/${URL}/user/${id}/lihat?${URLparams}`;
+  return callAPI({
+    url,
+    method: 'GET',
     token: true,
   });
 }

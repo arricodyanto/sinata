@@ -1,30 +1,31 @@
 import TitlePage from '@/common/components/atoms/TitlePage';
 import HeaderBreadcrumbs from '@/common/components/molecules/HeaderBreadcrumbs';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
+import LayananBaliho from '@/common/components/organism/FormEditLayanan/LayananBaliho';
+import LayananKonpers from '@/common/components/organism/FormEditLayanan/LayananKonpers';
+import LayananLiveStreaming from '@/common/components/organism/FormEditLayanan/LayananLiveStreaming';
+import LayananOpini from '@/common/components/organism/FormEditLayanan/LayananOpini';
 import LayananPeliputan from '@/common/components/organism/FormEditLayanan/LayananPeliputan';
+import LayananPeminformasi from '@/common/components/organism/FormEditLayanan/LayananPeminformasi';
+import LayananPublikasiAgenda from '@/common/components/organism/FormEditLayanan/LayananPublikasiAgenda';
+import LayananPublikasiMajalah from '@/common/components/organism/FormEditLayanan/LayananPublikasiMajalah';
+import LayananVideotron from '@/common/components/organism/FormEditLayanan/LayananVideotron';
+import { authAdmin } from '@/common/middlewares/auth';
+import { listMenuAdmin } from '@/pages/admins/dashboard';
+import { getOneLayananBaliho } from '@/services/layanan-baliho';
+import { getOneKonpers } from '@/services/layanan-konpers';
+import { getOneLayananLiveStreaming } from '@/services/layanan-livestreaming';
+import { getOneLayananMajalah } from '@/services/layanan-majalah';
+import { getOneLayananOpini } from '@/services/layanan-opini';
 import { getOneLayananPeliputan } from '@/services/layanan-peliputan';
+import { getOneLayananPeminformasi } from '@/services/layanan-peminformasi';
+import { getOneLayananPublikasiAgenda } from '@/services/layanan-pubagenda';
+import { getOneLayananVideotron } from '@/services/layanan-videotron';
 import { Box, Grid, Paper } from '@mui/material';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
-import { listMenuAdmin } from '../../dashboard';
-import Image from 'next/image';
-import { getOneKonpers } from '@/services/layanan-konpers';
-import LayananKonpers from '@/common/components/organism/FormEditLayanan/LayananKonpers';
-import { getOneLayananPeminformasi } from '@/services/layanan-peminformasi';
-import LayananPeminformasi from '@/common/components/organism/FormEditLayanan/LayananPeminformasi';
-import { getOneLayananLiveStreaming } from '@/services/layanan-livestreaming';
-import LayananLiveStreaming from '@/common/components/organism/FormEditLayanan/LayananLiveStreaming';
-import { getOneLayananPublikasiAgenda } from '@/services/layanan-pubagenda';
-import LayananPublikasiAgenda from '@/common/components/organism/FormEditLayanan/LayananPublikasiAgenda';
-import { getOneLayananMajalah } from '@/services/layanan-majalah';
-import LayananPublikasiMajalah from '@/common/components/organism/FormEditLayanan/LayananPublikasiMajalah';
-import { getOneLayananOpini } from '@/services/layanan-opini';
-import LayananOpini from '@/common/components/organism/FormEditLayanan/LayananOpini';
-import { getOneLayananVideotron } from '@/services/layanan-videotron';
-import LayananVideotron from '@/common/components/organism/FormEditLayanan/LayananVideotron';
-import LayananBaliho from '@/common/components/organism/FormEditLayanan/LayananBaliho';
-import { getOneLayananBaliho } from '@/services/layanan-baliho';
 
 export default function RiwayatAjuanPage() {
     const { query, isReady } = useRouter();
@@ -89,24 +90,24 @@ export default function RiwayatAjuanPage() {
                         <Grid item spacing={1} xs={12} md={8}>
                             <Paper className='shadow-md xs:p-4 md:p-6'>
                                 {jenis_layanan === 'Layanan Peliputan' ? (
-                                    <LayananPeliputan data={data} id={id} />
+                                    <LayananPeliputan data={data} id={id} admin />
                                 ) : jenis_layanan === 'Layanan Konferensi Pers' ? (
-                                    <LayananKonpers data={data} id={id} />
+                                    <LayananKonpers data={data} id={id} admin />
                                 ) : jenis_layanan === 'Layanan Pembaruan Informasi' ? (
-                                    <LayananPeminformasi data={data} id={id} />
+                                    <LayananPeminformasi data={data} id={id} admin />
                                 ) : jenis_layanan === 'Layanan Live Streaming' ? (
-                                    <LayananLiveStreaming data={data} id={id} />
+                                    <LayananLiveStreaming data={data} id={id} admin />
                                 ) : jenis_layanan === 'Layanan Publikasi Agenda' ? (
-                                    <LayananPublikasiAgenda data={data} id={id} />
+                                    <LayananPublikasiAgenda data={data} id={id} admin />
                                 ) : jenis_layanan === 'Layanan Publikasi di Majalah' ? (
-                                    <LayananPublikasiMajalah data={data} id={id} />
+                                    <LayananPublikasiMajalah data={data} id={id} admin />
                                 ) : jenis_layanan === 'Layanan Opini di Media' ? (
-                                    <LayananOpini data={data} id={id} />
+                                    <LayananOpini data={data} id={id} admin />
                                 ) : jenis_layanan === 'Layanan Penayangan Konten di Videotron' ? (
-                                    <LayananVideotron data={data} id={id} />
+                                    <LayananVideotron data={data} id={id} admin />
                                 ) : jenis_layanan === 'Layanan Pemasangan Baliho' ? (
-                                    <LayananBaliho data={data} id={id} />
-                                ) : null}
+                                    <LayananBaliho data={data} id={id} admin />
+                                ) : null} admin
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={4}>
@@ -119,4 +120,9 @@ export default function RiwayatAjuanPage() {
             </Box>
         </>
     );
+}
+
+export async function getServerSideProps({ req }: any) {
+    const { tkn } = req.cookies;
+    return authAdmin(tkn);
 }

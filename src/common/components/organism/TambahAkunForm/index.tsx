@@ -42,7 +42,7 @@ export default function TambahAkunForm(props: TTambahAkunFormProps) {
         <>
             <TextfieldLabel label={'Nama Pengguna'} value={username} onChange={handleFormChange(setUsername)} placeholder='johndoe123' />
             <TextfieldLabel label={'Nama Lenkap'} value={name} onChange={handleFormChange(setName)} placeholder='John Doe Smith' />
-            <TextfieldLabel label={'Alamat Email'} value={email} onChange={handleFormChange(setEmail)} placeholder='johndoe@mail.com' />
+            <TextfieldLabel type='email' label={'Alamat Email'} value={email} onChange={handleFormChange(setEmail)} placeholder='johndoe@mail.com' />
             <TextfieldLabel type='password' label={'Kata Sandi'} value={password} onChange={handleFormChange(setPassword)} placeholder='Kata Sandi Anda' />
             <TextfieldLabel label={'Nomor Identitas'} value={no_identitas} onChange={handleFormChange(setNo_identitas)} placeholder='MM1231123' />
             <TextfieldLabel label={'Fakultas/Unit Kerja'} value={unit} onChange={handleFormChange(setUnit)} placeholder='Kantor Pusat UNS' />
@@ -50,7 +50,7 @@ export default function TambahAkunForm(props: TTambahAkunFormProps) {
                 <MenuItem value='User'>User</MenuItem>
                 <MenuItem value='Super Admin'>Super Admin</MenuItem>
             </SelectLabel>
-            <TextfieldLabel label={'Kontak'} value={kontak} onChange={handleFormChange(setKontak)} placeholder='62 800000000' />
+            <TextfieldLabel type='number' label={'Kontak'} value={kontak} onChange={handleFormChange(setKontak)} placeholder='62 800000000' />
             {!isLoading ? (
                 <ButtonBasic type='submit' sx={{ marginTop: 2 }} variant='contained' onClick={handleDialogOpen}>Tambahkan Data</ButtonBasic>
             ) : (

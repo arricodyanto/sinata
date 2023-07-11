@@ -5,12 +5,9 @@ import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import { authAdmin } from '@/common/middlewares/auth';
 import { Box, Paper } from '@mui/material';
 import Link from 'next/link';
-import { adminPayload, listMenuAdmin } from './dashboard';
+import { listMenuAdmin } from './dashboard';
 
-export default function SemuaAjuan(props: any) {
-    const { user } = props;
-    let payload = adminPayload;
-    payload = user;
+export default function SemuaAjuan() {
     return (
         <Box className='bg-grey'>
             <TitlePage title='Semua Ajuan Layanan - Sinata' />
@@ -21,7 +18,7 @@ export default function SemuaAjuan(props: any) {
                     </Link>
                 </HeaderBreadcrumbs>
                 <Paper className='shadow-md xs:p-4 md:p-6'>
-                    <TableRiwayat />
+                    <TableRiwayat admin />
                 </Paper>
             </DashboardPanel>
         </Box>
