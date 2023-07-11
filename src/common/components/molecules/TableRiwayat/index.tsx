@@ -77,7 +77,6 @@ export default function TableRiwayat(props: TTableKegiatanProps) {
         if (!isAdmin) {
             const params = `page=${page}&rowsPerPage=${rowsPerPage}`;
             const response = await getAllRiwayatAjuanUser(params);
-            console.log(response);
             if (response) {
                 setData(response.data);
                 setTotalRow(response.totalRow);

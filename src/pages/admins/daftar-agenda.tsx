@@ -25,7 +25,6 @@ export default function DaftarAgenda() {
     const getAllPublishedAgenda = useCallback(async () => {
         const URLparams = `limit=${rowsPerPage}&page=${page}`;
         const response = await getKalenderEvents(URLparams);
-        console.log(response);
         setData(response.data);
         setTotalRow(response.totalRow);
         setRowsPerPage(response.rowsPerPage);

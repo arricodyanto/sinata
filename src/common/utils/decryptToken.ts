@@ -40,6 +40,16 @@ export function getAccountID() {
     const payload: TokenTypes = jwtDecode(jwtToken);
     id_account = payload.account.id;
   }
-
   return id_account;
+}
+
+export function getAccountFromPayload() {
+  let userPayload: TokenTypes | null = null;
+  const getCookies = Cookies.get('tkn');
+  if (getCookies) {
+    const jwtToken = atob(getCookies);
+    const payload: TokenTypes = jwtDecode(jwtToken);
+    userPayload = payload;
+  }
+  return userPayload;
 }

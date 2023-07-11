@@ -26,7 +26,7 @@ export default function Events() {
   };
 
   const getAgenda = useCallback(async () => {
-    const params = `limit=12&page=${page}`;
+    const params = `limit=12&page=${page}&status=Completed`;
     const response = await getAllLayananPublikasiAgenda(params);
     setAgenda(response.data);
     setTotalRow(response.totalRow);

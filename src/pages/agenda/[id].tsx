@@ -14,6 +14,7 @@ import { useRouter } from 'next/router';
 import { dateFormatter, timeFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
 import Link from 'next/link';
 import { getAllLayananPublikasiAgenda, getOneLayananPublikasiAgenda } from '@/services/layanan-pubagenda';
+import dayjs from 'dayjs';
 
 export default function DetailAgenda() {
   const { query, isReady } = useRouter();
@@ -24,7 +25,8 @@ export default function DetailAgenda() {
   const [agendaItem, setAgendaItem] = useState<Array<any>>([]);
 
   const getAgenda = useCallback(async () => {
-    const response = await getAllLayananPublikasiAgenda();
+    const params = 'status=Completed';
+    const response = await getAllLayananPublikasiAgenda(params);
     setAgenda(response.data);
   }, [getAllLayananPublikasiAgenda]);
 
@@ -51,7 +53,7 @@ export default function DetailAgenda() {
                 <Grid container spacing={4} sx={{ marginBottom: 5, minHeight: '30vh' }}>
                   <Grid item xs={12} md={7} lg={8} className='mb-4'>
                     <PageTitle title={item.tb_kegiatan.judul_kegiatan} />
-                    <Stack direction='row' alignItems='center' spacing={2} className='-mt-5' sx={{ display: { xs: 'none', lg: 'flex' } }}>
+                    <Stack direction='row' alignItems='center' spacing={1} className='-mt-5' sx={{ display: { xs: 'none', lg: 'flex' } }}>
                       <Stack direction='row'>
                         <PersonIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary' />
                         <Typography variant='caption' className='pl-1 text-gray-500'>{item.tb_kegiatan.tb_account.name}</Typography>

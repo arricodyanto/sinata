@@ -189,18 +189,18 @@ export const listMenuAdmin = [
         link: '#',
         divider: <Divider light className='border-gray-600 mx-5 mb-4' />,
         subItem: [
+            // {
+            //     id: 1,
+            //     subtitle: 'Dokumentasi',
+            //     link: '/admins/arsip-dokumentasi',
+            // },
             {
                 id: 1,
-                subtitle: 'Dokumentasi',
-                link: '/admins/arsip-dokumentasi',
-            },
-            {
-                id: 2,
                 subtitle: 'Arsip Pers',
                 link: '/admins/arsip/pers',
             },
             {
-                id: 3,
+                id: 2,
                 subtitle: 'Arsip Desain',
                 link: '/admins/arsip/desain',
             }
