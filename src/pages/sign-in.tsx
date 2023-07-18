@@ -1,11 +1,10 @@
-import { Box, Container, Grid, Stack, Typography } from '@mui/material';
+import ContainerPage from '@/common/components/atoms/ContainerPage';
+import CoverSide from '@/common/components/molecules/CoverSide';
+import HeaderBox from '@/common/components/molecules/HeaderBox';
+import SignInForm from '@/common/components/organism/SignInForm';
+import { Box, Grid, Typography } from '@mui/material';
 import Head from 'next/head';
 import Link from 'next/link';
-import React from 'react';
-import ContainerPage from '../common/components/atoms/ContainerPage';
-import CoverSide from '../common/components/molecules/CoverSide';
-import HeaderBox from '../common/components/molecules/HeaderBox';
-import SignInForm from '../common/components/organism/SignInForm';
 
 export default function SignIn() {
     return (

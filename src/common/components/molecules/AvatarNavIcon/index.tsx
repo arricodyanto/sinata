@@ -13,7 +13,6 @@ export default function AvatarNavIcon() {
     const { push } = useRouter();
     const onLogout = () => {
         Cookies.remove('tkn');
-        push('/');
     };
     const api_image = process.env.NEXT_PUBLIC_API_IMG;
     const user = getPayloadData();
