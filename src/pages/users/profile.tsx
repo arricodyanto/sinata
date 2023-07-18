@@ -15,7 +15,7 @@ export default function Profile(props: any) {
             <DashboardPanel listMenu={listMenuUser}>
                 <HeaderBreadcrumbs pageHeader='Profil Akun' currentPage='Profil Akun' />
                 <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                    <Paper className='shadow-md px-6 py-4 md:max-w-[300px] lg:max-w-[350px] h-fit'>
+                    <Paper className='shadow-md px-6 py-4 max-w-[450px] h-fit'>
                         <AccountProfile payload={user} />
                     </Paper>
                     <Paper className='shadow-md px-6 py-4 w-full'>
