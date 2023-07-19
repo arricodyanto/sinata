@@ -1,9 +1,17 @@
+import AutocompleteCustom from '@/common/components/atoms/AutocompleteCustom';
 import AutocompleteTitle from '@/common/components/atoms/AutocompleteTitle';
+import ButtonBasic from '@/common/components/atoms/ButtonBasic';
 import ButtonIcon from '@/common/components/atoms/ButtonIcon';
+import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
 import FileUpload from '@/common/components/atoms/FileUpload';
 import SelectLabel from '@/common/components/atoms/SelectLabel';
+import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
+import DisabledFormDataKegiatan from '@/common/components/organism/FormDataKegiatan/DisabledFormDataKegiatan';
 import { TFormEditLayananProps } from '@/common/types';
 import { dateStringFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
+import { getAccountID } from '@/common/utils/decryptToken';
+import { formDataFormatter } from '@/common/utils/formDataFormatter';
+import { getAllUsers } from '@/services/accounts';
 import { getAllDataKegiatan, getAllDataKegiatanUser } from '@/services/data-kegiatan';
 import { deleteOneLayananPeliputan, updateLayananPeliputan } from '@/services/layanan-peliputan';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -17,17 +25,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import ButtonBasic from '@/common/components/atoms/ButtonBasic';
-import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
-import DisabledFormDataKegiatan from '@/common/components/organism/FormDataKegiatan/DisabledFormDataKegiatan';
-import { formDataFormatter } from '@/common/utils/formDataFormatter';
-import { getAccountID } from '@/common/utils/decryptToken';
+import AutocompleteMultiple from '../../atoms/AutocompleteMultiple';
+import { nameuserToArray, nameuserToString } from '@/common/utils/nameuserFormatter.util';
 
 const form = new FormData();
 
 export default function LayananPeliputan(props: TFormEditLayananProps) {
     const { data, id, admin } = props;
     let rows = data;
+    // console.log(rows);
     const isAdmin = admin ? true : false;
 
     const { isReady, push } = useRouter();
@@ -40,6 +46,14 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 
     const [autocomplete, setAutocomplete] = useState<string>(''); // Handle autocomplete
     const [dataKegiatan, setDataKegiatan] = useState<Array<any>>([]); // Handle autocomplete
+    const [users, setUsers] = useState<Array<any>>([]);
+    const [PIC, setPIC] = useState('');
+
+    const handlePICChange = (event: any, value: any) => {
+        const newPICArray = value.map((item: any) => item.name || '');
+        form.set('pic', nameuserToString(newPICArray));
+        setPIC(nameuserToString(newPICArray));
+    };
 
     const handleStatusChange = (event: any) => {
         form.set('status', event.target.value);
@@ -112,10 +126,16 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
         }
     }, [getAllDataKegiatanUser]);
 
+    const getUsers = useCallback(async () => {
+        const response = await getAllUsers();
+        setUsers(response.data);
+    }, [getAllUsers]);
+
     useEffect(() => {
         if (isReady) {
             if (isAdmin) {
                 getDataKegiatan();
+                getUsers();
             }
             if (!isAdmin) {
                 getDataKegiatanUser();
@@ -126,6 +146,9 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
     useEffect(() => {
         if (judulFromProps.length > 0) {
             setAutocomplete(judulFromProps[0]);
+        }
+        if (rows) {
+            setPIC(nameuserToString(rows.map(item => item.pic)));
         }
     }, [rows]);
 
@@ -148,6 +171,10 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
             theme: 'colored'
         });
         isAdmin ? push('/admins/layanan-humas') : push('/users/profile');
+    };
+
+    const isOptionDisabled = (option: any) => {
+        return nameuserToArray(PIC).some((item: any) => item.name === option.name);
     };
     return (
         <>
@@ -221,8 +248,12 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
                                         </Stack>
                                     </>
                                 )}
+                                <AutocompleteMultiple name='pic' label='PIC' data={users} getOptionLabel={(data) => data.name} defaultValue={data.pic ? nameuserToArray(data.pic) : []} getOptionDisabled={isOptionDisabled} onChange={handlePICChange} disabled={!editable} />
+                                <TextfieldLabel label='Keterangan' placeholder='Keterangan tambahan jika ajuan layanan ditolak.' multiline minRows={2} maxRows={5} onChange={(event: any) => form.set('keterangan', event.target.value)} />
                             </>
-                        ) : null}
+                        ) : (
+                            <TextfieldLabel label='Keterangan' placeholder='Keterangan tambahan.' multiline minRows={2} maxRows={5} disabled />
+                        )}
                         <Stack direction='row' justifyContent='flex-end' spacing={1} marginTop={6}>
                             {editable ? (
                                 <Stack direction='row' spacing={1}>
@@ -242,7 +273,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
                             </Stack>
                         </DialogConfirmation>
                         <DialogConfirmation title='Ubah Data' body='Apakah Anda yakin ingin menyimpan perubahan pada data ini?' open={openSimpan} onClose={handleDialogClose(setOpenSimpan)}>
-                            <Stack direction='row' spacing={1} className='mt-4 px-2'>
+                            <Stack direction='row' spacing={1} className='my-4 px-2'>
                                 <ButtonBasic variant='contained' onClick={handleDialogClose(setOpenSimpan)}>Batal</ButtonBasic>
                                 <ButtonBasic variant='contained' color='success' onClick={onSave}>Simpan</ButtonBasic>
                             </Stack>

@@ -158,6 +158,7 @@ export default function TableManajemenPeliputan() {
                                             )}
                                             <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' disabled>Change File</Button>
                                         </Stack>
+                                        <TextfieldLabel label='PIC' value={item.pic} InputProps={{ readOnly: true }} />
                                         <Stack direction='row' spacing={1} className='mb-2 mt-6' justifyContent='space-between' alignItems={'center'}>
                                             <Stack direction={'row'} spacing={1}>
                                                 <Typography variant='subtitle2' className='font-bold'>Status</Typography>
