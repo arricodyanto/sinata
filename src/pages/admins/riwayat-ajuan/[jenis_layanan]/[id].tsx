@@ -107,7 +107,7 @@ export default function RiwayatAjuanPage() {
                                     <LayananVideotron data={data} id={id} admin />
                                 ) : jenis_layanan === 'Layanan Pemasangan Baliho' ? (
                                     <LayananBaliho data={data} id={id} admin />
-                                ) : null} admin
+                                ) : null}
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={4}>

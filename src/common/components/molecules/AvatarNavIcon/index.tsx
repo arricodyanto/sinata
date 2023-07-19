@@ -13,6 +13,7 @@ export default function AvatarNavIcon() {
     const { push } = useRouter();
     const onLogout = () => {
         Cookies.remove('tkn');
+        push('/sign-in');
     };
     const api_image = process.env.NEXT_PUBLIC_API_IMG;
     const user = getPayloadData();
@@ -20,7 +21,7 @@ export default function AvatarNavIcon() {
         <>
             <IconPopover height='auto' alt='user-icon' icon={
                 <>
-                    <Avatar alt='John Doe' src={user ? `${api_image}/${user.account.img_profil}` : '/'} />
+                    <Avatar alt={user?.account.name} src={user ? `${api_image}/${user.account.img_profil}` : '/'} />
                     <Stack direction='row' alignItems='center' sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <Typography variant='body2' className='ml-2 text-gray-600'>{user ? user.account.name : ''}</Typography>
                         <ExpandMoreIcon className='text-gray-500 text-base' />

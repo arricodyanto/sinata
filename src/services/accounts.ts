@@ -62,3 +62,13 @@ export async function changePasswordUser(id: string, data: any) {
 		token: true,
 	});
 }
+
+export async function changeAvatar(id: string, data: any) {
+	const url = `${HOST}/${VERSION}/${URL}/${id}/change-avatar`;
+	return callAPI({
+		url,
+		method: 'PUT',
+		data,
+		token: true,
+	});
+}

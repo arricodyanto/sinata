@@ -106,34 +106,18 @@ export default function Appnav(props: any) {
                               </Link>
                             </ListItem>
                             <ListItem>
-                              {payload?.account.role === 'User' ? (
-                                <Link href='/users/dashboard'>
-                                  <ListItemButton className='w-[210px]'>
-                                    <ListItemIcon>
-                                      <DashboardOutlinedIcon sx={{ color: '#f3f4f6' }} />
-                                    </ListItemIcon>
-                                    <Typography variant='body1'>Dashboard</Typography>
-                                  </ListItemButton>
-                                </Link>
-                              ) : payload?.account.role === 'Super Admin' ? (
-                                <Link href='/admins/dashboard'>
-                                  <ListItemButton className='w-[210px]'>
-                                    <ListItemIcon>
-                                      <DashboardOutlinedIcon sx={{ color: '#f3f4f6' }} />
-                                    </ListItemIcon>
-                                    <Typography variant='body1'>Dashboard</Typography>
-                                  </ListItemButton>
-                                </Link>
-                              ) : (
-                                <Link href='/sign-in'>
-                                  <ListItemButton className='w-[210px]'>
-                                    <ListItemIcon>
+                              <Link href={!payload?.account.role ? '/sign-in' : payload?.account.role !== 'User' ? '/admins/dashboard' : '/users/dashboard'}>
+                                <ListItemButton className='w-[210px]'>
+                                  <ListItemIcon>
+                                    {!payload?.account.role ? (
                                       <LoginOutlinedIcon sx={{ color: '#f3f4f6' }} />
-                                    </ListItemIcon>
-                                    <Typography variant='body1'>Sign in</Typography>
-                                  </ListItemButton>
-                                </Link>
-                              )}
+                                    ) : (
+                                      <DashboardOutlinedIcon sx={{ color: '#f3f4f6' }} />
+                                    )}
+                                  </ListItemIcon>
+                                  <Typography variant='body1'>{!payload?.account.role ? 'Sign in' : 'Dashboard'}</Typography>
+                                </ListItemButton>
+                              </Link>
                             </ListItem>
                           </List>
                         </Box>
@@ -165,19 +149,9 @@ export default function Appnav(props: any) {
                     <Link href='/guidelines' className='text-light'>
                       <Typography variant='body1' className='hover:brightness-90 hover:text-underline underline-offset-8'>Panduan</Typography>
                     </Link>
-                    {payload?.account.role === 'User' ? (
-                      <Link href='/users/dashboard' className='text-light'>
-                        <Typography variant='body1' className='hover:brightness-90 hover:text-underline underline-offset-8'>Dashboard</Typography>
-                      </Link>
-                    ) : payload?.account.role === 'Super Admin' ? (
-                      <Link href='/admins/dashboard' className='text-light'>
-                        <Typography variant='body1' className='hover:brightness-90 hover:text-underline underline-offset-8'>Dashboard</Typography>
-                      </Link>
-                    ) : (
-                      <Link href='/sign-in' className='text-light'>
-                        <Typography variant='body1' className='hover:brightness-90 hover:text-underline underline-offset-8'>Sign in</Typography>
-                      </Link>
-                    )}
+                    <Link href={!payload?.account.role ? '/sign-in' : payload?.account.role !== 'User' ? '/admins/dashboard' : '/users/dashboard'} className='text-light' passHref>
+                      <Typography variant='body1' className='hover:brightness-90 hover:text-underline underline-offset-8'>{!payload?.account.role ? 'Sign in' : 'Dashboard'}</Typography>
+                    </Link>
                   </Stack>
                 </Grid>
               </Grid>
