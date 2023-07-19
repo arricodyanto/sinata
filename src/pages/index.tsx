@@ -5,17 +5,22 @@ import PengumumanContent from '@/common/components/organism/PengumumanContent';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
 import PermMediaRoundedIcon from '@mui/icons-material/PermMediaRounded';
-import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, Grid, Paper, Slide, Stack, Typography } from '@mui/material';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import Appnav from '../common/components/organism/Appnav';
 // import UpdatesNotification from '@/common/components/organism/UpdatesNotification';
 import ContainerPage from '@/common/components/atoms/ContainerPage';
 import { getPengumumanList } from '@/services/pengumuman';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
+
+const Appnav = dynamic(() => import('@/common/components/organism/Appnav'), {
+  ssr: false,
+});
+
 
 export default function Home() {
   const { isReady } = useRouter();
