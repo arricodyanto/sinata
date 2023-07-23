@@ -6,7 +6,7 @@ import TableRiwayat from '@/common/components/molecules/TableRiwayat';
 import DaisyCarousel from '@/common/components/organism/DaisyCarousel';
 import DashboardPanel from '@/common/components/organism/DashboardPanel';
 import { authUser } from '@/common/middlewares/auth';
-import ArrowCircleDownOutlinedIcon from '@mui/icons-material/ArrowCircleDownOutlined';
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
@@ -16,7 +16,6 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import PendingOutlinedIcon from '@mui/icons-material/PendingOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import { Box, Divider, Grid, Paper, Stack, Typography } from '@mui/material';
-import React from 'react';
 
 export default function Dashboard() {
   const dark = '#1f2937';
@@ -75,10 +74,10 @@ export default function Dashboard() {
           <HeaderBreadcrumbs pageHeader='Dashboard' currentPage='Dashboard' />
           <Grid container marginBottom={{ xs: 2, md: 4 }} rowSpacing={1} columnSpacing={2}>
             <Grid item xs={12} md={3}>
-              <FlowCard text={dark} lineColor={primary} data={data} headline='Layanan diajukan' icon={<ArrowCircleDownOutlinedIcon fontSize='large' className='text-primary' />} />
+              <FlowCard text={dark} lineColor={pending} data={data} headline='Layanan diajukan' icon={<AccessTimeOutlinedIcon fontSize='large' className='text-pending' />} />
             </Grid>
             <Grid item xs={12} md={3}>
-              <FlowCard text={dark} lineColor={pending} data={data1} headline='Layanan dalam proses' icon={<PendingOutlinedIcon fontSize='large' className='text-pending' />} />
+              <FlowCard text={dark} lineColor={primary} data={data1} headline='Layanan dalam proses' icon={<PendingOutlinedIcon fontSize='large' className='text-primary' />} />
             </Grid>
             <Grid item xs={12} md={3}>
               <FlowCard text={dark} lineColor={complete} data={data2} headline='Layanan selesai' icon={<CheckCircleOutlinedIcon fontSize='large' className='text-complete' />} />
