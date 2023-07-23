@@ -18,7 +18,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import SaveIcon from '@mui/icons-material/Save';
-import { Button, FormControl, FormLabel, MenuItem, Stack, Typography } from '@mui/material';
+import { Button, Chip, FormControl, FormLabel, MenuItem, Stack, Typography } from '@mui/material';
 import { FilePondFile } from 'filepond';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -27,6 +27,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import AutocompleteMultiple from '../../atoms/AutocompleteMultiple';
 import { nameuserToArray, nameuserToString } from '@/common/utils/nameuserFormatter.util';
+import StatusStepper from '../../atoms/StatusStepper';
 
 const form = new FormData();
 
@@ -41,6 +42,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 
     // Editable File Input
     const [leaflet, setLeaflet] = useState(false);
+    const [bahanPublikasi, setBahanPublikasi] = useState(false);
     const [disposisi, setDisposisi] = useState(false);
     const [editable, setEditable] = useState(false);
 
@@ -211,6 +213,36 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
                                 </Stack>
                             </>
                         )}
+                        {bahanPublikasi === false ? (
+                            <>
+                                <FormLabel className='mb-2 text-sm'>Lampiran File</FormLabel>
+                                <Stack className='mb-4'>
+                                    <Stack direction='row' spacing={1} justifyContent='space-between' alignItems='center' className=''>
+                                        {data.bahan_publikasi ? (
+                                            <Link href={`${api_image}/${data.bahan_publikasi}`} target='_blank'>
+                                                <Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.bahan_publikasi}</Typography>
+                                            </Link>
+                                        ) : (
+                                            <Typography variant='body2' className='italic'>Tidak ada data.</Typography>
+                                        )}
+                                        <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setBahanPublikasi(true)} disabled={!editable}>Change File</Button>
+                                    </Stack>
+                                    <Typography variant='caption' className='italic'>Tambahkan file jika terdapat sudah terdapat naskah berita dari acara.</Typography>
+                                </Stack>
+                            </>
+                        ) : (
+                            <>
+                                <FileUpload label='Lampiran File' onupdatefiles={(fileItems: FilePondFile[]) => {
+                                    const file = fileItems[0]?.file;
+                                    if (file) {
+                                        form.set('bahan_publikasi', file);
+                                    }
+                                }} allowMultiple={false} allowReorder={false} acceptedFileTypes={['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']} labelFileTypeNotAllowed='Hanya file Doc dan PDF yang diijinkan' />
+                                <Stack direction='row-reverse' className='-mt-2'>
+                                    <Button size='small' disableElevation className='rounded-md capitalize py-1 px-3' onClick={() => setBahanPublikasi(false)} disabled={!editable}>Cancel</Button>
+                                </Stack>
+                            </>
+                        )}
                         {isAdmin ? (
                             <>
                                 <FormControl className='w-full'>
@@ -252,7 +284,11 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
                                 <TextfieldLabel label='Keterangan' placeholder='Keterangan tambahan jika ajuan layanan ditolak.' multiline minRows={2} maxRows={5} onChange={(event: any) => form.set('keterangan', event.target.value)} />
                             </>
                         ) : (
-                            <TextfieldLabel label='Keterangan' placeholder='Keterangan tambahan.' multiline minRows={2} maxRows={5} disabled />
+                            <>
+                                <AutocompleteMultiple name='pic' label='PIC' data={users} getOptionLabel={(data) => data.name} defaultValue={data.pic ? nameuserToArray(data.pic) : []} getOptionDisabled={isOptionDisabled} onChange={handlePICChange} disabled />
+                                <StatusStepper label='Status' status={data.status} />
+                                <TextfieldLabel label='Keterangan' placeholder='Keterangan tambahan.' multiline minRows={2} maxRows={5} disabled />
+                            </>
                         )}
                         <Stack direction='row' justifyContent='flex-end' spacing={1} marginTop={6}>
                             {editable ? (
