@@ -49,6 +49,15 @@ export default function TambahAkunForm(props: TTambahAkunFormProps) {
             <SelectLabel label={'Role Akun'} value={role} onChange={handleFormChange(setRole)}>
                 <MenuItem value='User'>User</MenuItem>
                 <MenuItem value='Super Admin'>Super Admin</MenuItem>
+                <MenuItem value='Admin Role 1'>Kepala Unit</MenuItem>
+                <MenuItem value='Admin Role 2'>Front Office</MenuItem>
+                <MenuItem value='Admin Role 3'>Media & Editor</MenuItem>
+                <MenuItem value='Admin Role 4'>Desainer & Media Sosial</MenuItem>
+                <MenuItem value='Admin Role 5'>IT & Website</MenuItem>
+                <MenuItem value='Admin Role 6'>Subkoordinator</MenuItem>
+                <MenuItem value='Admin Role 7'>Fotografer</MenuItem>
+                <MenuItem value='Admin Role 8'>Pengarah Desainer & Videotron</MenuItem>
+                <MenuItem value='Admin Role 9'>Jurnalis</MenuItem>
             </SelectLabel>
             <TextfieldLabel type='number' label={'Kontak'} value={kontak} onChange={handleFormChange(setKontak)} placeholder='62 800000000' />
             {!isLoading ? (

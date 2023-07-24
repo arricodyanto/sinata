@@ -52,10 +52,12 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
     const [arsip, setArsip] = useState<Array<any>>([]);
     const [peliputan, setPeliputan] = useState<Array<any>>([]);
     const [users, setUsers] = useState<Array<any>>([]);
+    const [PIC, setPIC] = useState('');
 
     const handlePICChange = (event: any, value: any) => {
         const newPICArray = value.map((item: any) => item.name || '');
         form.set('pic', nameuserToString(newPICArray));
+        setPIC(nameuserToString(newPICArray));
     };
 
     const handleStatusChange = (event: any) => {
@@ -147,7 +149,8 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
     }, [data]);
 
     const getUsers = useCallback(async () => {
-        const response = await getAllUsers();
+        const params = 'role=Admin Role 9';
+        const response = await getAllUsers(params);
         setUsers(response.data);
     }, [getAllUsers]);
 
@@ -169,6 +172,9 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
     useEffect(() => {
         if (judulFromProps.length > 0) {
             setAutocomplete(judulFromProps[0]);
+        }
+        if (rows) {
+            setPIC(nameuserToString(rows.map(item => item.pic)));
         }
     }, [rows]);
 
@@ -197,7 +203,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
         const getPIC = peliputan.map((item) => item.pic);
         const stringPIC = nameuserToString(getPIC);
         const formattedPIC = nameuserToArray(stringPIC);
-        return formattedPIC.some((item: any) => item.name === option.name);
+        return nameuserToArray(PIC).some((item: any) => item.name === option.name) || formattedPIC.some((item: any) => item.name === option.name);
     };
     return (
         <>
