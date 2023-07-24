@@ -91,7 +91,7 @@ export default function Dashboard() {
                     <Grid item xs={12} md={8}>
                         <Paper className='shadow-md px-6 py-4'>
                             <Typography variant='subtitle1' color='text.primary' className='font-bold mb-4 leading-5'>Riwayat Layanan</Typography>
-                            <TableRiwayat />
+                            <TableRiwayat admin />
                         </Paper>
                     </Grid>
                 </Grid>

@@ -8,7 +8,7 @@ import SelectLabel from '@/common/components/atoms/SelectLabel';
 import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
 import DisabledFormDataKegiatan from '@/common/components/organism/FormDataKegiatan/DisabledFormDataKegiatan';
 import { TFormEditLayananProps } from '@/common/types';
-import { dateStringFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
+import { dateStringFormatter, timeFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
 import { getAccountID } from '@/common/utils/decryptToken';
 import { formDataFormatter } from '@/common/utils/formDataFormatter';
 import { getAllUsers } from '@/services/accounts';
@@ -28,6 +28,8 @@ import { toast } from 'react-toastify';
 import AutocompleteMultiple from '../../atoms/AutocompleteMultiple';
 import { nameuserToArray, nameuserToString } from '@/common/utils/nameuserFormatter.util';
 import StatusStepper from '../../atoms/StatusStepper';
+import AccordionCustom from '../../atoms/AccordionCustom';
+import { getAllArsipPersUser } from '@/services/arsip-pers';
 
 const form = new FormData();
 
@@ -48,6 +50,8 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 
     const [autocomplete, setAutocomplete] = useState<string>(''); // Handle autocomplete
     const [dataKegiatan, setDataKegiatan] = useState<Array<any>>([]); // Handle autocomplete
+    const [arsip, setArsip] = useState<Array<any>>([]);
+    console.log(arsip);
     const [users, setUsers] = useState<Array<any>>([]);
     const [PIC, setPIC] = useState('');
 
@@ -128,10 +132,19 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
         }
     }, [getAllDataKegiatanUser]);
 
+    const getDataArsipUser = useCallback(async () => {
+        const id_account = data.map((item) => item.tb_kegiatan.id_account);
+        if (id_account) {
+            const response = await getAllArsipPersUser(id_account[0]);
+            setArsip(response.data);
+        }
+    }, [data]);
+
     const getUsers = useCallback(async () => {
         const response = await getAllUsers();
         setUsers(response.data);
     }, [getAllUsers]);
+
 
     useEffect(() => {
         if (isReady) {
@@ -142,6 +155,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
             if (!isAdmin) {
                 getDataKegiatanUser();
             }
+            getDataArsipUser();
         }
     }, [isReady, rows]);
 
@@ -281,7 +295,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
                                     </>
                                 )}
                                 <AutocompleteMultiple name='pic' label='PIC' data={users} getOptionLabel={(data) => data.name} defaultValue={data.pic ? nameuserToArray(data.pic) : []} getOptionDisabled={isOptionDisabled} onChange={handlePICChange} disabled={!editable} />
-                                <TextfieldLabel label='Keterangan' placeholder='Keterangan tambahan jika ajuan layanan ditolak.' multiline minRows={2} maxRows={5} onChange={(event: any) => form.set('keterangan', event.target.value)} />
+                                <TextfieldLabel label='Keterangan' placeholder='Keterangan tambahan jika ajuan layanan ditolak.' multiline minRows={2} maxRows={5} onChange={(event: any) => form.set('keterangan', event.target.value)} disabled={!editable} />
                             </>
                         ) : (
                             <>
@@ -290,6 +304,71 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
                                 <TextfieldLabel label='Keterangan' placeholder='Keterangan tambahan.' multiline minRows={2} maxRows={5} disabled />
                             </>
                         )}
+                        <Stack>
+                            <FormLabel className='mb-1 text-sm'>
+                                Luaran Layanan
+                            </FormLabel>
+                            {arsip.length !== 0 ? (
+                                <>
+                                    {arsip.map((item) => {
+                                        return (
+                                            <>
+                                                <AccordionCustom key={item.id} title={
+                                                    <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} spacing={1} className='w-full'>
+                                                        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+                                                            ID - {item.judul_berita}
+                                                        </Typography>
+                                                        <Typography variant='body2' sx={{ color: 'text.secondary', width: '33%' }}>
+                                                            {dateStringFormatter(item.tgl_upload)}
+                                                        </Typography>
+                                                    </Stack>
+                                                } content={
+                                                    <>
+                                                        <Typography variant='body2' color={'text.secondary'} marginBottom={2}>Tautan Berita:</Typography>
+                                                        <Link href={item.link_berita} target='blank'>
+                                                            <Typography variant='body2' color={'text.secondary'} className='hover:text-primary hover:underline hover:underline-offset-2 transition'>
+                                                                {item.link_berita}
+                                                            </Typography>
+                                                        </Link>
+                                                        <Typography variant='body2' color={'text.secondary'} className='mt-2 italic'>
+                                                            Dipublikasikan oleh <b>{item.admin}</b> pada pukul {timeStrictFormatter(item.waktu_upload)} WIB
+                                                        </Typography>
+                                                    </>
+                                                } />
+                                                {item.judul_terjemahan ? (
+                                                    <AccordionCustom key={item.id} title={
+                                                        <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} spacing={1} className='w-full'>
+                                                            <Typography variant='body2' sx={{ color: 'text.primary' }}>
+                                                                EN - {item.judul_terjemahan}
+                                                            </Typography>
+                                                            <Typography variant='body2' sx={{ color: 'text.secondary', width: '33%' }}>
+                                                                {dateStringFormatter(item.tgl_upload_terj)}
+                                                            </Typography>
+                                                        </Stack>
+                                                    } content={
+                                                        <>
+                                                            <Typography variant='body2' color={'text.secondary'} marginBottom={2}>Tautan Terjemahan:</Typography>
+                                                            <Link href={item.link_terj} target='blank'>
+                                                                <Typography variant='body2' color={'text.secondary'} className='hover:text-primary hover:underline hover:underline-offset-2 transition'>
+                                                                    {item.link_terj}
+                                                                </Typography>
+                                                            </Link>
+                                                            <Typography variant='body2' color={'text.secondary'} className='mt-2 italic'>
+                                                                Dipublikasikan oleh <b>{item.admin_terj}</b> pada pukul {timeStrictFormatter(item.waktu_upload_terj)} WIB
+                                                            </Typography>
+                                                        </>
+                                                    } />
+                                                ) : (
+                                                    <Typography variant='body2' marginTop={1}>Versi terjemahan (EN) belum tersedia.</Typography>
+                                                )}
+                                            </>
+                                        );
+                                    })}
+                                </>
+                            ) : (
+                                <Typography variant='body2'>Belum ada data.</Typography>
+                            )}
+                        </Stack>
                         <Stack direction='row' justifyContent='flex-end' spacing={1} marginTop={6}>
                             {editable ? (
                                 <Stack direction='row' spacing={1}>
