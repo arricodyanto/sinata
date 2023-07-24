@@ -13,12 +13,12 @@ import { getAccountID } from '@/common/utils/decryptToken';
 import { formDataFormatter } from '@/common/utils/formDataFormatter';
 import { getAllUsers } from '@/services/accounts';
 import { getAllDataKegiatan, getAllDataKegiatanUser } from '@/services/data-kegiatan';
-import { deleteOneLayananPeliputan, updateLayananPeliputan } from '@/services/layanan-peliputan';
+import { deleteOneLayananPeliputan, getAllLayananPeliputan, updateLayananPeliputan } from '@/services/layanan-peliputan';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import SaveIcon from '@mui/icons-material/Save';
-import { Button, Chip, FormControl, FormLabel, MenuItem, Stack, Typography } from '@mui/material';
+import { Box, Button, Chip, FormControl, FormLabel, MenuItem, Stack, Typography } from '@mui/material';
 import { FilePondFile } from 'filepond';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -36,7 +36,6 @@ const form = new FormData();
 export default function LayananPeliputan(props: TFormEditLayananProps) {
     const { data, id, admin } = props;
     let rows = data;
-    // console.log(rows);
     const isAdmin = admin ? true : false;
 
     const { isReady, push } = useRouter();
@@ -51,14 +50,12 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
     const [autocomplete, setAutocomplete] = useState<string>(''); // Handle autocomplete
     const [dataKegiatan, setDataKegiatan] = useState<Array<any>>([]); // Handle autocomplete
     const [arsip, setArsip] = useState<Array<any>>([]);
-    console.log(arsip);
+    const [peliputan, setPeliputan] = useState<Array<any>>([]);
     const [users, setUsers] = useState<Array<any>>([]);
-    const [PIC, setPIC] = useState('');
 
     const handlePICChange = (event: any, value: any) => {
         const newPICArray = value.map((item: any) => item.name || '');
         form.set('pic', nameuserToString(newPICArray));
-        setPIC(nameuserToString(newPICArray));
     };
 
     const handleStatusChange = (event: any) => {
@@ -140,6 +137,15 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
         }
     }, [data]);
 
+    const getPeliputan = useCallback(async () => {
+        const getDateFromRows = rows.map((item) => item.tb_kegiatan.tgl_kegiatan);
+        const params = `tgl=${getDateFromRows[0]}`;
+        const response = await getAllLayananPeliputan(params);
+        if (response.error === false) {
+            setPeliputan(response.data);
+        }
+    }, [data]);
+
     const getUsers = useCallback(async () => {
         const response = await getAllUsers();
         setUsers(response.data);
@@ -155,6 +161,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
             if (!isAdmin) {
                 getDataKegiatanUser();
             }
+            getPeliputan();
             getDataArsipUser();
         }
     }, [isReady, rows]);
@@ -162,9 +169,6 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
     useEffect(() => {
         if (judulFromProps.length > 0) {
             setAutocomplete(judulFromProps[0]);
-        }
-        if (rows) {
-            setPIC(nameuserToString(rows.map(item => item.pic)));
         }
     }, [rows]);
 
@@ -190,7 +194,10 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
     };
 
     const isOptionDisabled = (option: any) => {
-        return nameuserToArray(PIC).some((item: any) => item.name === option.name);
+        const getPIC = peliputan.map((item) => item.pic);
+        const stringPIC = nameuserToString(getPIC);
+        const formattedPIC = nameuserToArray(stringPIC);
+        return formattedPIC.some((item: any) => item.name === option.name);
     };
     return (
         <>
@@ -312,8 +319,8 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
                                 <>
                                     {arsip.map((item) => {
                                         return (
-                                            <>
-                                                <AccordionCustom key={item.id} title={
+                                            <Box key={item.id} >
+                                                <AccordionCustom title={
                                                     <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} spacing={1} className='w-full'>
                                                         <Typography variant='body2' sx={{ color: 'text.primary' }}>
                                                             ID - {item.judul_berita}
@@ -336,7 +343,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
                                                     </>
                                                 } />
                                                 {item.judul_terjemahan ? (
-                                                    <AccordionCustom key={item.id} title={
+                                                    <AccordionCustom title={
                                                         <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} spacing={1} className='w-full'>
                                                             <Typography variant='body2' sx={{ color: 'text.primary' }}>
                                                                 EN - {item.judul_terjemahan}
@@ -361,7 +368,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
                                                 ) : (
                                                     <Typography variant='body2' marginTop={1}>Versi terjemahan (EN) belum tersedia.</Typography>
                                                 )}
-                                            </>
+                                            </Box>
                                         );
                                     })}
                                 </>
