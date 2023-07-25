@@ -125,3 +125,35 @@ export async function authAddData(tkn: string) {
 		};
 	}
 }
+
+export async function authArsipPers(tkn: string) {
+	if (!tkn) {
+		return {
+			redirect: {
+				destination: '/sign-in',
+				permanent: false,
+			},
+		};
+	}
+
+	const jwtToken = Buffer.from(tkn, 'base64').toString('ascii');
+	const payload: TokenTypes = jwtDecode(jwtToken);
+	if (
+		payload.account.role === 'Super Admin' ||
+		payload.account.role === 'Admin Role 3' ||
+		payload.account.role === 'Admin Role 5' ||
+		payload.account.role === 'Admin Role 9'
+	) {
+		return {
+			props: {
+				user: payload,
+			},
+		};
+	} else {
+		return {
+			props: {
+				error: true,
+			},
+		};
+	}
+}
