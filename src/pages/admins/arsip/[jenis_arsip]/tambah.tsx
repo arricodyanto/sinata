@@ -25,13 +25,10 @@ export default function TambahArsip({ error }: any) {
 		if (error) {
 			const toastId = toast.isActive('errorToast');
 			if (!toastId) {
-				toast.error(
-					'Maaf Anda tidak diijinkan untuk melihat halaman ini. Hubungi Front Office atau Super Admin untuk meminta bantuan',
-					{
-						theme: 'colored',
-						toastId: 'errorToast', // Set a custom toastId to identify this toast
-					},
-				);
+				toast.error('Maaf Anda tidak diijinkan untuk melihat halaman ini.', {
+					theme: 'colored',
+					toastId: 'errorToast', // Set a custom toastId to identify this toast
+				});
 			}
 			back();
 		}

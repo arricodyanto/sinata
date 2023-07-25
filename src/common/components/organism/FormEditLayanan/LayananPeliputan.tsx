@@ -174,7 +174,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 	}, [data]);
 
 	const getUsers = useCallback(async () => {
-		const params = 'role=Admin Role 9';
+		const params = 'role=Admin Role 9&role=Admin Role 3';
 		const response = await getAllUsers(params);
 		setUsers(response.data);
 	}, [getAllUsers]);
@@ -543,6 +543,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 								<TextfieldLabel
 									label='Keterangan'
 									placeholder='Keterangan tambahan jika ajuan layanan ditolak.'
+									defaultValue={data.keterangan}
 									multiline
 									minRows={2}
 									maxRows={5}
