@@ -584,6 +584,7 @@ export default function ArsipPers() {
 														maxRows={16}
 														disabled={
 															roleAccount === 'Admin Role 3' ||
+															roleAccount === 'Admin Role 9' ||
 															roleAccount === 'Super Admin'
 																? !editable
 																: true
@@ -600,7 +601,6 @@ export default function ArsipPers() {
 														maxRows={16}
 														disabled={
 															roleAccount === 'Admin Role 3' ||
-															roleAccount === 'Admin Role 9' ||
 															roleAccount === 'Super Admin'
 																? !editable
 																: true
