@@ -10,7 +10,8 @@ import PeliputanForm from '@/common/components/organism/PeliputanForm';
 import PembaruanInfoForm from '@/common/components/organism/PembaruanInfoForm';
 import PublikasiAgendaForm from '@/common/components/organism/PublikasiAgendaForm';
 import VideotronForm from '@/common/components/organism/VideotronForm';
-import { authAdmin } from '@/common/middlewares/auth';
+import { authAddData } from '@/common/middlewares/auth';
+import { listMenuAdmin } from '@/pages/admins/dashboard';
 import { setOneLayananBaliho } from '@/services/layanan-baliho';
 import { setOneLayananKonpers } from '@/services/layanan-konpers';
 import { setOneLayananLiveStreaming } from '@/services/layanan-livestreaming';
@@ -24,11 +25,11 @@ import { Box, Grid, Paper } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { listMenuAdmin } from '../../dashboard';
 
-export default function TambahAjuanLayanan() {
-    const { query, isReady, push } = useRouter();
+export default function TambahAjuanLayanan({ error }: any) {
+    const { query, isReady, push, back } = useRouter();
     const { jenis_layanan } = query;
     const onSavePeliputan = async (form: any) => {
         const response = await setOneLayananPeliputan(form);
@@ -164,6 +165,22 @@ export default function TambahAjuanLayanan() {
             push('/admins/layanan-media');
         };
     };
+
+    useEffect(() => {
+        if (error) {
+            const toastId = toast.isActive('errorToast');
+            if (!toastId) {
+                toast.error(
+                    'Maaf Anda tidak diijinkan untuk melihat halaman ini. Hubungi Front Office atau Super Admin untuk meminta bantuan',
+                    {
+                        theme: 'colored',
+                        toastId: 'errorToast', // Set a custom toastId to identify this toast
+                    }
+                );
+            }
+            back();
+        }
+    }, [error]);
     return (
         <Box className='bg-grey'>
             <TitlePage title={isReady ? `Tambah Ajuan ${jenis_layanan} - Sinata` : 'Sinata Loading...'} />
@@ -210,5 +227,5 @@ export default function TambahAjuanLayanan() {
 
 export async function getServerSideProps({ req }: any) {
     const { tkn } = req.cookies;
-    return authAdmin(tkn);
+    return authAddData(tkn);
 }
