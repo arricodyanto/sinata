@@ -1,7 +1,16 @@
-import { getAccountID } from '@/common/utils/decryptToken';
+import {
+	getAccountFromPayload,
+	getAccountID,
+} from '@/common/utils/decryptToken';
 import callAPI from './config';
-import { getAllLayananKonpersUser } from './layanan-konpers';
-import { getAllLayananPeliputanUser } from './layanan-peliputan';
+import {
+	getAllLayananKonpers,
+	getAllLayananKonpersUser,
+} from './layanan-konpers';
+import {
+	getAllLayananPeliputan,
+	getAllLayananPeliputanUser,
+} from './layanan-peliputan';
 import { getAllLayananPeminformasiUser } from './layanan-peminformasi';
 import { getAllLayananLiveStreamingUser } from './layanan-livestreaming';
 import { getAllLayananPublikasiAgendaUser } from './layanan-pubagenda';
@@ -494,6 +503,66 @@ export async function getAllRiwayatAjuanUser(params: string) {
 			...modifiedVideotron,
 			...modifiedBaliho,
 		];
+
+		const sortedResults = dataResults.sort((a, b) => {
+			const dateA = new Date(a.createdAt).getTime();
+			const dateB = new Date(b.createdAt).getTime();
+			return dateB - dateA;
+		});
+
+		const URLparams = new URLSearchParams(params);
+
+		const page = parseInt(URLparams.get('page') || '0', 10);
+		const rowsPerPage = parseInt(URLparams.get('rowsPerPage') || '5', 10);
+		const startIndex = page * rowsPerPage;
+		const endIndex = startIndex + rowsPerPage;
+		const slicedData = sortedResults.slice(startIndex, endIndex);
+
+		const totalRow = sortedResults.length;
+		const totalPage = Math.ceil(totalRow / rowsPerPage);
+
+		const results = {
+			error: false,
+			message: 'Berhasil menampilkan Riwayat Ajuan Layanan',
+			page: page,
+			totalPage: totalPage,
+			totalRow: totalRow,
+			rowsPerPage: rowsPerPage,
+			data: slicedData,
+		};
+
+		return results;
+	}
+}
+
+export async function getAllRiwayatAjuanStrict(params: string) {
+	const getPayload = getAccountFromPayload();
+	const getPIC = getPayload?.account.name;
+	const epParams = `user=${getPIC}&status=Completed&status=Approved %26 On Progress&limit=50`;
+
+	let modifiedPeliputan = [];
+
+	if (getPIC) {
+		const peliputan = await getAllLayananPeliputan(epParams);
+		if (peliputan.data) {
+			modifiedPeliputan = peliputan.data.map((item: any) => {
+				return {
+					id: item.id,
+					id_account: item.tb_kegiatan.id_account,
+					pemohon: item.tb_kegiatan.tb_account.username,
+					jenis_layanan: 'Layanan Peliputan',
+					judul: item.tb_kegiatan.judul_kegiatan,
+					file: item.leaflet_kegiatan,
+					tgl_kegiatan: item.tb_kegiatan.tgl_kegiatan,
+					waktu_kegiatan: item.tb_kegiatan.waktu_kegiatan,
+					tempat_kegiatan: item.tb_kegiatan.tempat_kegiatan,
+					status: item.status,
+					createdAt: item.createdAt,
+				};
+			});
+		}
+
+		const dataResults = [...modifiedPeliputan];
 
 		const sortedResults = dataResults.sort((a, b) => {
 			const dateA = new Date(a.createdAt).getTime();
