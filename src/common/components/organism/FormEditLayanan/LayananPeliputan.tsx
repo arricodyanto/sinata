@@ -719,7 +719,8 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 							roleAccount === 'Super Admin' ||
 							roleAccount === 'Admin Role 2' ||
 							roleAccount === 'Admin Role 3' ||
-							roleAccount === 'Admin Role 6' ? (
+							roleAccount === 'Admin Role 6' ||
+							roleAccount === 'Admin Role 9' ? (
 								<>
 									{editable ? (
 										<Stack
