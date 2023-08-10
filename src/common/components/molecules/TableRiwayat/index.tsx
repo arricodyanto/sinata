@@ -59,9 +59,11 @@ export default function TableRiwayat(props: TTableKegiatanProps) {
 	const [page, setPage] = useState<number>(0);
 	const [totalRow, setTotalRow] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState(5);
+	const [loading, setLoading] = useState(false);
 
 	const handleChangePage = (newPage: number) => {
 		setPage(newPage);
+		setLoading(true);
 	};
 
 	const handleChangeLimit = (limit: number) => {
@@ -110,44 +112,60 @@ export default function TableRiwayat(props: TTableKegiatanProps) {
 		  ];
 
 	const getRiwayatAjuan = useCallback(async () => {
-		if (isAdmin) {
-			const params = `page=${page}&rowsPerPage=${rowsPerPage}`;
-			const response = await getAllRiwayatAjuan(params);
-			setData(response.data);
-			setTotalRow(response.totalRow);
-			setPage(response.page);
-		}
-	}, [setData, page, rowsPerPage]);
-
-	const getRiwayanAjuanUser = useCallback(async () => {
-		if (!isAdmin) {
-			const params = `page=${page}&rowsPerPage=${rowsPerPage}`;
-			const response = await getAllRiwayatAjuanUser(params);
-			if (response) {
+		try {
+			setLoading(true);
+			if (isAdmin) {
+				const params = `page=${page}&rowsPerPage=${rowsPerPage}`;
+				const response = await getAllRiwayatAjuan(params);
 				setData(response.data);
 				setTotalRow(response.totalRow);
 				setPage(response.page);
 			}
+		} finally {
+			setLoading(false);
+		}
+	}, [setData, page, rowsPerPage]);
+
+	const getRiwayanAjuanUser = useCallback(async () => {
+		try {
+			setLoading(true);
+			if (!isAdmin) {
+				const params = `page=${page}&rowsPerPage=${rowsPerPage}`;
+				const response = await getAllRiwayatAjuanUser(params);
+				if (response) {
+					setData(response.data);
+					setTotalRow(response.totalRow);
+					setPage(response.page);
+				}
+			}
+		} finally {
+			setLoading(false);
 		}
 	}, [setData, page, rowsPerPage]);
 
 	const getUserRole = getAccountRole();
 
 	const getRiwayatAjuanStrict = useCallback(async () => {
-		if (getUserRole === 'Admin Role 9') {
-			const params = `page=${page}&rowsPerPage=${rowsPerPage}`;
-			const response = await getAllRiwayatAjuanStrict(params);
-			console.log(response);
-			if (response) {
-				setData(response.data);
-				setTotalRow(response.totalRow);
-				setPage(response.page);
+		try {
+			setLoading(true);
+			if (getUserRole === 'Admin Role 9') {
+				const params = `page=${page}&rowsPerPage=${rowsPerPage}`;
+				const response = await getAllRiwayatAjuanStrict(params);
+				console.log(response);
+				if (response) {
+					setData(response.data);
+					setTotalRow(response.totalRow);
+					setPage(response.page);
+				}
 			}
+		} finally {
+			setLoading(false);
 		}
 	}, [setData, page, rowsPerPage]);
 
 	useEffect(() => {
 		if (router.isReady) {
+			setLoading(false);
 			if (isAdmin) {
 				if (getUserRole === 'Admin Role 9') {
 					getRiwayatAjuanStrict();
@@ -162,7 +180,7 @@ export default function TableRiwayat(props: TTableKegiatanProps) {
 	}, [router.isReady, page, rowsPerPage]);
 	return (
 		<>
-			{router.isReady ? (
+			{router.isReady && !loading ? (
 				<>
 					{data.length === 0 ? (
 						<TableDataEmpty headers={tableHeaders} />
