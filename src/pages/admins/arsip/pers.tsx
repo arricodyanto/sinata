@@ -474,7 +474,7 @@ export default function ArsipPers() {
 																		<SelectLabel
 																			name='status'
 																			label='Status Layanan Peliputan'
-																			defaultValue={item.status}
+																			value={item.status}
 																			disabled>
 																			<MenuItem value='Pending'>
 																				Pending
@@ -581,9 +581,9 @@ export default function ArsipPers() {
 															setPrarilis(event.target.value)
 														}
 														multiline
+														minRows={4}
 														maxRows={16}
 														disabled={
-															roleAccount === 'Admin Role 3' ||
 															roleAccount === 'Admin Role 9' ||
 															roleAccount === 'Super Admin'
 																? !editable
@@ -598,6 +598,7 @@ export default function ArsipPers() {
 															setRilis(event.target.value)
 														}
 														multiline
+														minRows={4}
 														maxRows={16}
 														disabled={
 															roleAccount === 'Admin Role 3' ||
@@ -678,6 +679,7 @@ export default function ArsipPers() {
 															onChange={(event: any) =>
 																setLink_berita(event.target.value)
 															}
+															placeholder='Tautan Berita Terpublikasi'
 															disabled={
 																roleAccount === 'Admin Role 5' ||
 																roleAccount === 'Super Admin'
@@ -723,6 +725,7 @@ export default function ArsipPers() {
 															setNaskah_terj(event.target.value)
 														}
 														multiline
+														minRows={4}
 														maxRows={16}
 														disabled={
 															roleAccount === 'Admin Role 9' ||
@@ -803,6 +806,7 @@ export default function ArsipPers() {
 															onChange={(event: any) =>
 																setLink_terj(event.target.value)
 															}
+															placeholder='Tautan Berita untuk Bahasa Inggris'
 															disabled={
 																roleAccount === 'Admin Role 5' ||
 																roleAccount === 'Super Admin'

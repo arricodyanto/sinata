@@ -1,5 +1,6 @@
 import AutocompleteCustom from '@/common/components/atoms/AutocompleteCustom';
 import ButtonBasic from '@/common/components/atoms/ButtonBasic';
+import CollapsibleAlert from '@/common/components/atoms/CollapsibleAlert';
 import DatePickerBasic from '@/common/components/atoms/DatePickerBasic';
 import DialogConfirmation from '@/common/components/atoms/DialogConfirmation';
 import SelectLabel from '@/common/components/atoms/SelectLabel';
@@ -12,7 +13,10 @@ import {
 	timeFormatter,
 	timeISOFormatter,
 } from '@/common/utils/dateFormatter.util';
+import { getAccountRole } from '@/common/utils/decryptToken';
 import { kategoriBerita } from '@/pages/admins/arsip/pers';
+import { getAllUsers } from '@/services/accounts';
+import { getAllLayananPeliputan } from '@/services/layanan-peliputan';
 import {
 	Button,
 	FormControl,
@@ -25,11 +29,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
-import CollapsibleAlert from '../../atoms/CollapsibleAlert';
-import { getAllUsers } from '@/services/accounts';
-import { getAllLayananPeliputan } from '@/services/layanan-peliputan';
-import { authArsipPers } from '@/common/middlewares/auth';
-import { toast } from 'react-toastify';
 
 export default function TambahArsipPers(props: TFormTambahArsipProps) {
 	const { onSave } = props;
@@ -37,6 +36,11 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 	const [open, setOpen] = useState(false);
 
 	const api_image = process.env.NEXT_PUBLIC_API_IMG;
+	const [roleAccount, setRoleAccount] = useState<string | null>(null);
+
+	useEffect(() => {
+		setRoleAccount(getAccountRole());
+	}, []);
 
 	const [id_peliputan, setId_peliputan] = useState('');
 	const [no_rilis, setNo_rilis] = useState('');
@@ -159,6 +163,14 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 				data={peliputans}
 				getOptionLabel={(data) => data.tb_kegiatan.judul_kegiatan}
 				onChange={handleJudulChange}
+				disabled={
+					roleAccount === 'Admin Role 3' ||
+					roleAccount === 'Admin Role 5' ||
+					roleAccount === 'Admin Role 9' ||
+					roleAccount === 'Super Admin'
+						? false
+						: true
+				}
 			/>
 			<DisabledFormDataKegiatan judul_kegiatan={autocomplete} />
 			{detailPeliputan.length > 0
@@ -204,7 +216,7 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 								<SelectLabel
 									name='status'
 									label='Status Layanan Peliputan'
-									defaultValue={item.status}
+									value={item.status}
 									disabled>
 									<MenuItem value='Pending'>Pending</MenuItem>
 									<MenuItem value='Approved & On Progress'>
@@ -223,6 +235,11 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 				value={no_rilis}
 				onChange={(event: any) => setNo_rilis(event.target.value)}
 				placeholder='xx/xxx/xxxxx'
+				disabled={
+					roleAccount === 'Admin Role 3' || roleAccount === 'Super Admin'
+						? false
+						: true
+				}
 			/>
 			<TextfieldLabel
 				name='judul_berita'
@@ -230,6 +247,13 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 				value={judul_berita}
 				onChange={(event: any) => setJudul_berita(event.target.value)}
 				placeholder='Judul Berita'
+				disabled={
+					roleAccount === 'Admin Role 3' ||
+					roleAccount === 'Admin Role 9' ||
+					roleAccount === 'Super Admin'
+						? false
+						: true
+				}
 			/>
 			<Stack
 				direction='row'
@@ -239,7 +263,15 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 					label='Kategori Berita'
 					value={kategori}
 					onChange={(event: any) => setKategori(event.target.value)}
-					className='capitalize'>
+					className='capitalize'
+					disabled={
+						roleAccount === 'Admin Role 3' ||
+						roleAccount === 'Admin Role 5' ||
+						roleAccount === 'Admin Role 9' ||
+						roleAccount === 'Super Admin'
+							? false
+							: true
+					}>
 					<MenuItem
 						value=''
 						disabled>
@@ -260,6 +292,13 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 					data={users}
 					getOptionLabel={(data) => data.name}
 					onChange={handleJurnalisChange}
+					disabled={
+						roleAccount === 'Admin Role 3' ||
+						roleAccount === 'Admin Role 9' ||
+						roleAccount === 'Super Admin'
+							? false
+							: true
+					}
 				/>
 			</Stack>
 			<TextfieldLabel
@@ -268,8 +307,14 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 				value={prarilis}
 				onChange={(event: any) => setPrarilis(event.target.value)}
 				multiline
+				minRows={4}
 				maxRows={16}
 				placeholder='Naskah Prarilis'
+				disabled={
+					roleAccount === 'Admin Role 9' || roleAccount === 'Super Admin'
+						? false
+						: true
+				}
 			/>
 			<TextfieldLabel
 				name='rilis'
@@ -277,8 +322,14 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 				value={rilis}
 				onChange={(event: any) => setRilis(event.target.value)}
 				multiline
+				minRows={4}
 				maxRows={16}
 				placeholder='Naskah Rilis Berita setelah Editing'
+				disabled={
+					roleAccount === 'Admin Role 3' || roleAccount === 'Super Admin'
+						? false
+						: true
+				}
 			/>
 			<Stack
 				direction='row'
@@ -288,12 +339,22 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 					<FormLabel className='mb-1 text-sm'>Tanggal Rilis</FormLabel>
 					<DatePickerBasic
 						onChange={(value: any) => setTgl_upload(dateISOFormatter(value))}
+						disabled={
+							roleAccount === 'Admin Role 5' || roleAccount === 'Super Admin'
+								? false
+								: true
+						}
 					/>
 				</FormControl>
 				<FormControl className='w-full'>
 					<FormLabel className='mb-1 text-sm'>Waktu Rilis</FormLabel>
 					<TimePickerBasic
 						onChange={(value: any) => setWaktu_upload(timeISOFormatter(value))}
+						disabled={
+							roleAccount === 'Admin Role 5' || roleAccount === 'Super Admin'
+								? false
+								: true
+						}
 					/>
 				</FormControl>
 			</Stack>
@@ -305,6 +366,11 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 					data={users}
 					onChange={handleAdminChange}
 					getOptionLabel={(data) => data.name}
+					disabled={
+						roleAccount === 'Admin Role 5' || roleAccount === 'Super Admin'
+							? false
+							: true
+					}
 				/>
 				<TextfieldLabel
 					name='link_berita'
@@ -312,6 +378,11 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 					value={link_berita}
 					onChange={(event: any) => setLink_berita(event.target.value)}
 					placeholder='Tautan Berita Terpublikasi'
+					disabled={
+						roleAccount === 'Admin Role 5' || roleAccount === 'Super Admin'
+							? false
+							: true
+					}
 				/>
 			</Stack>
 			<TextfieldLabel
@@ -320,12 +391,22 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 				value={judul_terjemahan}
 				onChange={(event: any) => setJudul_terjemahan(event.target.value)}
 				placeholder='Judul Berita untuk Bahasa Inggris'
+				disabled={
+					roleAccount === 'Admin Role 9' || roleAccount === 'Super Admin'
+						? false
+						: true
+				}
 			/>
 			<AutocompleteCustom
 				label='Penerjemah'
 				data={users}
 				onChange={handlePenerjemahChange}
 				getOptionLabel={(data) => data.name}
+				disabled={
+					roleAccount === 'Admin Role 9' || roleAccount === 'Super Admin'
+						? false
+						: true
+				}
 			/>
 			<TextfieldLabel
 				name='naskah_terj'
@@ -333,8 +414,14 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 				value={naskah_terj}
 				onChange={(event: any) => setNaskah_terj(event.target.value)}
 				multiline
+				minRows={4}
 				maxRows={16}
 				placeholder='Naskah Terjemahan dari Rilis Berita'
+				disabled={
+					roleAccount === 'Admin Role 9' || roleAccount === 'Super Admin'
+						? false
+						: true
+				}
 			/>
 			<Stack
 				direction='row'
@@ -348,6 +435,11 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 						onChange={(value: any) =>
 							setTgl_upload_terj(dateISOFormatter(value))
 						}
+						disabled={
+							roleAccount === 'Admin Role 5' || roleAccount === 'Super Admin'
+								? false
+								: true
+						}
 					/>
 				</FormControl>
 				<FormControl className='w-full'>
@@ -355,6 +447,11 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 					<TimePickerBasic
 						onChange={(value: any) =>
 							setWaktu_upload_terj(timeFormatter(value))
+						}
+						disabled={
+							roleAccount === 'Admin Role 5' || roleAccount === 'Super Admin'
+								? false
+								: true
 						}
 					/>
 				</FormControl>
@@ -367,6 +464,11 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 					data={users}
 					onChange={handleAdminTerjChange}
 					getOptionLabel={(data) => data.name}
+					disabled={
+						roleAccount === 'Admin Role 5' || roleAccount === 'Super Admin'
+							? false
+							: true
+					}
 				/>
 				<TextfieldLabel
 					name='link_terj'
@@ -374,13 +476,23 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 					value={link_terj}
 					onChange={(event: any) => setLink_terj(event.target.value)}
 					placeholder='Tautan Berita untuk Bahasa Inggris'
+					disabled={
+						roleAccount === 'Admin Role 5' || roleAccount === 'Super Admin'
+							? false
+							: true
+					}
 				/>
 			</Stack>
 			<SelectLabel
 				name='status'
 				label='Status Publikasi'
 				value={status_publikasi}
-				onChange={handleStatusPublikasiChange}>
+				onChange={handleStatusPublikasiChange}
+				disabled={
+					roleAccount === 'Admin Role 5' || roleAccount === 'Super Admin'
+						? false
+						: true
+				}>
 				<MenuItem value='Pending'>Pending</MenuItem>
 				<MenuItem value='ID'>ID</MenuItem>
 				<MenuItem value='EN'>EN</MenuItem>
