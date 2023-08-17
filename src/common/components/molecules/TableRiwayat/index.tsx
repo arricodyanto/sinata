@@ -68,6 +68,7 @@ export default function TableRiwayat(props: TTableKegiatanProps) {
 
 	const handleChangeLimit = (limit: number) => {
 		setRowsPerPage(limit);
+		setPage(1);
 	};
 
 	const tableHeaders = [
