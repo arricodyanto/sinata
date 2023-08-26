@@ -49,15 +49,17 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 	const [jurnalis, setJurnalis] = useState('');
 	const [prarilis, setPrarilis] = useState('');
 	const [rilis, setRilis] = useState('');
-	const [tgl_upload, setTgl_upload] = useState('');
-	const [waktu_upload, setWaktu_upload] = useState('');
+	const [tgl_upload, setTgl_upload] = useState<string | null>(null);
+	const [waktu_upload, setWaktu_upload] = useState<string | null>(null);
 	const [admin, setAdmin] = useState('');
 	const [link_berita, setLink_berita] = useState('');
 	const [judul_terjemahan, setJudul_terjemahan] = useState('');
 	const [penerjemah, setPenerjemah] = useState('');
 	const [naskah_terj, setNaskah_terj] = useState('');
-	const [tgl_upload_terj, setTgl_upload_terj] = useState('');
-	const [waktu_upload_terj, setWaktu_upload_terj] = useState('');
+	const [tgl_upload_terj, setTgl_upload_terj] = useState<string | null>(null);
+	const [waktu_upload_terj, setWaktu_upload_terj] = useState<string | null>(
+		null,
+	);
 	const [admin_terj, setAdmin_terj] = useState('');
 	const [link_terj, setLink_terj] = useState('');
 	const [status_publikasi, setStatus_publikasi] = useState('Pending');
@@ -95,7 +97,10 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 
 	const [detailPeliputan, setDetailPeliputan] = useState<Array<any>>([]);
 	const [peliputans, setPeliputans] = useState<Array<any>>([]);
+
 	const [users, setUsers] = useState<Array<any>>([]);
+	const [jurnalisData, setJurnalisData] = useState<Array<any>>([]);
+	const [adminData, setAdminData] = useState<Array<any>>([]);
 
 	const handleTambah = async () => {
 		const form = {
@@ -133,9 +138,23 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 		const response = await getAllUsers();
 		setUsers(response.data);
 	}, [getAllUsers]);
+
+	const getJurnalis = useCallback(async () => {
+		const params = 'role=Admin Role 9&role=Admin Role 3';
+		const response = await getAllUsers(params);
+		setJurnalisData(response.data);
+	}, [getAllUsers]);
+
+	const getAdmins = useCallback(async () => {
+		const params = 'role=Admin Role 5';
+		const response = await getAllUsers(params);
+		setAdminData(response.data);
+	}, [getAllUsers]);
+
 	useEffect(() => {
 		if (isReady) {
-			getUsers();
+			getJurnalis();
+			getAdmins();
 			getPeliputan();
 		}
 	}, [isReady]);
@@ -289,7 +308,7 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 				<AutocompleteCustom
 					name='jurnalis'
 					label='Jurnalis'
-					data={users}
+					data={jurnalisData}
 					getOptionLabel={(data) => data.name}
 					onChange={handleJurnalisChange}
 					disabled={
@@ -363,7 +382,7 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 				spacing={1}>
 				<AutocompleteCustom
 					label='Admin'
-					data={users}
+					data={adminData}
 					onChange={handleAdminChange}
 					getOptionLabel={(data) => data.name}
 					disabled={
@@ -399,7 +418,7 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 			/>
 			<AutocompleteCustom
 				label='Penerjemah'
-				data={users}
+				data={jurnalisData}
 				onChange={handlePenerjemahChange}
 				getOptionLabel={(data) => data.name}
 				disabled={
@@ -461,7 +480,7 @@ export default function TambahArsipPers(props: TFormTambahArsipProps) {
 				spacing={1}>
 				<AutocompleteCustom
 					label='Admin Terjemahan'
-					data={users}
+					data={adminData}
 					onChange={handleAdminTerjChange}
 					getOptionLabel={(data) => data.name}
 					disabled={
