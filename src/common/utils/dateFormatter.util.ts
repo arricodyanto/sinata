@@ -35,6 +35,12 @@ export function oneDigitdateFormatter(inputDate: Date) {
   return formattedDate;
 }
 
+export function timeOnlyFormatter(timeString: string): string {
+  const time = dayjs(timeString, 'HH:mm:ss');
+  const formattedTime = time.format('HH:mm');
+  return formattedTime;
+}
+
 export function timeFormatter(inputDate: Date) {
   const timeString = dayjs(inputDate);
   const hours = timeString.format('HH');

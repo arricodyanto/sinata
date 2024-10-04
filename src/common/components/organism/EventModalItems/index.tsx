@@ -4,13 +4,14 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
 import Link from 'next/link'
 import React from 'react'
-import { dateFormatter, timeFormatter } from '@/common/utils/dateFormatter.util';
+import {dateFormatter, timeOnlyFormatter} from '@/common/utils/dateFormatter.util';
 // import event from '../../../json/events.json'
 
 type TFilteredDate = {
   id: number
   title: String
   date: Date
+  time: string
   description: String
   image: String
   link: String
@@ -36,7 +37,7 @@ export default function EventModalItems(props: EventModalItemsProps) {
                 </Link>
                 <Typography variant='caption' color='text.primary' className='truncate xs:text-[10px] sm:text-[13px]'>
                     <CalendarMonthOutlinedIcon sx={{ fontSize: 10}} color='primary'/> {dateFormatter(item.date)}
-                    <ScheduleOutlinedIcon sx={{ fontSize: 10, marginLeft: 1}} color='primary'/> {timeFormatter(item.date)} WIB
+                    <ScheduleOutlinedIcon sx={{ fontSize: 10, marginLeft: 1}} color='primary'/> {timeOnlyFormatter(item.time)} WIB
                 </Typography>
                 <Typography variant='caption' className='leading-[1rem] line-clamp-2 mt-1'>{item.description}</Typography>
               </CardContent>
