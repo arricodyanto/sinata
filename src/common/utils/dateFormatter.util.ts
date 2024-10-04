@@ -23,6 +23,12 @@ export function dateTimeFormatter(inputDate: Date) {
   return formattedDate;
 }
 
+export function dateOnlyFormatter(inputDate: Date) {
+  const date = dayjs(inputDate);
+  const formattedDate = date.format('DD/MM/YYYY');
+  return formattedDate;
+}
+
 export function oneDigitdateFormatter(inputDate: Date) {
   const date = dayjs(inputDate);
   const formattedDate = date.format('D/M/YYYY');

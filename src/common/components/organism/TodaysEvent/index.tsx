@@ -40,7 +40,7 @@ export default function TodaysEvent() {
             <>
                 {filteredDate.map((item) => {
                     return (
-                        <Link href={`/agenda/${item.id}`}>
+                        <Link href={`/agenda/${item.id}`} key={item.id}>
                             <Card key={item.id} variant='outlined' className='mb-3 flex hover:shadow-md rounded-lg'>
                                 <CardMedia sx={{ width: { xs: 100, sm: 100 }, height: 140 }} component='img' image={`${api_image}/${item.leaflet_kegiatan}`} alt='event-cover' />
                                 <Box className='relative'>

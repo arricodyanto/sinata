@@ -6,7 +6,7 @@ import { DayCalendarSkeleton, LocalizationProvider, PickersDay, PickersDayProps,
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { Box, Divider, Modal, Typography } from '@mui/material';
 import EventModalItems from '../EventModalItems';
-import { oneDigitdateFormatter } from '@/common/utils/dateFormatter.util';
+import {dateOnlyFormatter, oneDigitdateFormatter} from '@/common/utils/dateFormatter.util';
 import { getKalenderEvents } from '@/services/layanan-pubagenda';
 
 export default function EventCalendar() {
@@ -89,10 +89,13 @@ export default function EventCalendar() {
   };
 
   useEffect(() => {
-    fetchHighlightedDays(initialValue, fetchP);
-    // abort request on unmount
-    return () => requestAbortController.current?.abort();
-  }, []);
+    var d = new Date()
+    var date = dayjs(d);
+    const getCurrentMonth = date.month() + 1;
+    const getCurrentYear = date.year();
+    filterEvent(getCurrentMonth, getCurrentYear);
+  }, [kalenderData]);
+
 
   const handleMonthChange = (date: Dayjs) => {
     if (requestAbortController.current) {
@@ -114,8 +117,7 @@ export default function EventCalendar() {
 
   function filterModal(newValue: any) {
     const dateString = new Date(newValue).toLocaleDateString('it-IT');
-    const filtered = kalenderData.filter(t => oneDigitdateFormatter(t.date) === dateString);
-    // console.log(filtered)
+    const filtered = kalenderData.filter(t => dateOnlyFormatter(t.date) === dateString);
     {
       if (filtered.length !== 0) {
         { setOpen(true); }

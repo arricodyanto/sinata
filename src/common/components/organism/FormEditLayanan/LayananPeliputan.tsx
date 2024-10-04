@@ -8,37 +8,17 @@ import SelectLabel from '@/common/components/atoms/SelectLabel';
 import TextfieldLabel from '@/common/components/atoms/TextfieldLabel';
 import DisabledFormDataKegiatan from '@/common/components/organism/FormDataKegiatan/DisabledFormDataKegiatan';
 import { TFormEditLayananProps } from '@/common/types';
-import {
-	dateStringFormatter,
-	timeFormatter,
-	timeStrictFormatter,
-} from '@/common/utils/dateFormatter.util';
+import { dateStringFormatter, timeFormatter, timeStrictFormatter } from '@/common/utils/dateFormatter.util';
 import { getAccountID, getAccountRole } from '@/common/utils/decryptToken';
 import { formDataFormatter } from '@/common/utils/formDataFormatter';
 import { getAllUsers } from '@/services/accounts';
-import {
-	getAllDataKegiatan,
-	getAllDataKegiatanUser,
-} from '@/services/data-kegiatan';
-import {
-	deleteOneLayananPeliputan,
-	getAllLayananPeliputan,
-	updateLayananPeliputan,
-} from '@/services/layanan-peliputan';
+import { getAllDataKegiatan, getAllDataKegiatanUser } from '@/services/data-kegiatan';
+import { deleteOneLayananPeliputan, getAllLayananPeliputan, updateLayananPeliputan } from '@/services/layanan-peliputan';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import SaveIcon from '@mui/icons-material/Save';
-import {
-	Box,
-	Button,
-	Chip,
-	FormControl,
-	FormLabel,
-	MenuItem,
-	Stack,
-	Typography,
-} from '@mui/material';
+import { Box, Button, Chip, FormControl, FormLabel, MenuItem, Stack, Typography } from '@mui/material';
 import { FilePondFile } from 'filepond';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -46,10 +26,7 @@ import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import AutocompleteMultiple from '../../atoms/AutocompleteMultiple';
-import {
-	nameuserToArray,
-	nameuserToString,
-} from '@/common/utils/nameuserFormatter.util';
+import { nameuserToArray, nameuserToString } from '@/common/utils/nameuserFormatter.util';
 import StatusStepper from '../../atoms/StatusStepper';
 import AccordionCustom from '../../atoms/AccordionCustom';
 import { getAllArsipPersUser } from '@/services/arsip-pers';
@@ -93,8 +70,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 
 	const onSave = async () => {
 		const formattedForm = formDataFormatter(form);
-		const isSame =
-			JSON.stringify(formattedForm) === JSON.stringify(originalForm);
+		const isSame = JSON.stringify(formattedForm) === JSON.stringify(originalForm);
 
 		if (isSame === true) {
 			toast.warning('Tidak ada perubahan pada data.', {
@@ -157,19 +133,23 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 	}, [getAllDataKegiatanUser]);
 
 	const getDataArsipUser = useCallback(async () => {
-		const id_account = data.map((item) => item.tb_kegiatan.id_account);
-		if (id_account) {
-			const response = await getAllArsipPersUser(id_account[0]);
-			setArsip(response.data);
+		if (data.length > 0) {
+			const id_account = data.map((item) => item.tb_kegiatan.id_account);
+			if (id_account) {
+				const response = await getAllArsipPersUser(id_account[0]);
+				setArsip(response.data);
+			}
 		}
 	}, [data]);
 
 	const getPeliputan = useCallback(async () => {
-		const getDateFromRows = rows.map((item) => item.tb_kegiatan.tgl_kegiatan);
-		const params = `tgl=${getDateFromRows[0]}`;
-		const response = await getAllLayananPeliputan(params);
-		if (response.error === false) {
-			setPeliputan(response.data);
+		if (data.length > 0) {
+			const getDateFromRows = rows.map((item) => item.tb_kegiatan.tgl_kegiatan);
+			const params = `tgl_kegiatan=${getDateFromRows[0]}`;
+			const response = await getAllLayananPeliputan(params);
+			if (response.error === false) {
+				setPeliputan(response.data);
+			}
 		}
 	}, [data]);
 
@@ -208,14 +188,12 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 
 	const [openHapus, setOpenHapus] = useState(false);
 	const [openSimpan, setOpenSimpan] = useState(false);
-	const handleDialogOpen =
-		(setState: React.Dispatch<React.SetStateAction<boolean>>) => () => {
-			setState(true);
-		};
-	const handleDialogClose =
-		(setState: React.Dispatch<React.SetStateAction<boolean>>) => () => {
-			setState(false);
-		};
+	const handleDialogOpen = (setState: React.Dispatch<React.SetStateAction<boolean>>) => () => {
+		setState(true);
+	};
+	const handleDialogClose = (setState: React.Dispatch<React.SetStateAction<boolean>>) => () => {
+		setState(false);
+	};
 
 	const handleDelete = async (id: string) => {
 		await deleteOneLayananPeliputan(id);
@@ -229,10 +207,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 		const getPIC = peliputan.map((item) => item.pic);
 		const stringPIC = nameuserToString(getPIC);
 		const formattedPIC = nameuserToArray(stringPIC);
-		return (
-			nameuserToArray(PIC).some((item: any) => item.name === option.name) ||
-			formattedPIC.some((item: any) => item.name === option.name)
-		);
+		return nameuserToArray(PIC).some((item: any) => item.name === option.name) || formattedPIC.some((item: any) => item.name === option.name);
 	};
 	return (
 		<>
@@ -249,16 +224,8 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 							label='Judul Kegiatan'
 							data={dataKegiatan}
 							onChange={handleJudulChange}
-							defaultValue={dataKegiatan.find(
-								(item: any) => item.id == data.id_kegiatan,
-							)}
-							disabled={
-								roleAccount === 'User' ||
-								roleAccount === 'Admin Role 2' ||
-								roleAccount === 'Super Admin'
-									? !editable
-									: true
-							}
+							defaultValue={dataKegiatan.find((item: any) => item.id == data.id_kegiatan)}
+							disabled={roleAccount === 'User' || roleAccount === 'Admin Role 2' || roleAccount === 'Super Admin' ? !editable : true}
 						/>
 						<DisabledFormDataKegiatan judul_kegiatan={autocomplete} />
 						{leaflet === false ? (
@@ -296,13 +263,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 										disableElevation
 										className='rounded-md capitalize py-1 px-3 mt-2'
 										onClick={() => setLeaflet(true)}
-										disabled={
-											roleAccount === 'User' ||
-											roleAccount === 'Admin Role 2' ||
-											roleAccount === 'Super Admin'
-												? !editable
-												: true
-										}>
+										disabled={roleAccount === 'User' || roleAccount === 'Admin Role 2' || roleAccount === 'Super Admin' ? !editable : true}>
 										Change File
 									</Button>
 								</Stack>
@@ -367,21 +328,14 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 											disableElevation
 											className='rounded-md capitalize py-1 px-3'
 											onClick={() => setBahanPublikasi(true)}
-											disabled={
-												roleAccount === 'User' ||
-												roleAccount === 'Admin Role 2' ||
-												roleAccount === 'Super Admin'
-													? !editable
-													: true
-											}>
+											disabled={roleAccount === 'User' || roleAccount === 'Admin Role 2' || roleAccount === 'Super Admin' ? !editable : true}>
 											Change File
 										</Button>
 									</Stack>
 									<Typography
 										variant='caption'
 										className='italic'>
-										Tambahkan file jika terdapat sudah terdapat naskah berita
-										dari acara.
+										Tambahkan file jika terdapat sudah terdapat naskah berita dari acara.
 									</Typography>
 								</Stack>
 							</>
@@ -397,11 +351,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 									}}
 									allowMultiple={false}
 									allowReorder={false}
-									acceptedFileTypes={[
-										'application/pdf',
-										'application/msword',
-										'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-									]}
+									acceptedFileTypes={['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']}
 									labelFileTypeNotAllowed='Hanya file Doc dan PDF yang diijinkan'
 								/>
 								<Stack
@@ -439,9 +389,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 														: true
 												}>
 												<MenuItem value='Pending'>Pending</MenuItem>
-												<MenuItem value='Approved & On Progress'>
-													Approved & On Progress
-												</MenuItem>
+												<MenuItem value='Approved & On Progress'>Approved & On Progress</MenuItem>
 												<MenuItem value='Completed'>Complete</MenuItem>
 												<MenuItem value='Rejected'>Rejected</MenuItem>
 											</SelectLabel>
@@ -468,9 +416,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 												<Link
 													href={`${api_image}/${data.disposisi}`}
 													target='_blank'>
-													<Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>
-														{data.disposisi}
-													</Typography>
+													<Typography className='text-sm hover:text-primary hover:underline hover:underline-offset-2 transition'>{data.disposisi}</Typography>
 												</Link>
 											) : (
 												<Typography
@@ -484,12 +430,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 												disableElevation
 												className='rounded-md capitalize py-1 px-3'
 												onClick={() => setDisposisi(true)}
-												disabled={
-													roleAccount === 'Admin Role 6' ||
-													roleAccount === 'Super Admin'
-														? !editable
-														: true
-												}>
+												disabled={roleAccount === 'Admin Role 6' || roleAccount === 'Super Admin' ? !editable : true}>
 												Change File
 											</Button>
 										</Stack>
@@ -532,13 +473,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 									defaultValue={data.pic ? nameuserToArray(data.pic) : []}
 									getOptionDisabled={isOptionDisabled}
 									onChange={handlePICChange}
-									disabled={
-										roleAccount === 'Admin Role 3' ||
-										roleAccount === 'Admin Role 6' ||
-										roleAccount === 'Super Admin'
-											? !editable
-											: true
-									}
+									disabled={roleAccount === 'Admin Role 3' || roleAccount === 'Admin Role 6' || roleAccount === 'Super Admin' ? !editable : true}
 								/>
 								<TextfieldLabel
 									label='Keterangan'
@@ -547,16 +482,8 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 									multiline
 									minRows={2}
 									maxRows={5}
-									onChange={(event: any) =>
-										form.set('keterangan', event.target.value)
-									}
-									disabled={
-										roleAccount === 'Admin Role 2' ||
-										roleAccount === 'Admin Role 6' ||
-										roleAccount === 'Super Admin'
-											? !editable
-											: true
-									}
+									onChange={(event: any) => form.set('keterangan', event.target.value)}
+									disabled={roleAccount === 'Admin Role 2' || roleAccount === 'Admin Role 6' || roleAccount === 'Super Admin' ? !editable : true}
 								/>
 							</>
 						) : (
@@ -634,9 +561,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 																variant='body2'
 																color={'text.secondary'}
 																className='mt-2 italic'>
-																Dipublikasikan oleh <b>{item.admin}</b> pada
-																pukul {timeStrictFormatter(item.waktu_upload)}{' '}
-																WIB
+																Dipublikasikan oleh <b>{item.admin}</b> pada pukul {timeStrictFormatter(item.waktu_upload)} WIB
 															</Typography>
 														</>
 													}
@@ -687,10 +612,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 																	variant='body2'
 																	color={'text.secondary'}
 																	className='mt-2 italic'>
-																	Dipublikasikan oleh <b>{item.admin_terj}</b>{' '}
-																	pada pukul{' '}
-																	{timeStrictFormatter(item.waktu_upload_terj)}{' '}
-																	WIB
+																	Dipublikasikan oleh <b>{item.admin_terj}</b> pada pukul {timeStrictFormatter(item.waktu_upload_terj)} WIB
 																</Typography>
 															</>
 														}
@@ -750,9 +672,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 											Ubah
 										</ButtonIcon>
 									)}
-									{roleAccount === 'User' ||
-									roleAccount === 'Admin Role 2' ||
-									roleAccount === 'Super Admin' ? (
+									{roleAccount === 'User' || roleAccount === 'Admin Role 2' || roleAccount === 'Super Admin' ? (
 										<ButtonIcon
 											variant='outlined'
 											color='error'
@@ -768,8 +688,7 @@ export default function LayananPeliputan(props: TFormEditLayananProps) {
 							variant='caption'
 							className='italic'
 							marginTop={-4}>
-							Terakhir diubah pada {dateStringFormatter(data.updatedAt)} -{' '}
-							{timeFormatter(data.updatedAt)} WIB
+							Terakhir diubah pada {dateStringFormatter(data.updatedAt)} - {timeFormatter(data.updatedAt)} WIB
 						</Typography>
 						<DialogConfirmation
 							title='Hapus'
