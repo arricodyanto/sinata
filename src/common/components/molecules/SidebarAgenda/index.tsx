@@ -22,10 +22,6 @@ export default function SidebarAgenda(props: TSidebarAgendaProps) {
                             <Typography variant='body1' className='text-primary font-bold line-clamp-2'>{item.tb_kegiatan.judul_kegiatan}</Typography>
                             <Stack direction='row' alignItems='center' spacing={2} className='mt-1'>
                                 <Stack direction='row'>
-                                    <PersonIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>
-                                    <Typography variant='caption' className='pl-1 text-gray-500'>{item.tb_kegiatan.tb_account.name}</Typography>
-                                </Stack>
-                                <Stack direction='row'>
                                     <EventIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>
                                     <Typography variant='caption' className='pl-1 text-gray-500'>{dateFormatter(item.tb_kegiatan.tgl_kegiatan)}</Typography>
                                 </Stack>
@@ -34,7 +30,11 @@ export default function SidebarAgenda(props: TSidebarAgendaProps) {
                                     <Typography variant='caption' className='pl-1 text-gray-500'>{timeStrictFormatter(item.tb_kegiatan.waktu_kegiatan)} WIB</Typography>
                                 </Stack>
                             </Stack>
-                            <Stack direction='row'>
+                            <Stack direction='row' className='mt-1'>
+                                <PersonIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>
+                                <Typography variant='caption' className='pl-1 text-gray-500'>{item.tb_kegiatan.tb_account.name}</Typography>
+                            </Stack>
+                            <Stack direction='row' className='mt-1'>
                                 <PlaceIcon fontSize='inherit' sx={{ fontSize: 18 }} color='primary'/>
                                 <Typography variant='caption' className='pl-1 text-gray-500'>{item.tb_kegiatan.tempat_kegiatan}</Typography>
                             </Stack>
